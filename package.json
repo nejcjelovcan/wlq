@@ -1,0 +1,33 @@
+{
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "lint": "eslint packages --ext ts,tsx",
+    "lint:fix": "yarn lint --fix",
+    "prebuild": "rm -rf ./packages/*/lib",
+    "build": "yarn build:cjs && yarn build:esm",
+    "build:cjs": "yarn module:cjs && tsc --build tsconfig.project.json",
+    "build:esm": "yarn module:esm && tsc --build tsconfig.project.json",
+    "dev:cjs": "yarn build:cjs --watch",
+    "dev:esm": "yarn build:esm --watch",
+    "module:cjs": "sed -i -e '0,/target/{s:esnext:es5:}' -e '0,/module/{s:esnext:commonjs:}' ./tsconfig.json && sed -i -e s:lib/esm:lib/cjs: packages/**/tsconfig.json",
+    "module:esm": "sed -i -e s:es5:esnext: -e s:commonjs:esnext: ./tsconfig.json && sed -i -e s:lib/cjs:lib/esm: packages/**/tsconfig.json"
+  },
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "2.x",
+    "@typescript-eslint/parser": "2.x",
+    "babel-eslint": "10.x",
+    "eslint": "6.x",
+    "eslint-config-react-app": "^5.2.1",
+    "eslint-plugin-flowtype": "3.x",
+    "eslint-plugin-import": "2.x",
+    "eslint-plugin-jsx-a11y": "6.x",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "7.x",
+    "eslint-plugin-react-hooks": "2.x",
+    "prettier": "1.x",
+    "typescript": "4.x"
+  }
+}
