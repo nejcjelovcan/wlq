@@ -39,3 +39,16 @@ export const USER_DETAILS_COLORS = [
   'green',
   'cyan',
 ]
+
+export const validateUserDetails = (obj: { [key: string]: any }): boolean => {
+  if (
+    typeof obj.alias !== 'string' ||
+    obj.alias.length < 1 ||
+    obj.alias.length > 30
+  ) {
+    return false
+  }
+  if (!USER_DETAILS_COLORS.includes(obj.color)) return false
+  if (!USER_DETAILS_EMOJIS.includes(obj.emoji)) return false
+  return true
+}

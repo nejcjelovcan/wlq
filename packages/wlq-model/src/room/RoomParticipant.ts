@@ -1,29 +1,30 @@
-import { v4 } from 'uuid'
+import { nanoid } from 'nanoid'
 import UserDetails from '../user/UserDetails'
 
 export default interface RoomParticipant {
   type: 'RoomParticipant'
-  room: string
+  roomId: string
   details: UserDetails
-  uuid: string
+  uid: string
   connectionId: string
   joinedTime: string
 }
 
 export type RoomParticipantJoin = Pick<
   RoomParticipant,
-  'room' | 'details' | 'connectionId'
+  'roomId' | 'details' | 'connectionId'
 >
 
-export const getRoomParticipantPK = ({ room }: Pick<RoomParticipant, 'room'>) =>
-  room
+export const getRoomParticipantPK = ({
+  roomId,
+}: Pick<RoomParticipant, 'roomId'>) => roomId
 
 export const getRoomParticipantSK = ({
   connectionId,
 }: Pick<RoomParticipant, 'connectionId'>) => `#ROOM_PARTICIPANT#${connectionId}`
 
 export const getRoomParticipantKeys = (
-  room: Pick<RoomParticipant, 'room' | 'connectionId'>,
+  room: Pick<RoomParticipant, 'roomId' | 'connectionId'>,
 ) => ({
   PK: getRoomParticipantPK(room),
   SK: getRoomParticipantSK(room),
@@ -34,7 +35,7 @@ export const newRoomParticipant = (
 ): RoomParticipant => {
   return {
     type: 'RoomParticipant',
-    uuid: v4(),
+    uid: nanoid(),
     joinedTime: new Date().toISOString(),
     ...join,
   }
