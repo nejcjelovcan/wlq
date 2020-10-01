@@ -16,15 +16,15 @@ custom:
   hostedZone: qweel.be
   hostedZoneId: Z09065943TDVT0RBWETEM
   siteNames:
-    prod: ${hostedZone}
-    dev: dev.${hostedZone}
-    other: other.${hostedZone}
+    prod: ${self:custom.hostedZone}
+    dev: dev.${self:custom.hostedZone}
+    other: other.${self:custom.hostedZone}
   siteName: ${self:custom.siteNames.${self:provider.stage}, self:custom.siteNames.other}
   acmCertificate: arn:aws:acm:us-east-1:514340827327:certificate/0be0656e-0773-459e-a383-d88e9a7ac1bf
 
   scripts:
     hooks:
-      "package:createDeploymentArtifacts": cd ../wlq-app && yarn build:serverless
+      "package:createDeploymentArtifacts": cd ../wlq-app && NEXT_TELEMETRY_DISABLED=1 yarn build:serverless
 
   assets:
     targets:
