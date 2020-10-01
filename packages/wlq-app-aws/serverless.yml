@@ -10,6 +10,7 @@ provider:
 
 plugins:
   - serverless-s3-deploy
+  - serverless-domain-manager
   - serverless-plugin-scripts
 
 custom:
