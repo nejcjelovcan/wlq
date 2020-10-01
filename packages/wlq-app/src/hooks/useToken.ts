@@ -1,10 +1,13 @@
 import { useEffect } from 'react'
 import { useOvermind } from '../overmind'
 
-const useToken = () => {
+const useToken = (retry = false) => {
   const {
     state: {
-      user: { token },
+      user: {
+        token,
+        getTokenState: { error },
+      },
     },
     actions: {
       user: { getToken },
@@ -12,11 +15,11 @@ const useToken = () => {
   } = useOvermind()
 
   useEffect(() => {
-    if (!token) {
+    // TODO don't know about this retry mechanism...
+    if (!token && (!error || retry)) {
       getToken()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token])
+  }, [token, error, retry, getToken])
 
   return token
 }

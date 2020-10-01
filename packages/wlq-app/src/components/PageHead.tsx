@@ -1,6 +1,6 @@
-import React from 'react'
 import { Box, Flex, Heading, Skeleton } from '@chakra-ui/core'
-import useUserDetails from '../hooks/useUserDetails'
+import React from 'react'
+import { useOvermindState } from '../overmind'
 import UserBadge from './UserBadge'
 
 export type PageHeadProps = {
@@ -12,7 +12,9 @@ export type PageHeadProps = {
 }
 
 const PageHead = ({ loading, title, subtitle }: PageHeadProps) => {
-  const userDetails = useUserDetails(false)
+  const {
+    user: { details },
+  } = useOvermindState()
 
   return (
     <Flex direction="row" justifyContent="space-between" alignItems="center">
@@ -29,7 +31,7 @@ const PageHead = ({ loading, title, subtitle }: PageHeadProps) => {
           </Heading>
         </Skeleton>
       </Flex>
-      {userDetails && <UserBadge userDetails={userDetails} />}
+      {details && <UserBadge userDetails={details} />}
     </Flex>
   )
 }

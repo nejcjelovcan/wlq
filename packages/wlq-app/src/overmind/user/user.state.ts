@@ -6,6 +6,7 @@ export type UserState = {
   getTokenState: RequestState
   details?: Partial<UserDetails>
   detailsValid?: boolean
+  detailsChecked?: boolean
 }
 
 export const state: UserState = {

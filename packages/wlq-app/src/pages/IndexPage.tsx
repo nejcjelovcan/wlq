@@ -4,11 +4,13 @@ import { Skeleton, Stack, Button } from '@chakra-ui/core'
 import PageHead from '../components/PageHead'
 import { useOvermind } from '../overmind'
 import useToken from '../hooks/useToken'
+import useUserDetails from '../hooks/useUserDetails'
 
 const FauxRoom = () => <Skeleton height="2rem" />
 
 const IndexPage = () => {
   useToken()
+  useUserDetails()
   const {
     actions: {
       user: { clearUserData },

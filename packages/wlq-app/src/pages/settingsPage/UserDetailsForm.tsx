@@ -8,7 +8,6 @@ import {
   SimpleGrid,
   Stack,
 } from '@chakra-ui/core'
-import { sample } from '@wlq/wlq-model/src/helpers'
 import {
   USER_DETAILS_COLORS,
   USER_DETAILS_EMOJIS,
@@ -23,23 +22,28 @@ const UserDetailsForm = ({ onDone }: { onDone?: () => void }) => {
       user: { details },
     },
     actions: {
-      user: { setUserDetails },
+      user: { getUserDetails, setUserDetails },
     },
   } = useOvermind()
 
+  const [touched, setTouched] = useState(false)
   const [alias, setAlias] = useState(details?.alias ?? '')
+
+  // There are two issue we are solving here
+  // 1. userDetails come from localStorage, so static/ssr doesn't know about it
+  // (which can cause a render mismatch)
+  // 2. if no userDetails are present, we set a random emoji/color, which again
+  // could cause render mismatch
+  // Therefore all logic is done on frontend with getUserDetails action
+  // This approach does cause a slight flash, though (form is empty before
+  // interactive)
   useEffect(() => {
-    if (!details) {
-      setUserDetails({
-        color: sample(USER_DETAILS_COLORS),
-        emoji: sample(USER_DETAILS_EMOJIS),
-      })
-    }
-  }, [details, setUserDetails])
+    setAlias(getUserDetails()?.alias || '')
+  }, [getUserDetails])
 
   return (
     <Stack spacing={4}>
-      <FormControl isInvalid={!alias}>
+      <FormControl isInvalid={touched && !alias}>
         <FormLabel>Nickname</FormLabel>
         <Input
           placeholder="choose a name or nickname"
@@ -49,6 +53,7 @@ const UserDetailsForm = ({ onDone }: { onDone?: () => void }) => {
             if (alias) {
               setUserDetails({ ...details, alias })
             }
+            setTouched(true)
           }}
         />
         {!alias && <FormErrorMessage>Please enter a nickname</FormErrorMessage>}
@@ -79,8 +84,8 @@ const UserDetailsForm = ({ onDone }: { onDone?: () => void }) => {
             const variant = emo === details?.emoji ? 'vibrant' : 'vibrantHover'
             return (
               <Button
-                key={emo}
-                colorScheme={details?.color ?? 'yellow'}
+                key={`${details?.color}${emo}`}
+                colorScheme={details?.color}
                 variant={variant}
                 onClick={() => setUserDetails({ ...details, emoji: emo })}
                 p={2}

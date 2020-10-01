@@ -5,22 +5,28 @@ import { useOvermind } from '../overmind'
 const useUserDetails = (redirect = false) => {
   const {
     state: {
-      user: { details, detailsValid },
+      user: { details, detailsValid, detailsChecked },
+    },
+    actions: {
+      user: { getUserDetails },
     },
   } = useOvermind()
 
   const router = useRouter()
 
   useEffect(() => {
-    if (!detailsValid && redirect) {
+    if (!detailsChecked) getUserDetails()
+  }, [detailsChecked, getUserDetails])
+
+  useEffect(() => {
+    if (detailsChecked && !detailsValid && redirect) {
       router.replace(
         `/user/?next=${encodeURIComponent(
           document.location.pathname + document.location.search,
         )}`,
       )
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [detailsValid])
+  }, [detailsValid, detailsChecked, router, redirect])
 
   return detailsValid ? details : undefined
 }
