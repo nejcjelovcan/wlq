@@ -13,8 +13,6 @@ provider:
   runtime: nodejs12.x
   region: eu-central-1
   stage: ${opt:stage, 'dev'}
-  environment:
-    - NEXT_PUBLIC_API_URL=${self:custom.apiUrl}
 
 plugins:
   - serverless-s3-deploy
@@ -29,7 +27,7 @@ custom:
 
   scripts:
     hooks:
-      "package:createDeploymentArtifacts": cd ../wlq-app && NEXT_TELEMETRY_DISABLED=1 yarn build:serverless
+      "package:createDeploymentArtifacts": cd ../wlq-app && NEXT_PUBLIC_API_URL=${self:custom.apiUrl} NEXT_TELEMETRY_DISABLED=1 yarn build:serverless
 
   cloudfrontInvalidate:
     distributionIdKey: "CloudFrontDistributionId"
