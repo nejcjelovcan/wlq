@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "packages/wlq-api" },
+    { "path": "packages/wlq-api-aws" },
     { "path": "packages/wlq-model" }
   ]
 }

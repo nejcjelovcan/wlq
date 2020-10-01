@@ -1,0 +1,38 @@
+service: wlq-api-aws
+
+frameworkVersion: "2"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-central-1
+  stage: ${opt:stage, 'dev'}
+  apiGateway:
+    minimumCompressionSize: 1024
+
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+
+plugins:
+  - serverless-webpack
+
+custom:
+  webpack:
+    webpackConfig: "./webpack.config.js"
+    includeModules: true
+
+functions:
+  getToken:
+    handler: src/lambdas/getToken.handler
+    events:
+      - http:
+          path: getToken
+          method: GET
+          cors: true
+
+# resources:
+#   Resources:
+
+package:
+  individually: true
+  excludeDevDependencies: true

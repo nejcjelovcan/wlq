@@ -1,0 +1,20 @@
+{
+  "name": "@wlq/wlq-api",
+  "version": "1.0.0",
+  "main": "lib/cjs/index.js",
+  "typings": "lib/cjs/index.d.ts",
+  "module": "lib/esm/index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "yarn jest",
+    "test:watch": "yarn jest --watch-all"
+  },
+  "dependencies": {
+    "jose": "^2.0.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.14",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.4.1"
+  }
+}

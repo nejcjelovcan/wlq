@@ -1,10 +1,9 @@
+import { Stack } from '@chakra-ui/core'
+import { useRouter } from 'next/dist/client/router'
 import React from 'react'
-import Link from 'next/link'
-import { Skeleton, Stack, Button } from '@chakra-ui/core'
 import PageHead from '../components/PageHead'
 import useToken from '../hooks/useToken'
 import UserDetailsForm from './settingsPage/UserDetailsForm'
-import { useRouter } from 'next/dist/client/router'
 
 const SettingsPage = () => {
   useToken()
