@@ -44,23 +44,12 @@ functions:
       - http:
           path: getRoom
           origin: ${self:custom.httpOrigin}
-          authorize: authorize
+          authorizer: authorize
           method: POST
           cors: true
 
   authorize:
     handler: src/lambdas/authorize.handler
-
-resources:
-  Resources:
-    ApiDomain:
-      Type: "AWS::ApiGateway::DomainName"
-      Properties:
-        DomainName: ${self:custom.siteName}
-        EndpointConfiguration:
-          Types:
-            - EDGE
-        CertificateArn: ${self:custom.acmCertificateArn}
 
 package:
   individually: true
