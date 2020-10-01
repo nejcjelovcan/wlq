@@ -27,7 +27,7 @@ custom:
   customDomain:
     domainName: ${self:custom.siteName}
     stage: ${self:provider.stage}
-    createRoute53Record: true
+    createRoute53Record: false
 
   assets:
     targets:
