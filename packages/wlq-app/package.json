@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "_clean:serverless": "rm -rf ./.next/static/ && rm -rf ./.next/serverless/",
+    "_link:serverless": "cd .next/serverless/pages && mkdir ./room && mkdir ./new && mkdir ./user && mv ./room.html ./room/index.html && mv ./new.html ./new/index.html && mv ./user.html ./user/index.html",
+    "_build:serverless": "yarn clean:serverless && next build && yarn link:serverless",
+    "build:serverless": "next build"
   },
   "dependencies": {
     "@chakra-ui/core": "1.0.0-rc.5",

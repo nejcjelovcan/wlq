@@ -4,7 +4,7 @@ import UserDetails from '@wlq/wlq-model/src/user/UserDetails'
 import EmojiIcon from './EmojiIcon'
 
 export type UserBadgeProps = {
-  userDetails: UserDetails
+  userDetails: Partial<UserDetails>
 } & ButtonProps
 
 const UserBadge = ({

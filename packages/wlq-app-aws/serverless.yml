@@ -1,0 +1,126 @@
+service: wlq-app-aws
+
+frameworkVersion: "2"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-central-1
+  stage: ${opt:stage, 'dev'}
+
+plugins:
+  - serverless-s3-deploy
+  - serverless-plugin-scripts
+
+custom:
+  siteNames:
+    prod: qweel.be
+    other: dev.qweel.be
+  siteName: ${self:custom.siteNames.${self:provider.stage}, self:custom.siteNames.other}
+  acmCertificate: arn:aws:acm:us-east-1:514340827327:certificate/0be0656e-0773-459e-a383-d88e9a7ac1bf
+
+  scripts:
+    hooks:
+      "deploy:createDeploymentArtifacts": cd ../wlq-app && yarn build:serverless
+
+  assets:
+    auto: true
+    targets:
+      - bucket: ${self:custom.siteName}
+        empty: true
+
+        files:
+          - source: ../wlq-app/.next/serverless/pages/
+            globs: "**/*.html"
+
+          - source: ../wlq-app/public/
+            globs: "**/*"
+            headers:
+              CacheControl: max-age=86400
+
+      - bucket: ${self:custom.siteName}
+        prefix: _next/static
+        files:
+          - source: ../wlq-app/.next/static/
+            globs: "**/*.js"
+            headers:
+              CacheControl: max-age=86400
+
+resources:
+  Resources:
+    StaticSite:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: PublicRead
+        BucketName: ${self:custom.siteName}
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: 404.html
+
+    StaticSiteBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: StaticSite
+        PolicyDocument:
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: "*"
+              Action:
+                - s3:GetObject
+              Resource:
+                Fn::Join: ["", ["arn:aws:s3:::", { "Ref": "StaticSite" }, "/*"]]
+
+    CloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          PriceClass: PriceClass_100
+          Origins:
+            - DomainName: ${self:custom.siteName}.s3-website.eu-central-1.amazonaws.com
+              ## An identifier for the origin which must be unique within the distribution
+              Id: StaticSiteOrigin
+              CustomOriginConfig:
+                HTTPPort: 80
+                HTTPSPort: 443
+                OriginProtocolPolicy: http-only
+              ## In case you want to restrict the bucket access use S3OriginConfig and remove CustomOriginConfig
+              # S3OriginConfig:
+              #   OriginAccessIdentity: origin-access-identity/cloudfront/E127EXAMPLE51Z
+          Enabled: "true"
+          ## Uncomment the following section in case you are using a custom domain
+          Aliases:
+            - ${self:custom.siteName}
+          DefaultRootObject: index.html
+          ## SPA:
+          ## Since the Single Page App is taking care of the routing we need to make sure ever path is served with index.html
+          ## The only exception are files that actually exist e.h. app.js, reset.css
+          CustomErrorResponses:
+            - ErrorCode: 404
+              ResponseCode: 404
+              ResponsePagePath: /404.html
+
+          HttpVersion: http2
+
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - GET
+              - HEAD
+              - OPTIONS
+
+            ## The origin id defined above
+            TargetOriginId: StaticSiteOrigin
+            ## Defining if and how the QueryString and Cookies are forwarded to the origin which in this case is S3
+            ForwardedValues:
+              QueryString: "false"
+              Cookies:
+                Forward: none
+            ## The protocol that users can use to access the files in the origin. To allow HTTP use `allow-all`
+            ViewerProtocolPolicy: redirect-to-https
+
+            Compress: true
+
+          ViewerCertificate:
+            AcmCertificateArn: ${self:custom.acmCertificate}
+            SslSupportMethod: sni-only

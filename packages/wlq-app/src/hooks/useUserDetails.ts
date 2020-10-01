@@ -22,6 +22,6 @@ const useUserDetails = (redirect = false) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detailsValid])
 
-  return details
+  return detailsValid ? details : undefined
 }
 export default useUserDetails
