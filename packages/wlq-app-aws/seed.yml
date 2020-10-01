@@ -1,0 +1,2 @@
+after_deploy:
+  - serverless s3deploy -v

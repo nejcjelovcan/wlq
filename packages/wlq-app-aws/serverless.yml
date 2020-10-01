@@ -21,10 +21,9 @@ custom:
 
   scripts:
     hooks:
-      "deploy:createDeploymentArtifacts": cd ../wlq-app && yarn build:serverless
+      "package:createDeploymentArtifacts": cd ../wlq-app && yarn build:serverless
 
   assets:
-    auto: true
     targets:
       - bucket: ${self:custom.siteName}
         empty: true
