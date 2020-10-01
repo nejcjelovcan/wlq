@@ -1,4 +1,2 @@
-before_build:
-  - if [ $SEED_SERVICE_NAME = "wlq-app-aws" ]; then cd packages/wlq-app-aws && serverless create_domain --stage $SEED_STAGE_NAME; fi
 after_deploy:
   - if [ $SEED_SERVICE_NAME = "wlq-app-aws" ]; then cd packages/wlq-app-aws && serverless s3deploy -v; fi

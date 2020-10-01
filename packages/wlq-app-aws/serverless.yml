@@ -10,24 +10,21 @@ provider:
 
 plugins:
   - serverless-s3-deploy
-  - serverless-domain-manager
   - serverless-plugin-scripts
 
 custom:
+  hostedZone: qweel.be
+  hostedZoneId: Z09065943TDVT0RBWETEM
   siteNames:
-    prod: qweel.be
-    other: dev.qweel.be
+    prod: ${hostedZone}
+    dev: dev.${hostedZone}
+    other: other.${hostedZone}
   siteName: ${self:custom.siteNames.${self:provider.stage}, self:custom.siteNames.other}
   acmCertificate: arn:aws:acm:us-east-1:514340827327:certificate/0be0656e-0773-459e-a383-d88e9a7ac1bf
 
   scripts:
     hooks:
       "package:createDeploymentArtifacts": cd ../wlq-app && yarn build:serverless
-
-  customDomain:
-    domainName: ${self:custom.siteName}
-    stage: ${self:provider.stage}
-    createRoute53Record: false
 
   assets:
     targets:
@@ -129,3 +126,15 @@ resources:
           ViewerCertificate:
             AcmCertificateArn: ${self:custom.acmCertificate}
             SslSupportMethod: sni-only
+
+    DNSRecords:
+      Type: AWS::Route53::RecordSetGroup
+      Properties:
+        HostedZoneName: ${self:custom.hostedZone}.
+        RecordSets:
+          - Name: ${self:custom.siteName}
+            Type: A
+            AliasTarget:
+              HostedZoneId: ${self:custom.hostedZoneId}
+              DNSName:
+                "Fn::GetAtt": [CloudFrontDistribution, DomainName]
