@@ -20,7 +20,10 @@ plugins:
   - serverless-webpack
 
 custom:
+  hostedZoneId: ${env:HOSTED_ZONE_ID}
+  siteName: api.${env:SITE_DOMAIN}
   httpOrigin: https://${SITE_DOMAIN}
+  acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
   webpack:
     webpackConfig: "./webpack.config.js"
     includeModules: true
@@ -47,6 +50,17 @@ functions:
 
   authorize:
     handler: src/lambdas/authorize.handler
+
+resources:
+  Resources:
+    ApiDomain:
+      Type: "AWS::ApiGateway::DomainName"
+      Properties:
+        DomainName: ${self:custom.siteName}
+        EndpointConfiguration:
+          Types:
+            - EDGE
+        RegionalCertificateArn: ${self:custom.acmCertificateArn}
 
 package:
   individually: true

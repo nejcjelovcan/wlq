@@ -13,6 +13,8 @@ provider:
   runtime: nodejs12.x
   region: eu-central-1
   stage: ${opt:stage, 'dev'}
+  environment:
+    - NEXT_PUBLIC_API_URL=${self:custom.apiUrl}
 
 plugins:
   - serverless-s3-deploy
@@ -20,9 +22,10 @@ plugins:
   - serverless-cloudfront-invalidate
 
 custom:
+  apiUrl: api.${env:SITE_DOMAIN}
   hostedZoneId: ${env:HOSTED_ZONE_ID}
   siteName: ${env:SITE_DOMAIN}
-  acmCertificate: ${env:ACM_CERTIFICATE_ARN}
+  acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
 
   scripts:
     hooks:
@@ -131,7 +134,7 @@ resources:
             Compress: true
 
           ViewerCertificate:
-            AcmCertificateArn: ${self:custom.acmCertificate}
+            AcmCertificateArn: ${self:custom.acmCertificateArn}
             SslSupportMethod: sni-only
 
     DNSRecords:
