@@ -1,7 +1,8 @@
-export const getItem = (key: string) => localStorage.getItem(key)
+export const getItem = (key: string) =>
+  typeof window !== 'undefined' ? localStorage.getItem(key) : undefined
 
 export const setItem = (key: string, value: string) =>
-  localStorage.setItem(key, value)
+  typeof window !== 'undefined' ? localStorage.setItem(key, value) : undefined
 
 export const getItemJson = (key: string) => {
   try {
@@ -14,4 +15,5 @@ export const getItemJson = (key: string) => {
 export const setItemJson = (key: string, obj: { [key: string]: any }) =>
   setItem(key, JSON.stringify(obj))
 
-export const clear = () => localStorage.clear()
+export const clear = () =>
+  typeof window !== 'undefined' ? localStorage.clear() : undefined

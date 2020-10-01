@@ -13,7 +13,7 @@ import {
   USER_DETAILS_COLORS,
   USER_DETAILS_EMOJIS,
 } from '@wlq/wlq-model/src/user/UserDetails'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import EmojiIcon from '../../components/EmojiIcon'
 import { useOvermind } from '../../overmind'
 
@@ -35,7 +35,7 @@ const UserDetailsForm = ({ onDone }: { onDone?: () => void }) => {
         emoji: sample(USER_DETAILS_EMOJIS),
       })
     }
-  }, [details])
+  }, [details, setUserDetails])
 
   return (
     <Stack spacing={4}>
