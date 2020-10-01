@@ -23,6 +23,11 @@ custom:
     hooks:
       "package:createDeploymentArtifacts": cd ../wlq-app && yarn build:serverless
 
+  customDomain:
+    domainName: ${self:custom.siteName}
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+
   assets:
     targets:
       - bucket: ${self:custom.siteName}
