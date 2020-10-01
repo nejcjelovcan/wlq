@@ -60,7 +60,7 @@ resources:
         EndpointConfiguration:
           Types:
             - EDGE
-        RegionalCertificateArn: ${self:custom.acmCertificateArn}
+        CertificateArn: ${self:custom.acmCertificateArn}
 
 package:
   individually: true
