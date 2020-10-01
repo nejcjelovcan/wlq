@@ -1,5 +1,8 @@
 service: wlq-api-aws
 
+# Expected env variables:
+# SITE_DOMAIN (sub)domain of the root service (static site - wql-app-aws)
+
 frameworkVersion: "2"
 
 provider:
@@ -17,6 +20,7 @@ plugins:
   - serverless-webpack
 
 custom:
+  httpOrigin: https://${SITE_DOMAIN}
   webpack:
     webpackConfig: "./webpack.config.js"
     includeModules: true
@@ -27,11 +31,22 @@ functions:
     events:
       - http:
           path: getToken
+          origin: ${self:custom.httpOrigin}
           method: GET
           cors: true
 
-# resources:
-#   Resources:
+  getRoom:
+    handler: src/lambdas/getRoom.handler
+    events:
+      - http:
+          path: getRoom
+          origin: ${self:custom.httpOrigin}
+          authorize: authorize
+          method: POST
+          cors: true
+
+  authorize:
+    handler: src/lambdas/authorize.handler
 
 package:
   individually: true

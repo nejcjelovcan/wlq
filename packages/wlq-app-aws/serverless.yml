@@ -1,5 +1,11 @@
 service: wlq-app-aws
 
+# Expected env variables:
+# HOSTED_ZONE_ID
+# API_OCT_SECRET_KEY
+# SITE_DOMAIN (sub)domain of the root service (static site - wql-app-aws)
+# ACM_CERTIFICATE_ARN certificate ARN for given hosted zone
+
 frameworkVersion: "2"
 
 provider:
@@ -13,20 +19,16 @@ plugins:
   - serverless-plugin-scripts
 
 custom:
-  hostedZone: qweel.be
-  hostedZoneId: Z09065943TDVT0RBWETEM
-  siteNames:
-    prod: ${self:custom.hostedZone}
-    dev: dev.${self:custom.hostedZone}
-    other: other.${self:custom.hostedZone}
-  siteName: ${self:custom.siteNames.${self:provider.stage}, self:custom.siteNames.other}
-  acmCertificate: arn:aws:acm:us-east-1:514340827327:certificate/0be0656e-0773-459e-a383-d88e9a7ac1bf
+  hostedZoneId: ${env:HOSTED_ZONE_ID}
+  siteName: ${env:SITE_DOMAIN}
+  acmCertificate: ${env:ACM_CERTIFICATE_ARN}
 
   scripts:
     hooks:
       "package:createDeploymentArtifacts": cd ../wlq-app && NEXT_TELEMETRY_DISABLED=1 yarn build:serverless
 
   assets:
+    auto: true
     targets:
       - bucket: ${self:custom.siteName}
         empty: true
@@ -91,13 +93,12 @@ resources:
               # S3OriginConfig:
               #   OriginAccessIdentity: origin-access-identity/cloudfront/E127EXAMPLE51Z
           Enabled: "true"
-          ## Uncomment the following section in case you are using a custom domain
+
           Aliases:
             - ${self:custom.siteName}
+
           DefaultRootObject: index.html
-          ## SPA:
-          ## Since the Single Page App is taking care of the routing we need to make sure ever path is served with index.html
-          ## The only exception are files that actually exist e.h. app.js, reset.css
+
           CustomErrorResponses:
             - ErrorCode: 404
               ResponseCode: 404
