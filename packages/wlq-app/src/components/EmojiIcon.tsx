@@ -27,14 +27,14 @@ const EmojiIcon = ({
   }) as SystemStyleObject
   const theme = useTheme()
   const textColor = getColor(theme, buttonStyle['color'] || 'gray.800')
-  // TODO
+  // TODO this only works icon hover, not parent button
   const textHoverColor = getColor(
     theme,
     buttonStyle['_hover']['color'] || 'gray.800',
   )
 
   return (
-    <Flex justifyContent="center" alignItems="center">
+    <Flex justifyContent="center" alignItems="center" userSelect="none">
       <Box
         fontSize={fontSize ?? '4xl'}
         textShadow={`0 0 1px ${textColor}`}

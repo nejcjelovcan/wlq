@@ -13,7 +13,7 @@ export type PageHeadProps = {
 
 const PageHead = ({ loading, title, subtitle }: PageHeadProps) => {
   const {
-    user: { details },
+    user: { details, detailsValid },
   } = useOvermindState()
 
   return (
@@ -31,7 +31,7 @@ const PageHead = ({ loading, title, subtitle }: PageHeadProps) => {
           </Heading>
         </Skeleton>
       </Flex>
-      {details && <UserBadge userDetails={details} />}
+      {detailsValid && details && <UserBadge userDetails={details} />}
     </Flex>
   )
 }

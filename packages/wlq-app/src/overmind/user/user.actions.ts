@@ -9,13 +9,15 @@ import { sample } from '@wlq/wlq-model/src/helpers'
 
 export const getToken: AsyncAction = async ({
   state: { user },
-  effects: { api },
+  effects: { api, localStorage },
 }) => {
   if (!user.getTokenState.loading) {
     user.getTokenState = { loading: true }
 
     try {
-      user.token = (await api.apiGet<GetTokenResponseData>('/getToken')).token
+      const data = await api.apiGet<GetTokenResponseData>('getToken')
+      user.token = data.token
+      localStorage.setItem('token', user.token)
     } catch (e) {
       user.getTokenState.error = e.message
     } finally {
@@ -24,14 +26,8 @@ export const getToken: AsyncAction = async ({
   }
 }
 
-export const clearUserData: Action = ({
-  state: { user },
-  effects: { localStorage },
-}) => {
-  user.details = undefined
-  user.detailsValid = false
-  user.token = undefined
-  user.getTokenState = {}
+export const clearUserData: Action = ({ state, effects: { localStorage } }) => {
+  state.user = { getTokenState: {} }
   localStorage.clear()
 }
 
