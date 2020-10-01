@@ -27,6 +27,11 @@ custom:
     hooks:
       "package:createDeploymentArtifacts": cd ../wlq-app && NEXT_TELEMETRY_DISABLED=1 yarn build:serverless
 
+  cloudfrontInvalidate:
+    distributionIdKey: "CloudFrontDistributionId"
+    items:
+      - "/*"
+
   assets:
     auto: true
     targets:
@@ -141,3 +146,9 @@ resources:
               HostedZoneId: Z2FDTNDATAQYW2
               DNSName:
                 "Fn::GetAtt": [CloudFrontDistribution, DomainName]
+
+  Outputs:
+    CloudFrontDistributionId:
+      Description: Static site CloudFront distribution id
+      Value:
+        Ref: CloudFrontDistribution
