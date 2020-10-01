@@ -9,9 +9,7 @@
     "test": "yarn jest",
     "test:watch": "yarn jest --watch-all"
   },
-  "dependencies": {
-    "@wlq/wlq-api": "1.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/aws-lambda": "^8.10.63",
     "@types/jest": "^26.0.14",
