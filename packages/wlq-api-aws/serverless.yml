@@ -21,7 +21,7 @@ plugins:
 
 custom:
   hostedZoneId: ${env:HOSTED_ZONE_ID}
-  siteName: api.${env:SITE_DOMAIN}
+  siteName: ${env:API_DOMAIN}
   httpOrigin: https://${SITE_DOMAIN}
   acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
   webpack:
