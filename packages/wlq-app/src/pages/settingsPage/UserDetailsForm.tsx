@@ -13,7 +13,7 @@ import {
   USER_DETAILS_COLORS,
   USER_DETAILS_EMOJIS,
 } from '@wlq/wlq-model/src/user/UserDetails'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import EmojiIcon from '../../components/EmojiIcon'
 import { useOvermind } from '../../overmind'
 
@@ -27,11 +27,15 @@ const UserDetailsForm = ({ onDone }: { onDone?: () => void }) => {
     },
   } = useOvermind()
 
-  const [alias, setAlias] = useState('')
-  const initialColor = useMemo(() => sample(USER_DETAILS_COLORS), [])
-  const initialEmoji = useMemo(() => sample(USER_DETAILS_EMOJIS), [])
-  const color = details?.color ?? initialColor
-  const emoji = details?.emoji ?? initialEmoji
+  const [alias, setAlias] = useState(details?.alias ?? '')
+  useEffect(() => {
+    if (!details) {
+      setUserDetails({
+        color: sample(USER_DETAILS_COLORS),
+        emoji: sample(USER_DETAILS_EMOJIS),
+      })
+    }
+  }, [details])
 
   return (
     <Stack spacing={4}>
@@ -62,7 +66,7 @@ const UserDetailsForm = ({ onDone }: { onDone?: () => void }) => {
               onClick={() => setUserDetails({ ...details, color: col })}
               aria-label={`Color ${col}`}
             >
-              {col === color ? '•' : ''}
+              {col === details?.color ? '•' : ''}
             </Button>
           ))}
         </SimpleGrid>
@@ -72,11 +76,11 @@ const UserDetailsForm = ({ onDone }: { onDone?: () => void }) => {
         <FormLabel>Icon</FormLabel>
         <SimpleGrid columns={{ base: 5, sm: 7 }} spacingY={2} spacingX={2}>
           {USER_DETAILS_EMOJIS.map(emo => {
-            const variant = emo === emoji ? 'vibrant' : 'vibrantHover'
+            const variant = emo === details?.emoji ? 'vibrant' : 'vibrantHover'
             return (
               <Button
                 key={emo}
-                colorScheme={color}
+                colorScheme={details?.color ?? 'yellow'}
                 variant={variant}
                 onClick={() => setUserDetails({ ...details, emoji: emo })}
                 p={2}
@@ -84,7 +88,11 @@ const UserDetailsForm = ({ onDone }: { onDone?: () => void }) => {
                 height="3.5rem"
                 borderRadius="full"
               >
-                <EmojiIcon emoji={emo} colorScheme={color} variant={variant} />
+                <EmojiIcon
+                  emoji={emo}
+                  colorScheme={details?.color ?? 'yellow'}
+                  variant={variant}
+                />
               </Button>
             )
           })}

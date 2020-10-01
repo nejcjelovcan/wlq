@@ -33,9 +33,12 @@ export const clearUserData: Action = ({
 }
 
 export const setUserDetails: Action<Partial<UserDetails>> = (
-  { state: { user } },
+  { state: { user }, effects: { localStorage } },
   userDetails,
 ) => {
   user.details = userDetails
   user.detailsValid = validateUserDetails(userDetails)
+  if (user.detailsValid) {
+    localStorage.setItemJson('userDetails', user.details)
+  }
 }

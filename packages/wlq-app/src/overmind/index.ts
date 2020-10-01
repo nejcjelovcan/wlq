@@ -11,10 +11,11 @@ import {
 import * as api from '../utils/api'
 import * as localStorage from '../utils/localStorage'
 import * as user from './user'
+import { onInitialize } from './onInitialize'
 // import * as room from './room'
 
 export const config = merge(
-  { state: {}, effects: { api, localStorage } },
+  { onInitialize, state: {}, effects: { api, localStorage } },
   namespaced({ user }),
 )
 

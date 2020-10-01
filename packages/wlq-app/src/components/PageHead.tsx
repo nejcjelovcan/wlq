@@ -13,6 +13,7 @@ export type PageHeadProps = {
 
 const PageHead = ({ loading, title, subtitle }: PageHeadProps) => {
   const userDetails = useUserDetails(false)
+
   return (
     <Flex direction="row" justifyContent="space-between" alignItems="center">
       <Flex direction="row" alignItems="flex-end">

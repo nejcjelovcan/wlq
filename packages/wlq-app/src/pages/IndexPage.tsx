@@ -30,6 +30,11 @@ const IndexPage = () => {
             New Game
           </Button>
         </Link>
+        <Link href="/settings/" passHref>
+          <Button as="a" size="lg">
+            Settings
+          </Button>
+        </Link>
         <Button size="lg" onClick={() => clearUserData()}>
           Clear data
         </Button>
