@@ -17,6 +17,7 @@ provider:
 plugins:
   - serverless-s3-deploy
   - serverless-plugin-scripts
+  - serverless-cloudfront-invalidate
 
 custom:
   hostedZoneId: ${env:HOSTED_ZONE_ID}

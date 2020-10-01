@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "validate": "yarn build",
     "clean:serverless": "rm -rf ./.next/static/ && rm -rf ./.next/serverless/",
     "link:serverless": "cd .next/serverless/pages && mkdir -p ./settings && mv ./settings.html ./settings/index.html",
     "build:serverless": "next build && yarn link:serverless"

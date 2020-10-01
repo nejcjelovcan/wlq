@@ -6,6 +6,7 @@
   "module": "lib/esm/index.js",
   "license": "MIT",
   "scripts": {
+    "validate": "serverless webpack",
     "test": "yarn jest",
     "test:watch": "yarn jest --watch-all"
   },

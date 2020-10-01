@@ -6,6 +6,7 @@
   "module": "lib/esm/index.js",
   "license": "MIT",
   "scripts": {
+    "validate": "yarn test",
     "test": "yarn jest",
     "test:watch": "yarn jest --watch-all"
   },
