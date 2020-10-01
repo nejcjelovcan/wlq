@@ -1,2 +1,3 @@
 after_deploy:
   - serverless s3deploy -v
+  - serverless create_domain
