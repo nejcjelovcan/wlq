@@ -1,3 +1,5 @@
+import { ValidationError, Validator } from '../validation'
+
 export default interface UserDetails {
   alias: string
   emoji: string
@@ -40,15 +42,20 @@ export const USER_DETAILS_COLORS = [
   'cyan',
 ]
 
-export const validateUserDetails = (obj: { [key: string]: any }): boolean => {
+export const validateUserDetails: Validator<UserDetails> = obj => {
   if (
     typeof obj.alias !== 'string' ||
     obj.alias.length < 1 ||
     obj.alias.length > 30
   ) {
-    return false
+    throw new ValidationError(
+      'alias',
+      'Alias must be between 1 and 30 characters',
+    )
   }
-  if (!USER_DETAILS_COLORS.includes(obj.color)) return false
-  if (!USER_DETAILS_EMOJIS.includes(obj.emoji)) return false
-  return true
+  if (!USER_DETAILS_COLORS.includes(obj.color))
+    throw new ValidationError('color', 'Invalid color')
+  if (!USER_DETAILS_EMOJIS.includes(obj.emoji))
+    throw new ValidationError('emoji', 'Invalid emoji')
+  return { alias: obj.alias, color: obj.color, emoji: obj.emoji }
 }

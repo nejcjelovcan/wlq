@@ -1,14 +1,20 @@
-import Request from '../rest/Request'
-import Response from '../rest/Response'
+import { RestRequest, RestResponse } from '../rest'
 
-import Room, { newRoom, RoomCreation } from '@wlq/wlq-model/src/room/Room'
+import Room, {
+  newRoom,
+  validateRoomCreation,
+} from '@wlq/wlq-model/src/room/Room'
+
+export type CreateRoomResponseData = {
+  room: Room
+}
 
 const createRoom = async (
-  request: Request<RoomCreation>,
-  onCreate: (room: Room) => Promise<void>,
-): Promise<Response> => {
-  const room = newRoom(request.data)
-  await onCreate(room)
+  request: RestRequest,
+  onCreate: (room: Room) => Promise<any>,
+): Promise<RestResponse<CreateRoomResponseData>> => {
+  let room = newRoom(validateRoomCreation(request.data))
+  room = await onCreate(room)
   return { statusCode: 200, data: { room } }
 }
 

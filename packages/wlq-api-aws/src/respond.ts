@@ -1,11 +1,45 @@
-import Response from '@wlq/wlq-api/src/rest/Response'
+import { RestRespondFunction, RestResponseError } from '@wlq/wlq-api/src/rest'
+import { ValidationError } from '@wlq/wlq-model/src/validation'
 import { APIGatewayProxyResult } from 'aws-lambda'
 
-export const respond = (response: Response): APIGatewayProxyResult => ({
-  statusCode: response.statusCode,
-  headers: {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Credentials': true,
-  },
-  body: JSON.stringify(response.data, null, '  '),
-})
+const COMMON_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Credentials': true,
+}
+
+const formatBody = (data: { [key: string]: any }) =>
+  JSON.stringify(data, null, '  ')
+
+export const respond: RestRespondFunction<APIGatewayProxyResult> = async responseGenerator => {
+  try {
+    // wrapping into promise will handle async and sync responseGenerator functions
+    const response =
+      responseGenerator instanceof Promise
+        ? await responseGenerator
+        : responseGenerator()
+    return {
+      statusCode: response.statusCode,
+      headers: COMMON_HEADERS,
+      body: formatBody(response.data),
+    }
+  } catch (e) {
+    if (e instanceof RestResponseError) {
+      return {
+        statusCode: e.statusCode,
+        headers: COMMON_HEADERS,
+        body: formatBody({ error: e.message }),
+      }
+    } else if (e instanceof ValidationError) {
+      return {
+        statusCode: 400,
+        headers: COMMON_HEADERS,
+        body: formatBody({ error: e.message, field: e.field }),
+      }
+    }
+    return {
+      statusCode: 500,
+      headers: COMMON_HEADERS,
+      body: formatBody({ error: e.message }),
+    }
+  }
+}

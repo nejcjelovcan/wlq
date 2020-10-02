@@ -36,7 +36,13 @@ export const setUserDetails: Action<Partial<UserDetails>> = (
   userDetails,
 ) => {
   user.details = userDetails
-  user.detailsValid = validateUserDetails(userDetails)
+  try {
+    user.details = validateUserDetails(userDetails)
+    user.detailsValid = true
+  } catch (e) {
+    user.detailsValid = false
+  }
+
   if (user.detailsValid) {
     localStorage.setItemJson('userDetails', user.details)
   }
@@ -49,14 +55,19 @@ export const getUserDetails: Action<void, Partial<UserDetails> | undefined> = ({
   if (user.detailsChecked) return user.details
 
   const userDetails = localStorage.getItemJson('userDetails')
-  if (userDetails && validateUserDetails(userDetails)) {
+  if (userDetails) {
     user.details = userDetails
-    user.detailsValid = true
   } else {
     user.details = {
       color: user.details?.color ?? sample(USER_DETAILS_COLORS),
       emoji: user.details?.emoji ?? sample(USER_DETAILS_EMOJIS),
     }
+  }
+  try {
+    validateUserDetails(userDetails)
+    user.detailsValid = true
+  } catch (e) {
+    user.detailsValid = false
   }
   user.detailsChecked = true
   return user.details
