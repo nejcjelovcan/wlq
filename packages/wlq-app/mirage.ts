@@ -53,7 +53,6 @@ export function makeServer({ environment = 'test' } = {}) {
     seeds(server) {
       const schema = server.schema as ServerSchema
       schema.create('room', {
-        // id: '1',
         listed: false,
         name: 'Room1',
         roomId: 'testId',

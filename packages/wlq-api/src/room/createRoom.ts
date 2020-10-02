@@ -11,7 +11,7 @@ const createRoom = async (
   onCreate: (room: Room) => Promise<any>,
 ): Promise<RestResponse<GetRoomResponseData>> => {
   let room = newRoom(validateRoomCreation(request.data))
-  room = await onCreate(room)
+  await onCreate(room)
   return { statusCode: 200, data: { room } }
 }
 
