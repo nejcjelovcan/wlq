@@ -3,12 +3,12 @@ import { RequestState } from '../../utils/api'
 
 export type UserState = {
   token?: string
-  getTokenState: RequestState
+  getTokenRequest: RequestState
   details?: Partial<UserDetails>
   detailsValid?: boolean
   detailsChecked?: boolean
 }
 
 export const state: UserState = {
-  getTokenState: {},
+  getTokenRequest: {},
 }

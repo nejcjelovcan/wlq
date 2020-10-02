@@ -12,11 +12,8 @@ const formatBody = (data: { [key: string]: any }) =>
 
 export const respond: RestRespondFunction<APIGatewayProxyResult> = async responseGenerator => {
   try {
-    // wrapping into promise will handle async and sync responseGenerator functions
-    const response =
-      responseGenerator instanceof Promise
-        ? await responseGenerator
-        : responseGenerator()
+    let response = responseGenerator()
+    if (response instanceof Promise) response = await response
     return {
       statusCode: response.statusCode,
       headers: COMMON_HEADERS,

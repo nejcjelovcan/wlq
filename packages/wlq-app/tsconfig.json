@@ -3,6 +3,8 @@
   "include": ["./src/**/*", "./src/**/*.json"],
   "exclude": ["node_modules"],
   "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
     "rootDir": "src",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": false,

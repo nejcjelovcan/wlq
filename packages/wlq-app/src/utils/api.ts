@@ -29,7 +29,7 @@ export const apiRequest = async <R = { [key: string]: any }>(
   }
 }
 
-export const apiGet = async <R = { [key: string]: any }>(
+export const apiGet = async <R>(
   endpoint: string,
   token?: string,
 ): Promise<R> => {
@@ -39,7 +39,7 @@ export const apiGet = async <R = { [key: string]: any }>(
   })
 }
 
-export const apiPost = async <R = { [key: string]: any }>(
+export const apiPost = async <R>(
   endpoint: string,
   token: string,
   data: { [key: string]: any },

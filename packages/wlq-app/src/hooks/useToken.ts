@@ -6,7 +6,7 @@ const useToken = (retry = false) => {
     state: {
       user: {
         token,
-        getTokenState: { error },
+        getTokenRequest: { error },
       },
     },
     actions: {

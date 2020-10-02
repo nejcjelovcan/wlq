@@ -14,10 +14,8 @@ import { ModelDefinition } from 'miragejs/-types'
 
 const respond: RestRespondFunction<MirageResponse> = async responseGenerator => {
   try {
-    const response =
-      responseGenerator instanceof Promise
-        ? await responseGenerator
-        : responseGenerator()
+    let response = responseGenerator()
+    if (response instanceof Promise) response = await response
     return new MirageResponse(response.statusCode, undefined, response.data)
   } catch (e) {
     if (e instanceof RestResponseError) {

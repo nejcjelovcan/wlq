@@ -27,7 +27,7 @@ const IndexPage = () => {
           <FauxRoom />
           <FauxRoom />
         </Stack>
-        <Link href="/new/" passHref>
+        <Link href="/room/" passHref>
           <Button as="a" size="lg">
             New Game
           </Button>

@@ -12,11 +12,11 @@ import * as api from '../utils/api'
 import * as localStorage from '../utils/localStorage'
 import * as user from './user'
 import { onInitialize } from './onInitialize'
-// import * as room from './room'
+import * as room from './room'
 
 export const config = merge(
   { onInitialize, state: {}, effects: { api, localStorage } },
-  namespaced({ user }),
+  namespaced({ user, room }),
 )
 
 export const useOvermind = createHook<typeof config>()

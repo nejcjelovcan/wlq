@@ -1,33 +1,33 @@
-import { AsyncAction, Action } from 'overmind'
 import { GetTokenResponseData } from '@wlq/wlq-api/src/user/getToken'
+import { sample } from '@wlq/wlq-model/src/helpers'
 import UserDetails, {
   USER_DETAILS_COLORS,
   USER_DETAILS_EMOJIS,
   validateUserDetails,
 } from '@wlq/wlq-model/src/user/UserDetails'
-import { sample } from '@wlq/wlq-model/src/helpers'
+import { Action, AsyncAction } from 'overmind'
 
 export const getToken: AsyncAction = async ({
   state: { user },
   effects: { api, localStorage },
 }) => {
-  if (!user.getTokenState.loading) {
-    user.getTokenState = { loading: true }
+  if (!user.getTokenRequest.loading) {
+    user.getTokenRequest = { loading: true }
 
     try {
       const data = await api.apiGet<GetTokenResponseData>('getToken')
       user.token = data.token
       localStorage.setItem('token', user.token)
     } catch (e) {
-      user.getTokenState.error = e.message
+      user.getTokenRequest.error = e.message
     } finally {
-      user.getTokenState.loading = false
+      user.getTokenRequest.loading = false
     }
   }
 }
 
 export const clearUserData: Action = ({ state, effects: { localStorage } }) => {
-  state.user = { getTokenState: {} }
+  state.user = { getTokenRequest: {} }
   localStorage.clear()
 }
 
