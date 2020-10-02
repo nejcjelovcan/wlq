@@ -7,12 +7,8 @@ import Layout from '../src/components/Layout'
 import { config } from '../src/overmind'
 import theme from '../src/theme'
 
-// TODO this is not ideal since it takes a while for mirage to load
-// (in the meantime getToken request can already fire)
 if (process.env.NODE_ENV === 'development') {
-  import('../mirage').then(mirage => {
-    mirage.makeServer({ environment: 'development' })
-  })
+  require('../mirage').makeServer({ environment: 'development' })
 }
 
 const overmind = createOvermind(config, {
