@@ -21,7 +21,7 @@ const useUserDetails = (redirect = false) => {
   useEffect(() => {
     if (detailsChecked && !detailsValid && redirect) {
       router.replace(
-        `/user/?next=${encodeURIComponent(
+        `/settings/?next=${encodeURIComponent(
           document.location.pathname + document.location.search,
         )}`,
       )

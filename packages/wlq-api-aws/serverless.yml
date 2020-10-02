@@ -15,6 +15,22 @@ provider:
 
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+    ROOM_TABLE_NAME: ${self:custom.roomTableName}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:DeleteItem
+        # - dynamodb:BatchGetItem
+        # - dynamodb:Scan
+        # - dynamodb:UpdateItem
+
+      Resource:
+        - { "Fn::GetAtt": ["RoomTable", "Arn"] }
+        - Fn::Join: ["/", [{ "Fn::GetAtt": ["RoomTable", "Arn"] }, "index/*"]]
 
 plugins:
   - serverless-webpack
@@ -24,6 +40,7 @@ custom:
   siteName: ${env:API_DOMAIN}
   httpOrigin: https://${SITE_DOMAIN}
   acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
+  roomTableName: ${self:service}-RoomTable-${self:provider.stage, 'dev'}
   webpack:
     webpackConfig: "./webpack.config.js"
     includeModules: true
@@ -48,8 +65,56 @@ functions:
           method: POST
           cors: true
 
+  createRoom:
+    handler: src/lambdas/createRoom.handler
+    events:
+      - http:
+          path: createRoom
+          origin: ${self:custom.httpOrigin}
+          authorizer: authorize
+          method: POST
+          cors: true
+
   authorize:
     handler: src/lambdas/authorize.handler
+
+resources:
+  Resources:
+    RoomTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.roomTableName}
+        # Instead of streams, SQS seems a better option
+        # 1. streams do a lot of lambda calling that we don't need (and can't filter out in StreamSpecification)
+        # 2. SQS supports delayed queue, which we will need for room timing mechanics
+        # StreamSpecification:
+        #   StreamViewType: NEW_AND_OLD_IMAGES
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: InverseIndex
+            KeySchema:
+              - AttributeName: SK
+                KeyType: HASH
+              - AttributeName: PK
+                KeyType: RANGE
+            Projection:
+              # TODO we could probably do with KEYS_ONLY
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
 
 package:
   individually: true

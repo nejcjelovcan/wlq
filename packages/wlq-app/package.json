@@ -8,7 +8,7 @@
     "start": "next start",
     "validate": "yarn build",
     "clean:serverless": "rm -rf ./.next/static/ && rm -rf ./.next/serverless/",
-    "link:serverless": "cd .next/serverless/pages && mkdir -p ./settings && mv ./settings.html ./settings/index.html",
+    "link:serverless": "cd .next/serverless/pages && mkdir -p ./settings && mv ./settings.html ./settings/index.html && mkdir -p ./room && mv ./room.html ./room/index.html",
     "build:serverless": "next build && yarn link:serverless"
   },
   "dependencies": {

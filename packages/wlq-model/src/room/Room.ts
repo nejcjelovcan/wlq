@@ -7,6 +7,7 @@ export default interface Room {
   roomId: string
   state: 'Idle' | 'Game'
   listed: boolean
+  ws?: string
 }
 
 export type RoomCreation = Pick<Room, 'name' | 'listed'>

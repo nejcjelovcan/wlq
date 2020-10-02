@@ -11,6 +11,7 @@ import { ValidationError } from '@wlq/wlq-model/src/validation'
 import { Model, Registry, Response as MirageResponse, Server } from 'miragejs'
 import Schema from 'miragejs/orm/schema'
 import { ModelDefinition } from 'miragejs/-types'
+import getRoom from '@wlq/wlq-api/src/room/getRoom'
 
 const respond: RestRespondFunction<MirageResponse> = async responseGenerator => {
   try {
@@ -49,6 +50,18 @@ export function makeServer({ environment = 'test' } = {}) {
       room: Model,
     },
 
+    seeds(server) {
+      const schema = server.schema as ServerSchema
+      schema.create('room', {
+        // id: '1',
+        listed: false,
+        name: 'Room1',
+        roomId: 'testId',
+        state: 'Idle',
+        type: 'Room',
+      })
+    },
+
     routes() {
       this.passthrough(request => {
         if (request.url.startsWith('/_')) return true
@@ -63,6 +76,14 @@ export function makeServer({ environment = 'test' } = {}) {
           createRoom({ data: JSON.parse(request.requestBody) }, async room =>
             schema.create('room', room),
           ),
+        ),
+      )
+      this.post('/getRoom', async (schema: ServerSchema, request) =>
+        respond(() =>
+          getRoom({ data: JSON.parse(request.requestBody) }, async roomId => {
+            const room = schema.findBy('room', { roomId })
+            return (room?.attrs as unknown) as Room
+          }),
         ),
       )
     },

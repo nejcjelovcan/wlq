@@ -15,7 +15,11 @@ import React, { useCallback, useState } from 'react'
 import { useOvermind } from '../../overmind'
 import { useThrottleCallback } from '@react-hook/throttle'
 
-const RoomCreationForm = () => {
+const RoomCreationForm = ({
+  userDetailsReady,
+}: {
+  userDetailsReady: boolean
+}) => {
   const {
     state: {
       room: {
@@ -35,7 +39,7 @@ const RoomCreationForm = () => {
   const throttledSetRoomCreation = useThrottleCallback(
     setRoomCreation,
     10,
-    false,
+    true,
   )
 
   const onSubmit = useCallback(
@@ -60,7 +64,7 @@ const RoomCreationForm = () => {
   return (
     <form action="?" onSubmit={onSubmit}>
       <Stack spacing={4}>
-        <Skeleton isLoaded={true}>
+        <Skeleton isLoaded={userDetailsReady}>
           <FormControl
             isInvalid={roomCreationError?.field === 'name'}
             isReadOnly={loading}
@@ -84,7 +88,7 @@ const RoomCreationForm = () => {
             )}
           </FormControl>
         </Skeleton>
-        <Skeleton isLoaded={true}>
+        <Skeleton isLoaded={userDetailsReady}>
           <FormControl
             isInvalid={roomCreationError?.field === 'listed'}
             isReadOnly={loading}
@@ -111,7 +115,7 @@ const RoomCreationForm = () => {
             </FormHelperText>
           </FormControl>
         </Skeleton>
-        <Skeleton isLoaded={true}>
+        <Skeleton isLoaded={userDetailsReady}>
           <FormControl isInvalid={!!error}>
             <FormErrorMessage>{error}</FormErrorMessage>
             <Flex justifyContent="flex-end" pt={4}>

@@ -1,4 +1,4 @@
-import { CreateRoomResponseData } from '@wlq/wlq-api/src/room/createRoom'
+import { GetRoomResponseData } from '@wlq/wlq-api/src/room/getRoom'
 import {
   RoomCreation,
   validateRoomCreation,
@@ -33,7 +33,7 @@ export const createRoom: AsyncAction = async ({
   try {
     room.roomCreationRequest = { loading: true }
 
-    const createdRoom = await api.apiPost<CreateRoomResponseData>(
+    const createdRoom = await api.apiPost<GetRoomResponseData>(
       'createRoom',
       token!,
       room.roomCreation,
@@ -52,4 +52,30 @@ export const createRoom: AsyncAction = async ({
   }
 }
 
-export const getRoom: AsyncAction = async () => {}
+export const getRoom: AsyncAction<string> = async (
+  {
+    state: {
+      room,
+      user: { token },
+    },
+    effects: { api },
+  },
+  roomId,
+) => {
+  try {
+    room.getRoomRequest = { loading: true }
+
+    const responseData = await api.apiPost<GetRoomResponseData>(
+      'getRoom',
+      token!,
+      {
+        roomId,
+      },
+    )
+    room.currentRoom = responseData.room
+  } catch (e) {
+    room.getRoomRequest.error = e.message
+  } finally {
+    room.getRoomRequest.loading = false
+  }
+}
