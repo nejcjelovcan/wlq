@@ -4,7 +4,7 @@ import createRoom from '@wlq/wlq-api/src/room/createRoom'
 import { getRoomKeys } from '@wlq/wlq-model/src/room/Room'
 import AWS from 'aws-sdk'
 
-const TableName = process.env.GAME_TABLE_NAME!
+const TableName = process.env.ROOM_TABLE_NAME!
 const DB = new AWS.DynamoDB.DocumentClient()
 
 export const handler: APIGatewayProxyHandler = async event =>
