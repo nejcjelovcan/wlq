@@ -36,7 +36,7 @@ export const respond: RestRespondFunction<APIGatewayProxyResult> = async respons
     return {
       statusCode: 500,
       headers: COMMON_HEADERS,
-      body: formatBody({ error: e.message }),
+      body: formatBody({ error: 'Internal server error' }),
     }
   }
 }

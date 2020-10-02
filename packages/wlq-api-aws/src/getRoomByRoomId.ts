@@ -5,6 +5,8 @@ const getRoomByRoomId = async (
   TableName: string,
   roomId: string,
 ): Promise<Room | undefined> => {
+  // TODO room's listed property should be a sparse index, not a part of GSI
+  // (then we also won't need batchGet here)
   const result = await DB.batchGet({
     RequestItems: {
       [TableName]: {
