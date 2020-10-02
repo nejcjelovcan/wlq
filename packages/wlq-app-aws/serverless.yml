@@ -38,7 +38,9 @@ custom:
     auto: true
     targets:
       - bucket: ${self:custom.siteName}
-        empty: true
+        # TODO the timing of s3 sync is bad (should be before cloudfront updates
+        # but also after the s3 bucket is created)
+        # empty: true
 
         files:
           - source: ../wlq-app/.next/serverless/pages/
