@@ -24,7 +24,6 @@ provider:
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     ROOM_TABLE_NAME: ${self:custom.roomTableName}
-    ALLOW_ORIGIN: ${self:custom.httpOrigin}
     WEBSOCKET_ENDPOINT:
       Fn::Join:
         - ""
