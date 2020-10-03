@@ -3,7 +3,7 @@ import { ValidationError } from '@wlq/wlq-model/src/validation'
 import { APIGatewayProxyResult } from 'aws-lambda'
 
 export const COMMON_HEADERS = {
-  'Access-Control-Allow-Origin': `https://${process.env.SITE_DOMAIN}`,
+  'Access-Control-Allow-Origin': process.env.ALLOW_ORIGIN!,
   'Access-Control-Allow-Credentials': true,
 }
 

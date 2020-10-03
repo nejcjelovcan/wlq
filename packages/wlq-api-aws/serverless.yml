@@ -24,6 +24,7 @@ provider:
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     ROOM_TABLE_NAME: ${self:custom.roomTableName}
+    ALLOW_ORIGIN: ${self:custom.httpOrigin}
     WEBSOCKET_ENDPOINT:
       Fn::Join:
         - ""
@@ -55,7 +56,7 @@ plugins:
 custom:
   hostedZoneId: ${env:HOSTED_ZONE_ID}
   siteName: ${env:API_DOMAIN}
-  httpOrigin: https://${SITE_DOMAIN}
+  httpOrigin: https://${env:SITE_DOMAIN}
   acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
   roomTableName: ${self:service}-RoomTable-${self:provider.stage, 'dev'}
   webpack:
