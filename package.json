@@ -7,6 +7,7 @@
     "lint": "eslint packages --ext ts,tsx",
     "lint:fix": "yarn lint --fix",
     "validate": "yarn workspace @wlq/wlq-model validate && yarn workspace @wlq/wlq-api-aws validate && yarn workspace @wlq/wlq-app validate",
+    "test": "yarn workspace @wlq/wlq-model test",
     "prebuild": "rm -rf ./packages/*/lib",
     "build": "yarn build:cjs && yarn build:esm",
     "build:cjs": "yarn module:cjs && tsc --build tsconfig.project.json",

@@ -2,7 +2,7 @@ import { RestRespondFunction, RestResponseError } from '@wlq/wlq-api/src/rest'
 import { ValidationError } from '@wlq/wlq-model/src/validation'
 import { APIGatewayProxyResult } from 'aws-lambda'
 
-const COMMON_HEADERS = {
+export const COMMON_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Credentials': true,
 }

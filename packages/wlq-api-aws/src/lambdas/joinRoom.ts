@@ -11,6 +11,7 @@ import AWS from 'aws-sdk'
 import getRoomAndParticipantsByRoomId from '../getRoomAndParticipantsByRoomId'
 import getRoomByRoomId from '../getRoomByRoomId'
 import getWebsocketApi from '../getWebsocketApi'
+import { COMMON_HEADERS } from '../respond'
 
 const TableName = process.env.ROOM_TABLE_NAME!
 const DB = new AWS.DynamoDB.DocumentClient()
@@ -57,5 +58,5 @@ export const handler: APIGatewayProxyHandler = async ({
     }
   }
 
-  return { statusCode: 200, body: '{}' }
+  return { statusCode: 200, headers: COMMON_HEADERS, body: '{}' }
 }

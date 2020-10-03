@@ -1,4 +1,5 @@
 import { APIGatewayProxyHandler } from 'aws-lambda'
+import { COMMON_HEADERS } from '../respond'
 
 // TODO We should disconnect clients that haven't joinRoom in a short time
 export const handler: APIGatewayProxyHandler = async ({
@@ -25,5 +26,5 @@ export const handler: APIGatewayProxyHandler = async ({
   //
   // }
 
-  return { statusCode: 200, body: '{}' }
+  return { statusCode: 200, headers: COMMON_HEADERS, body: '{}' }
 }
