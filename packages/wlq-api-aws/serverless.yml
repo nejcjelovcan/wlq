@@ -21,7 +21,8 @@ provider:
     WEBSOCKET_ENDPOINT:
       Fn::Join:
         - ""
-        - - Ref: WebsocketApi
+        - - wss://
+          - Ref: WebsocketApi
           - .execute-api.
           - Ref: AWS::Region
           - .amazonaws.com/
