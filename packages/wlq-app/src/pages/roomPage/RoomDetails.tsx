@@ -17,18 +17,18 @@ const RoomDetails = () => {
   } = useOvermind()
 
   useEffect(() => {
-    if (currentRoom && !loading && !connected) {
+    if (currentRoom && !loading && !connected && !error) {
       joinRoom()
       return () => {
         leaveRoom()
       }
     }
     return () => {}
-  }, [currentRoom, loading, connected, joinRoom, leaveRoom])
+  }, [currentRoom, loading, connected, error, joinRoom, leaveRoom])
 
   return (
     <Stack spacing={4}>
-      <Skeleton isLoaded={connected}>
+      <Skeleton isLoaded={connected || !!error}>
         {connected ? 'User connected' : `Something happened: ${error}`}
       </Skeleton>
       <Skeleton isLoaded={connected}>

@@ -57,5 +57,5 @@ export const handler: APIGatewayProxyHandler = async ({
     }
   }
 
-  return { statusCode: 200, body: '' }
+  return { statusCode: 200, body: '{}' }
 }

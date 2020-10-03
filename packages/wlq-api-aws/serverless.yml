@@ -92,8 +92,8 @@ functions:
   socketConnection:
     handler: src/lambdas/socketConnection.handler
     events:
-      # - websocket:
-      #     route: $connect
+      - websocket:
+          route: $connect
       - websocket:
           route: $disconnect
       # - websocket:

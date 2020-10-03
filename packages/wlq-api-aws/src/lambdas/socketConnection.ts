@@ -9,16 +9,21 @@ export const handler: APIGatewayProxyHandler = async ({
   // if (routeKey === '$connect') {
   //   console.log('CONNECT')
   // }
-
-  if (routeKey === '$disconnect') {
-    console.log('DISCONNECT')
-    // try {
-    //   await leaveRoom({ connectionId })
-    // } catch (e) {
-    //   console.error('Error disconnecting', e)
-    //
-    // }
+  switch (routeKey) {
+    case '$connect':
+      console.log('CONNECT')
+      break
+    case '$disconnect':
+      console.log('DISCONNECT')
+      break
   }
 
-  return { statusCode: 200, body: '' }
+  // try {
+  //   await leaveRoom({ connectionId })
+  // } catch (e) {
+  //   console.error('Error disconnecting', e)
+  //
+  // }
+
+  return { statusCode: 200, body: '{}' }
 }
