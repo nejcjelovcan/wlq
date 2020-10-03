@@ -48,7 +48,7 @@ export type WsEventIterableFunctionFactory<T extends object = WsMessageData> = (
   ...args: any[]
 ) => WsEventIterableFunction<T>
 
-export type WsSendFunction = (event: WsMessageEvent) => Promise<void>
+export type WsSendFunction = (event: WsMessageEvent) => Promise<any>
 
 // export type WsEventIterableConsumer<T extends object = WsMessageData> = (
 //   incomingEvent: WsMessageEvent<T>,

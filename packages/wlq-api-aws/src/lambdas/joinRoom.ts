@@ -48,15 +48,16 @@ export const handler: APIGatewayProxyHandler = async ({
               TableName,
               Item: { ...participant, ...getRoomParticipantKeys(participant) },
               ConditionExpression: 'attribute_not_exists(PK)',
-            })
+            }).promise()
           },
         ),
-        async event => {
-          websocketApi.postToConnection({
-            ConnectionId: event.connectionId,
-            Data: JSON.stringify(event.message),
-          })
-        },
+        async event =>
+          websocketApi
+            .postToConnection({
+              ConnectionId: event.connectionId,
+              Data: JSON.stringify(event.message),
+            })
+            .promise(),
       )
     }
   }
