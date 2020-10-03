@@ -13,6 +13,11 @@ provider:
   apiGateway:
     minimumCompressionSize: 1024
 
+  logs:
+    websocket:
+      level: INFO
+
+  websocketApiName: websocket-chat-${self:provider.stage}
   websocketApiRouteSelectionExpression: $request.body.action
 
   environment:
@@ -95,9 +100,9 @@ functions:
       - websocket:
           route: $connect
       - websocket:
-          route: $default
-      - websocket:
           route: $disconnect
+      - websocket:
+          route: $default
 
   joinRoom:
     handler: src/lambdas/joinRoom.handler
@@ -107,10 +112,10 @@ functions:
 
 resources:
   Resources:
-    WebsocketApi:
+    WebsocketsApi:
       Type: AWS::ApiGatewayV2::Api
       Properties:
-        Name: WebsocketApi
+        Name: WebsocketsApi
         ProtocolType: WEBSOCKET
         RouteSelectionExpression: "$request.body.action"
 
