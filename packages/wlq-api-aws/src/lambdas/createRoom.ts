@@ -12,7 +12,11 @@ export const handler: APIGatewayProxyHandler = async event =>
     createRoom({ data: event.body ? JSON.parse(event.body) : {} }, room =>
       DB.put({
         TableName,
-        Item: { ...room, ...getRoomKeys(room) },
+        Item: {
+          ...room,
+          ...getRoomKeys(room),
+          ws: process.env.WEBSOCKET_ENDPOINT,
+        },
         ConditionExpression: 'attribute_not_exists(PK)',
       }).promise(),
     ),
