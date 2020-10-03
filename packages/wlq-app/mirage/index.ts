@@ -10,7 +10,7 @@ import { Model, Registry, Server } from 'miragejs'
 import { ModelDefinition } from 'miragejs/-types'
 import Schema from 'miragejs/orm/schema'
 import { getRoomByRoomId } from './helpers'
-import makeWsServer from './makeWsServer'
+import makeWsServer, { WS } from './makeWsServer'
 import respond from './respondMirage'
 
 // In case of getToken we can't use the common api function
@@ -61,9 +61,10 @@ export function makeServer({ environment = 'test' } = {}) {
       this.get('/getToken', async () => respond(mirageGetToken))
       this.post('/createRoom', async (schema: ServerSchema, request) =>
         respond(() =>
-          createRoom({ data: JSON.parse(request.requestBody) }, async room =>
-            schema.create('room', room),
-          ),
+          createRoom({ data: JSON.parse(request.requestBody) }, async room => ({
+            ...((schema.create('room', room).attrs as unknown) as Room),
+            ws: WS,
+          })),
         ),
       )
       this.post('/getRoom', async (schema: ServerSchema, request) =>

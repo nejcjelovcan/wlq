@@ -4,10 +4,10 @@ import { RestRequest, RestResponse } from '../rest'
 
 const createRoom = async (
   request: RestRequest,
-  onCreate: (room: Room) => Promise<any>,
+  onCreate: (room: Room) => Promise<Room>,
 ): Promise<RestResponse<GetRoomResponseData>> => {
   let room = newRoom(validateRoomCreation(request.data))
-  await onCreate(room)
+  room = await onCreate(room)
   return { statusCode: 200, data: { room } }
 }
 

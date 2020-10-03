@@ -9,7 +9,16 @@ const DB = new AWS.DynamoDB.DocumentClient()
 
 export const handler: APIGatewayProxyHandler = async event =>
   respond(() =>
-    getRoom({ data: event.body ? JSON.parse(event.body) : {} }, roomId =>
-      getRoomByRoomId(DB, TableName, roomId),
+    getRoom(
+      { data: event.body ? JSON.parse(event.body) : {} },
+      async roomId => {
+        const room = await getRoomByRoomId(DB, TableName, roomId)
+        return room
+          ? {
+              ...room,
+              ws: process.env.WEBSOCKET_ENDPOINT,
+            }
+          : undefined
+      },
     ),
   )
