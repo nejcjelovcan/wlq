@@ -27,7 +27,7 @@ provider:
       Fn::Join:
         - ""
         - - wss://
-          - Ref: WebsocketApi
+          - Ref: WebsocketsApi
           - .execute-api.
           - Ref: AWS::Region
           - .amazonaws.com/
