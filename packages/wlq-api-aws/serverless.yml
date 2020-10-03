@@ -95,9 +95,9 @@ functions:
       - websocket:
           route: $connect
       - websocket:
+          route: $default
+      - websocket:
           route: $disconnect
-      # - websocket:
-      #     route: $default
 
   joinRoom:
     handler: src/lambdas/joinRoom.handler
