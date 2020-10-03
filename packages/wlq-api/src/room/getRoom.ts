@@ -1,9 +1,6 @@
+import { Room } from '@wlq/wlq-model/src/room'
+import { GetRoomResponseData } from '.'
 import { RestRequest, RestResponse, RestResponseError } from '../rest'
-import Room from '@wlq/wlq-model/src/room/Room'
-
-export type GetRoomResponseData = {
-  room: Room
-}
 
 const getRoom = async (
   request: RestRequest,

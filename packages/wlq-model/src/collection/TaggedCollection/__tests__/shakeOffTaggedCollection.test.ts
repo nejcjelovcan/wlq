@@ -1,4 +1,4 @@
-import TaggedCollection from '..'
+import { TaggedCollection } from '..'
 import shakeOffTaggedCollection from '../shakeOffTaggedCollection'
 
 import {

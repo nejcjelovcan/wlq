@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid'
 import { ValidationError, Validator } from '../validation'
 
-export default interface Room {
+export interface Room {
   type: 'Room'
   name: string
   roomId: string

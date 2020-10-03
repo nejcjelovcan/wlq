@@ -1,4 +1,4 @@
-import Room, { getRoomKeys } from '@wlq/wlq-model/src/room/Room'
+import { getRoomKeys, Room } from '@wlq/wlq-model/src/room'
 
 const getRoomByRoomId = async (
   DB: AWS.DynamoDB.DocumentClient,

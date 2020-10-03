@@ -1,8 +1,8 @@
+import { createRoom } from '@wlq/wlq-api/src/room'
+import { getRoomKeys } from '@wlq/wlq-model/src/room'
 import { APIGatewayProxyHandler } from 'aws-lambda'
-import { respond } from '../respond'
-import createRoom from '@wlq/wlq-api/src/room/createRoom'
-import { getRoomKeys } from '@wlq/wlq-model/src/room/Room'
 import AWS from 'aws-sdk'
+import { respond } from '../respond'
 
 const TableName = process.env.ROOM_TABLE_NAME!
 const DB = new AWS.DynamoDB.DocumentClient()

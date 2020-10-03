@@ -1,7 +1,6 @@
+import verifyToken from '@wlq/wlq-api/src/user/verifyToken.helper'
 import { APIGatewayAuthorizerHandler } from 'aws-lambda'
-
-import verifyToken from '@wlq/wlq-api/src/user/helpers/verifyToken'
-import generatePolicy from '@wlq/wlq-api-aws/src/generatePolicy'
+import generatePolicy from '../generatePolicy'
 
 export const handler: APIGatewayAuthorizerHandler = (
   event,

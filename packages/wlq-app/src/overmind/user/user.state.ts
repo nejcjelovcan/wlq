@@ -1,4 +1,4 @@
-import UserDetails from '@wlq/wlq-model/src/user/UserDetails'
+import { UserDetails } from '@wlq/wlq-model/src/user'
 import { RequestState } from '../../utils/api'
 
 export type UserState = {

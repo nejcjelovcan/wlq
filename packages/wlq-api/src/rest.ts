@@ -19,6 +19,10 @@ export interface RestResponse<D extends object = RestResponseData> {
 
 export type RestResponseData = { [key: string]: any }
 
-export type RestRespondFunction<D = RestResponseData> = (
-  responseGenerator: (...args: any[]) => RestResponse | Promise<RestResponse>,
+export type RestResponseGenerator = (
+  ...args: any[]
+) => RestResponse | Promise<RestResponse>
+
+export type RestRespondFunction<D> = (
+  responseGenerator: RestResponseGenerator,
 ) => Promise<D>

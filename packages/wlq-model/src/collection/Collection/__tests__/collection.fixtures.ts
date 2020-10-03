@@ -1,5 +1,5 @@
-import Collection, { CollectionItem } from '..'
-import Question from '../../Question'
+import { Collection, CollectionItem } from '..'
+import { Question } from '../../Question'
 import {
   taggedCollectionFixture,
   taggedQuestionFixture,

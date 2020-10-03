@@ -1,10 +1,6 @@
+import { Room, newRoom, validateRoomCreation } from '@wlq/wlq-model/src/room'
+import { GetRoomResponseData } from '.'
 import { RestRequest, RestResponse } from '../rest'
-
-import Room, {
-  newRoom,
-  validateRoomCreation,
-} from '@wlq/wlq-model/src/room/Room'
-import { GetRoomResponseData } from './getRoom'
 
 const createRoom = async (
   request: RestRequest,

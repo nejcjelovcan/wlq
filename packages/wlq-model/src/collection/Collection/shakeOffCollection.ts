@@ -1,4 +1,4 @@
-import Collection from '.'
+import { Collection } from '.'
 import getCollectionInfo from './getCollectionInfo'
 
 const COLLECTION_MIN_ITEMS = 8

@@ -1,7 +1,7 @@
-import Collection, { CollectionItem } from './Collection'
-import Question from './Question'
+import { Collection, CollectionItem } from './Collection'
+import { Question } from './Question'
 
-export default interface RankedCollection extends Collection {
+export interface RankedCollection extends Collection {
   type: 'RankedCollection'
   questions: RankedCollectionQuestion[]
 }

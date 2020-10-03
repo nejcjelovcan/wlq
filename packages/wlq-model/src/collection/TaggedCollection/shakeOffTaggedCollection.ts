@@ -1,4 +1,4 @@
-import TaggedCollection from '.'
+import { TaggedCollection } from '.'
 import getTaggedCollectionInfo from './getTaggedCollectionInfo'
 
 const TAGGED_COLLECTION_MIN_NEGATIVE_QUESTION_TAG_ITEMS = 4

@@ -6,6 +6,7 @@ import useToken from '../hooks/useToken'
 import useUserDetails from '../hooks/useUserDetails'
 import { useOvermind } from '../overmind'
 import RoomCreationForm from './roomPage/RoomCreationForm'
+import RoomDetails from './roomPage/RoomDetails'
 
 const RoomPage = () => {
   const token = useToken()
@@ -47,6 +48,7 @@ const RoomPage = () => {
         title={roomNotLoaded ? 'Room name' : currentRoom?.name ?? 'New room'}
       />
       {!rid && <RoomCreationForm userDetailsReady={ready} />}
+      {rid && <RoomDetails />}
     </Stack>
   )
 }

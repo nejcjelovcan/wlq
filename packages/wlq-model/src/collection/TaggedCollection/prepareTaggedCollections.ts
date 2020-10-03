@@ -1,4 +1,4 @@
-import TaggedCollection from '.'
+import { TaggedCollection } from '.'
 import { filterCollectionItemsBySets, shakeOffCollection } from '../Collection'
 import shakeOffTaggedCollection from './shakeOffTaggedCollection'
 

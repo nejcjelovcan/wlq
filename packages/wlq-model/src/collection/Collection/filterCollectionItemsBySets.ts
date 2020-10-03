@@ -1,4 +1,4 @@
-import Collection from '.'
+import { Collection } from '.'
 
 const filterCollectionItemsBySets = <C extends Collection = Collection>(
   collection: C,

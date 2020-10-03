@@ -13,9 +13,19 @@ provider:
   apiGateway:
     minimumCompressionSize: 1024
 
+  websocketApiRouteSelectionExpression: $request.body.action
+
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     ROOM_TABLE_NAME: ${self:custom.roomTableName}
+    WEBSOCKET_ENDPOINT:
+      Fn::Join:
+        - ""
+        - - Ref: WebsocketApi
+          - .execute-api.
+          - Ref: AWS::Region
+          - .amazonaws.com/
+          - ${self:provider.stage}
 
   iamRoleStatements:
     - Effect: Allow
@@ -78,8 +88,31 @@ functions:
   authorize:
     handler: src/lambdas/authorize.handler
 
+  socketConnection:
+    handler: src/lambdas/socketConnection.handler
+    events:
+      # - websocket:
+      #     route: $connect
+      - websocket:
+          route: $disconnect
+      # - websocket:
+      #     route: $default
+
+  joinRoom:
+    handler: src/lambdas/joinRoom.handler
+    events:
+      - websocket:
+          route: joinRoom
+
 resources:
   Resources:
+    WebsocketApi:
+      Type: AWS::ApiGatewayV2::Api
+      Properties:
+        Name: WebsocketApi
+        ProtocolType: WEBSOCKET
+        RouteSelectionExpression: "$request.body.action"
+
     RoomTable:
       Type: AWS::DynamoDB::Table
       Properties:

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "lib/cjs/index.js",
   "typings": "lib/cjs/index.d.ts",
-  "module": "lib/esm/index.js",
+  "module": "src/",
   "license": "MIT",
   "scripts": {
     "test": "yarn jest",

@@ -1,8 +1,7 @@
-import Collection, { CollectionItem } from '../Collection'
-import Question from '../Question'
+import { Collection, CollectionItem } from '../Collection'
+import { Question } from '../Question'
 
-export default interface TaggedCollection
-  extends Collection<TaggedCollectionItem> {
+export interface TaggedCollection extends Collection<TaggedCollectionItem> {
   type: 'TaggedCollection'
   questions: TaggedCollectionQuestion[]
 }

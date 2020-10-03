@@ -1,6 +1,6 @@
 import { ValidationError, Validator } from '../validation'
 
-export default interface UserDetails {
+export interface UserDetails {
   alias: string
   emoji: string
   color: string

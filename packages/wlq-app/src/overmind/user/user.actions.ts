@@ -1,10 +1,11 @@
-import { GetTokenResponseData } from '@wlq/wlq-api/src/user/getToken'
-import { sample } from '@wlq/wlq-model/src/helpers'
-import UserDetails, {
+import { GetTokenResponseData } from '@wlq/wlq-api/src/user'
+import {
+  sample,
+  UserDetails,
   USER_DETAILS_COLORS,
   USER_DETAILS_EMOJIS,
   validateUserDetails,
-} from '@wlq/wlq-model/src/user/UserDetails'
+} from '@wlq/wlq-model/src'
 import { Action, AsyncAction } from 'overmind'
 
 export const getToken: AsyncAction = async ({

@@ -1,6 +1,6 @@
-import Question from '../Question'
+import { Question } from '../Question'
 
-export default interface Collection<I extends CollectionItem = CollectionItem> {
+export interface Collection<I extends CollectionItem = CollectionItem> {
   type: string
   name: string
   category: string

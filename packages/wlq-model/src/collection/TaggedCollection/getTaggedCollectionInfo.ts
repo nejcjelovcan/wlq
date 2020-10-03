@@ -1,4 +1,4 @@
-import TaggedCollection, { TaggedCollectionInfo } from '.'
+import { TaggedCollection, TaggedCollectionInfo } from '.'
 
 const getTaggedCollectionInfo = (
   collection: TaggedCollection,

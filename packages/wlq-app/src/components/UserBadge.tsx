@@ -1,6 +1,6 @@
 import { Box, Button, ButtonProps } from '@chakra-ui/core'
+import { UserDetails } from '@wlq/wlq-model/src/user'
 import React from 'react'
-import UserDetails from '@wlq/wlq-model/src/user/UserDetails'
 import EmojiIcon from './EmojiIcon'
 
 export type UserBadgeProps = {

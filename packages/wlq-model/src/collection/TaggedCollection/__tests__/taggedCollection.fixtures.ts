@@ -1,4 +1,5 @@
-import TaggedCollection, {
+import {
+  TaggedCollection,
   TaggedCollectionItem,
   TaggedCollectionQuestion,
 } from '..'

@@ -1,8 +1,7 @@
 import { JWK, JWT } from 'jose'
 import { nanoid } from 'nanoid'
+import { GetTokenResponseData } from '.'
 import { RestResponse } from '../rest'
-
-export type GetTokenResponseData = { token: string }
 
 const KEY = JWK.asKey(process.env.API_OCT_SECRET_KEY!)
 
