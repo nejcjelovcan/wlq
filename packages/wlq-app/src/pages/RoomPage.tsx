@@ -28,7 +28,7 @@ const RoomPage = () => {
   // redirect to /room/? if currentRoom changed
   useEffect(() => {
     if (currentRoom?.roomId && !rid) {
-      router.push(`/room/?r=${currentRoom.roomId}`, undefined, {
+      router.replace(`/room/?r=${currentRoom.roomId}`, undefined, {
         shallow: true,
       })
     }

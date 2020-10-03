@@ -23,8 +23,9 @@ export const handler: APIGatewayProxyHandler = async ({
   console.log('JOIN ROOM', connectionId, body)
   if (connectionId && body) {
     const websocketApi = getWebsocketApi(domainName, stage)
-    const { token, roomId, userDetails } = JSON.parse(body)
-    console.log('TOKEN', token, roomId, userDetails)
+    const {
+      data: { token, roomId, userDetails },
+    } = JSON.parse(body)
     if (token && roomId && userDetails) {
       const incomingEvent = newWsMessageEvent<RoomJoinProps>(
         connectionId,
