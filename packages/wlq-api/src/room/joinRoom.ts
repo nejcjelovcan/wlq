@@ -28,11 +28,14 @@ const joinRoom = (
     },
   }) {
     // verify token, get room
+    console.log('VERIFYING TOKEN', token)
     const uid = await verifyToken(token)
+    console.log('GETTING ROOM', roomId)
     const room = await roomGetter(roomId)
 
     if (room && roomId) {
       // validate user details
+      console.log('VALIDATING USER DETAILS', userDetails)
       const details = validateUserDetails(userDetails)
 
       // create & add participant
@@ -42,10 +45,12 @@ const joinRoom = (
         connectionId,
         uid,
       })
+      console.log('ADDING PARTICIPANT', participant)
       await addParticipant(participant)
       const [, participants] = await roomAndParticipantsGetter(roomId)
 
       // send setParticipants to joined participant
+      console.log('YIELDING setParticipants event')
       yield newWsMessageEvent<RoomSetParticipantsProps>(
         connectionId,
         'setParticipants',
@@ -56,6 +61,7 @@ const joinRoom = (
       )
 
       // send userJoined to all participants
+      console.log('YIELDING useJoined events')
       const message: WsMessage<RoomUserJoinedProps> = {
         action: 'userJoined',
         data: { participant: getRoomParticipantPublic(participant) },

@@ -70,6 +70,7 @@ export const wsEventConsumer = async <T extends object = WsMessageData>(
       }
     }
   } catch (e) {
+    console.error('wsEventConsumer error', e)
     let error = 'Internal Server Error'
     if (e instanceof RestResponseError) {
       error = e.message
