@@ -20,6 +20,7 @@ export const handler: APIGatewayProxyHandler = async ({
   requestContext: { domainName, stage, connectionId },
   body,
 }) => {
+  console.log('JOIN ROOM', connectionId, body)
   if (connectionId && body) {
     const websocketApi = getWebsocketApi(domainName, stage)
     const { token, roomId, userDetails } = JSON.parse(body)
