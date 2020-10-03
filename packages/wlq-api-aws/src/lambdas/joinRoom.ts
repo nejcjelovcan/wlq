@@ -34,7 +34,7 @@ export const handler: APIGatewayProxyHandler = async ({
         },
       )
 
-      wsEventConsumer(
+      await wsEventConsumer(
         incomingEvent,
         joinRoom(
           verifyToken,
