@@ -11,7 +11,7 @@ import {
   roomFixture,
   roomParticipantFixture,
   userDetailsFixture,
-} from './room.fixtures'
+} from '@wlq/wlq-model/src/room/__tests__/room.fixtures'
 
 const verifyTokenStub = async () => 'uid'
 const roomGetterStub = async () => roomFixture()

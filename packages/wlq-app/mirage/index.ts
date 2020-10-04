@@ -6,6 +6,7 @@ import {
   RestResponse,
 } from '@wlq/wlq-api/src'
 import { Room, RoomParticipant } from '@wlq/wlq-model/src'
+import { roomParticipantWithAliasFixture } from '@wlq/wlq-model/src/room/__tests__/room.fixtures'
 import { Model, Registry, Server } from 'miragejs'
 import { ModelDefinition } from 'miragejs/-types'
 import Schema from 'miragejs/orm/schema'
@@ -48,6 +49,14 @@ export function makeServer({ environment = 'test' } = {}) {
         state: 'Idle',
         type: 'Room',
       })
+      schema.create(
+        'participant',
+        roomParticipantWithAliasFixture('Anna', { roomId: 'testId' }),
+      )
+      schema.create(
+        'participant',
+        roomParticipantWithAliasFixture('Bob', { roomId: 'testId' }),
+      )
     },
 
     routes() {

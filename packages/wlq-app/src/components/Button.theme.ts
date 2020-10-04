@@ -1,8 +1,8 @@
 import { mode } from '@chakra-ui/theme-tools'
 
-export default {
+const ButtonTheme = {
   baseStyle: { borderColor: 'white' },
-  defaultProps: { size: 'md', variant: 'outline' },
+  defaultProps: { size: 'lg', variant: 'outline' },
   variants: {
     vibrant(props: Record<string, any>) {
       const { colorScheme: c } = props
@@ -30,3 +30,4 @@ export default {
     },
   },
 }
+export default ButtonTheme

@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid'
-import { PosedQuestion } from '../collection'
+import { PosedQuestion, PosedQuestionPublic } from '../collection'
 import { ValidationError, Validator } from '../validation'
 
 export interface Room {
@@ -9,6 +9,7 @@ export interface Room {
   state: 'Idle' | 'Question' | 'Answer'
   listed: boolean
   question?: PosedQuestion
+  questionPublic?: PosedQuestionPublic
   ws?: string
 }
 

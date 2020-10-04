@@ -43,6 +43,8 @@ export const createRoom: AsyncAction = async ({
       room.roomCreation,
     )
     room.currentRoom = createdRoom.room
+    room.roomSession = { participants: [] }
+    room.socket = {}
 
     // TODO
     room.roomCreation = {}
@@ -77,6 +79,8 @@ export const getRoom: AsyncAction<string> = async (
       },
     )
     room.currentRoom = responseData.room
+    room.roomSession = { participants: [] }
+    room.socket = {}
   } catch (e) {
     room.getRoomRequest.error = e.message
   } finally {
@@ -104,7 +108,8 @@ export const roomOnOpen: Action = ({
 
 export const roomOnClose: Action = ({ state: { room } }) => {
   console.log('WEBSOCKET CLOSE')
-  room.socket = { loading: false, connected: false }
+  room.socket.loading = false
+  room.socket.connected = false
   room.roomSession = { participants: [] }
 }
 
@@ -196,7 +201,14 @@ export const joinRoom: Action = ({
   },
   effects: { websocket },
 }) => {
-  if (token && currentRoom?.ws && details && !socket.connected) {
+  console.log('SOCKET STATE', socket)
+  if (
+    token &&
+    currentRoom?.ws &&
+    details &&
+    !socket.connected &&
+    !socket.error
+  ) {
     socket.loading = true
     websocket.initialize(currentRoom?.ws)
     websocket.setOnOpen(() => {

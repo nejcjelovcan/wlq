@@ -1,11 +1,11 @@
 import {
   joinRoom,
   leaveRoom,
-  startGame,
   newWsMessageEvent,
   wsEventConsumer,
   WsSendFunction,
 } from '@wlq/wlq-api/src'
+import startGame from '@wlq/wlq-api/src/room/startGame'
 import { Server as SocketServer, WebSocket } from 'mock-socket'
 import { ServerSchema } from './'
 import {
@@ -29,7 +29,9 @@ const makeWsServer = async (schema: ServerSchema) => {
 
   wsServer.on('connection', socket => {
     const send: WsSendFunction = async ({ connectionId, message }) => {
-      socket.send(JSON.stringify(message))
+      if (connectionId === 'connectionId') {
+        socket.send(JSON.stringify(message))
+      }
     }
     const roomAndParticipantsGetter = async (roomId: string) =>
       getRoomAndParticipantsByRoomId(schema, roomId)

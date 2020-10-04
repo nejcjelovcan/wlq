@@ -69,7 +69,7 @@ const RoomCreationForm = ({
             isInvalid={roomCreationError?.field === 'name'}
             isReadOnly={loading}
           >
-            <FormLabel htmlFor="room_name">Name</FormLabel>
+            <FormLabel htmlFor="room_name">Room name</FormLabel>
             <Input
               id="room_name"
               name="room_name"

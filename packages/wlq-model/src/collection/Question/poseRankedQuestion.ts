@@ -18,7 +18,7 @@ const poseRankedQuestion = ({
       break
     case 'RankedMost':
       answer = sample(items.slice(0, items.length - 3))
-      possibleWrongs = items.slice(answer.rank - 1)
+      possibleWrongs = items.slice(answer.rank)
       break
   }
 

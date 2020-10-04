@@ -11,3 +11,18 @@ export interface PosedQuestion<I extends CollectionItem = CollectionItem> {
   options: I[]
   answer: I
 }
+
+export type PosedQuestionPublic = {
+  questionText: string
+  options: Pick<CollectionItem, 'type' | 'name'>[]
+}
+
+export const getPosedQuestionPublic = <
+  I extends CollectionItem = CollectionItem
+>({
+  questionText,
+  options,
+}: PosedQuestion<I>): PosedQuestionPublic => ({
+  questionText,
+  options: options.map(({ type, name }) => ({ type, name })),
+})

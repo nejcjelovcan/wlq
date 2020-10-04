@@ -16,7 +16,8 @@ const RoomPage = () => {
     state: {
       room: {
         currentRoom,
-        getRoomRequest: { error },
+        getRoomRequest: { error: getRoomError },
+        socket: { error: socketError },
       },
     },
     actions: {
@@ -25,8 +26,9 @@ const RoomPage = () => {
   } = useOvermind()
 
   const router = useRouter()
+  const hasRoomId = typeof router.query.r === 'string'
   const rid = typeof router.query.r === 'string' ? router.query.r : undefined
-  const roomNotLoaded = !!(rid && currentRoom?.roomId !== rid)
+  const roomLoaded = hasRoomId && currentRoom?.roomId === rid
 
   // redirect to /room/? if currentRoom changed
   useEffect(() => {
@@ -39,19 +41,20 @@ const RoomPage = () => {
 
   // fetch room if rid is set but no currentRoom
   useEffect(() => {
-    if (roomNotLoaded && token && rid && !error) {
+    if (!roomLoaded && token && !getRoomError && rid) {
       getRoom(rid)
     }
-  }, [roomNotLoaded, token, getRoom, rid, error])
+  }, [roomLoaded, token, getRoom, rid, getRoomError])
+
+  const error = getRoomError || socketError
+  const loading = !ready || (hasRoomId && !error && !roomLoaded)
+  const title = !hasRoomId ? 'New Game' : error ? 'Error' : 'Room name'
 
   return (
-    <Stack spacing={4}>
-      <PageHead
-        loading={!ready || roomNotLoaded}
-        title={roomNotLoaded ? 'Room name' : currentRoom?.name ?? 'New room'}
-      />
-      {!rid && <RoomCreationForm userDetailsReady={ready} />}
-      {rid && !error && <RoomDetails />}
+    <Stack spacing={4} flexGrow={1}>
+      <PageHead loading={loading} title={currentRoom?.name ?? title} />
+      {!hasRoomId && <RoomCreationForm userDetailsReady={ready} />}
+      {hasRoomId && !error && <RoomDetails />}
       {error && <Alert status="error">{error}</Alert>}
     </Stack>
   )

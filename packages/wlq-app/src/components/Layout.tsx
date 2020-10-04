@@ -1,16 +1,14 @@
-import React from 'react'
-import { Box, Center, Flex } from '@chakra-ui/core'
-
-import { FC } from 'react'
+import { Flex } from '@chakra-ui/core'
+import React, { FC } from 'react'
 
 const Layout: FC = ({ children }) => {
   const width = { base: '100%', sm: '30em' }
 
   return (
-    <Flex height="100vh" direction="column" p={3}>
-      <Center>
-        <Box width={width}>{children}</Box>
-      </Center>
+    <Flex direction="column" height="100vh" p={3} pb={4} alignItems="center">
+      <Flex direction="column" width={width} flexGrow={1}>
+        {children}
+      </Flex>
     </Flex>
   )
 }
