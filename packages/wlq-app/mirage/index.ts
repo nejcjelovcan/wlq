@@ -51,11 +51,15 @@ export function makeServer({ environment = 'test' } = {}) {
       })
       schema.create(
         'participant',
-        roomParticipantWithAliasFixture('Anna', { roomId: 'testId' }),
+        roomParticipantWithAliasFixture('Annabelle', { roomId: 'testId' }),
       )
       schema.create(
         'participant',
-        roomParticipantWithAliasFixture('Bob', { roomId: 'testId' }),
+        roomParticipantWithAliasFixture('Bobriard', { roomId: 'testId' }),
+      )
+      schema.create(
+        'participant',
+        roomParticipantWithAliasFixture('Schwarzenegger', { roomId: 'testId' }),
       )
     },
 

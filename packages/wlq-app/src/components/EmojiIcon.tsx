@@ -1,25 +1,27 @@
-import React from 'react'
 import {
   Box,
+  BoxProps,
   Flex,
   SystemStyleObject,
   useStyleConfig,
   useTheme,
 } from '@chakra-ui/core'
 import { getColor } from '@chakra-ui/theme-tools'
+import React from 'react'
 
-export interface EmojiIconProps {
+export type EmojiIconProps = {
   emoji: string
   colorScheme: string
   variant: string
   fontSize?: string
-}
+} & BoxProps
 
 const EmojiIcon = ({
   emoji,
   colorScheme,
   variant,
   fontSize,
+  ...props
 }: EmojiIconProps) => {
   const buttonStyle = useStyleConfig('Button', {
     colorScheme,
@@ -34,7 +36,12 @@ const EmojiIcon = ({
   )
 
   return (
-    <Flex justifyContent="center" alignItems="center" userSelect="none">
+    <Flex
+      justifyContent="center"
+      alignItems="center"
+      userSelect="none"
+      {...props}
+    >
       <Box
         fontSize={fontSize ?? '4xl'}
         textShadow={`0 0 1px ${textColor}`}

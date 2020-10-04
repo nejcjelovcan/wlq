@@ -1772,7 +1772,7 @@
         "questionTextTemplate": "Which of these countries is the largest?"
       },
       {
-        "type": "RankedList",
+        "type": "RankedLeast",
         "questionTextTemplate": "Which of these countries is the smallest?"
       }
     ]
@@ -3569,7 +3569,7 @@
         "questionTextTemplate": "Which of these countries has the largest population?"
       },
       {
-        "type": "RankedList",
+        "type": "RankedLeast",
         "questionTextTemplate": "Which of these countries has the smallest population?"
       }
     ]
@@ -7848,7 +7848,7 @@
         "helpTextTemplate": "by number of intentional homicide victims per inhabitant"
       },
       {
-        "type": "RankedList",
+        "type": "RankedLeast",
         "questionTextTemplate": "Which country has the lowest intentional homicide rate?",
         "helpTextTemplate": "by number of intentional homicide victims per inhabitant"
       }
@@ -9530,7 +9530,7 @@
         "helpTextTemplate": "according to WHO data from 2015"
       },
       {
-        "type": "RankedList",
+        "type": "RankedLeast",
         "questionTextTemplate": "Which country has the lowest life expectancy?",
         "helpTextTemplate": "according to WHO data from 2015"
       }

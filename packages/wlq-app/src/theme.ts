@@ -14,6 +14,7 @@ export default extendTheme({
     },
     Button,
     FormLabel: { baseStyle: { fontSize: 'lg' } },
+    UserBadge: Button,
     // Stack: { defaultProps: { spacing: 10 } },
   },
 

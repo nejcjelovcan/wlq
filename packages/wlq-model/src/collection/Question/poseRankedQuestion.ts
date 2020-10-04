@@ -20,6 +20,10 @@ const poseRankedQuestion = ({
       answer = sample(items.slice(0, items.length - 3))
       possibleWrongs = items.slice(answer.rank)
       break
+    default:
+      throw new Error(
+        `Unrecognized question type for RankedCollection: ${type}`,
+      )
   }
 
   let options = shuffleArray([answer, ...sampleMany(possibleWrongs, 3)])

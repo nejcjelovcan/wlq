@@ -7,11 +7,10 @@ export type PageHeadProps = {
   loading?: boolean
   title: string
   subtitle?: string
-  spinner?: boolean
-  onClose?: () => void
+  showAlias?: boolean
 }
 
-const PageHead = ({ loading, title, subtitle }: PageHeadProps) => {
+const PageHead = ({ loading, title, subtitle, showAlias }: PageHeadProps) => {
   const {
     user: { details, detailsValid },
   } = useOvermindState()
@@ -31,7 +30,9 @@ const PageHead = ({ loading, title, subtitle }: PageHeadProps) => {
           </Heading>
         </Skeleton>
       </Flex>
-      {detailsValid && details && <UserBadge userDetails={details} />}
+      {detailsValid && details && (
+        <UserBadge userDetails={details} showAlias={showAlias} />
+      )}
     </Flex>
   )
 }

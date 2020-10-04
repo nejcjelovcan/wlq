@@ -52,7 +52,11 @@ const RoomPage = () => {
 
   return (
     <Stack spacing={4} flexGrow={1}>
-      <PageHead loading={loading} title={currentRoom?.name ?? title} />
+      <PageHead
+        loading={loading}
+        title={currentRoom?.name ?? title}
+        showAlias={currentRoom ? currentRoom.state === 'Idle' : true}
+      />
       {!hasRoomId && <RoomCreationForm userDetailsReady={ready} />}
       {hasRoomId && !error && <RoomDetails />}
       {error && <Alert status="error">{error}</Alert>}

@@ -1,4 +1,12 @@
-import { Button, Flex, Skeleton, Stack, useDisclosure } from '@chakra-ui/core'
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  Skeleton,
+  Stack,
+  useDisclosure,
+} from '@chakra-ui/core'
 import React, { useCallback, useEffect } from 'react'
 import UserBadge from '../../components/UserBadge'
 import { useOvermind } from '../../overmind'
@@ -41,22 +49,53 @@ const RoomDetails = () => {
   }, [otherUsers, onOpen, startGame])
 
   return (
-    <Flex direction="column" justifyContent="space-between" flexGrow={1}>
-      <Stack spacing={4}>
+    <Flex direction="column" flexGrow={1}>
+      <Flex
+        as={Flex}
+        justifyContent="center"
+        flexDirection="column"
+        alignItems="stretch"
+        height="70vh"
+      >
         <Skeleton isLoaded={connected}>
-          {otherUsers.map(p => (
-            <UserBadge key={p.pid} userDetails={p.details} mr={4} />
-          ))}
-          {otherUsers.length === 0 && (
-            <InviteYourFiends text="There's no one here." />
-          )}
+          <Stack spacing={4}>
+            {otherUsers.length === 0 && (
+              <InviteYourFiends text="There's no one here." />
+            )}
+
+            {currentRoom?.state === 'Idle' && (
+              <Button size="lg" onClick={onStartGame}>
+                Start game
+              </Button>
+            )}
+
+            {currentRoom?.state === 'Question' && (
+              <>
+                <Heading as="h2" textAlign="center">
+                  {currentRoom?.questionPublic?.questionText}
+                </Heading>
+                {currentRoom?.questionPublic?.options.map(option => (
+                  <Button key={option.name}>{option.name}</Button>
+                ))}
+              </>
+            )}
+          </Stack>
         </Skeleton>
-      </Stack>
-      {currentRoom?.state === 'Idle' && (
-        <Button size="lg" onClick={onStartGame}>
-          Start game
-        </Button>
-      )}
+      </Flex>
+
+      <Box position="fixed" bottom={0} width={{ base: '100%', sm: '30em' }}>
+        <Flex justifyContent="center" flexWrap="wrap">
+          {otherUsers.map(p => (
+            <UserBadge
+              key={p.pid}
+              userDetails={p.details}
+              showAlias={currentRoom?.state === 'Idle'}
+              mr={4}
+              mb={4}
+            />
+          ))}
+        </Flex>
+      </Box>
       <StartGameModal isOpen={isOpen} onClose={onClose} startGame={startGame} />
     </Flex>
   )
