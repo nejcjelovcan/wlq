@@ -79,7 +79,9 @@ functions:
       - http:
           path: getRoom
           origin: ${self:custom.httpOrigin}
-          authorizer: authorize
+          authorizer:
+            name: authorize
+            resultTtlInSeconds: 0
           method: POST
           cors: true
 
@@ -89,7 +91,9 @@ functions:
       - http:
           path: createRoom
           origin: ${self:custom.httpOrigin}
-          authorizer: authorize
+          authorizer:
+            name: authorize
+            resultTtlInSeconds: 0
           method: POST
           cors: true
 
@@ -172,11 +176,6 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 1
               WriteCapacityUnits: 1
-
-  extensions:
-    AutorizeApiGatewayAuthorizer:
-      Properties:
-        AuthorizerResultTtlInSeconds: 0
 
 package:
   individually: true
