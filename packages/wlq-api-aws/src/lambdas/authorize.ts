@@ -16,12 +16,20 @@ export const handler: APIGatewayAuthorizerHandler = (
 
   if (!(tokenParts[0].toLowerCase() === 'bearer' && tokenValue)) {
     // no auth token!
+    console.log('No auth token!')
     return callback('Unauthorized')
   }
 
   verifyToken(tokenValue)
-    .then(sub => callback(null, generatePolicy(sub, 'Allow', event.methodArn)))
+    .then(sub => {
+      console.log(
+        'Token verified!',
+        generatePolicy(sub, 'Allow', event.methodArn),
+      )
+      callback(null, generatePolicy(sub, 'Allow', event.methodArn))
+    })
     .catch(error => {
+      console.error('Token verification error')
       console.error(error)
       callback('Unauthorized')
     })
