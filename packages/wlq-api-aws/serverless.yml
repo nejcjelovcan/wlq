@@ -112,6 +112,12 @@ functions:
       - websocket:
           route: joinRoom
 
+  startGame:
+    handler: src/lambdas/startGame.handler
+    events:
+      - websocket:
+          route: startGame
+
 resources:
   Resources:
     WebsocketsApi:
