@@ -4,7 +4,7 @@ const awsWebsocketSendFunction = (
   api: AWS.ApiGatewayManagementApi,
 ): WsSendFunction => async event => {
   try {
-    api
+    await api
       .postToConnection({
         ConnectionId: event.connectionId,
         Data: JSON.stringify(event.message),
