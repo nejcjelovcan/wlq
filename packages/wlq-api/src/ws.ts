@@ -33,7 +33,9 @@ export type WsMessageData = { [key: string]: any }
 // No real point in having it generic, since usually messages of several
 // different types will be yielded from a single iterable
 // (we can type those messages properly inside the function though)
-export type WsEventIterable = AsyncIterable<WsMessageEvent | WsMessageEvent[]>
+export type WsEventIterable = AsyncIterable<
+  WsMessageEvent | WsMessageEvent[] | undefined
+>
 
 // Iterable function that returns the async iterator
 // Use this as return type when defining factories (since args can be inferred)
@@ -65,7 +67,7 @@ export const wsEventConsumer = async <T extends object = WsMessageData>(
     for await (const message of iterableFunction(incomingEvent)) {
       if (Array.isArray(message)) {
         await Promise.all(message.map(sendFunction))
-      } else {
+      } else if (message) {
         await sendFunction(message)
       }
     }

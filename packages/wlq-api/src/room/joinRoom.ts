@@ -5,7 +5,7 @@ import {
 } from '@wlq/wlq-model/src/room'
 import { validateUserDetails } from '@wlq/wlq-model/src/user'
 import {
-  RoomAndParticipantGetter,
+  RoomAndParticipantsGetter,
   RoomGetter,
   RoomJoinProps,
   RoomSetParticipantsProps,
@@ -18,7 +18,7 @@ import { newWsMessageEvent, WsEventIterableFunction, WsMessage } from '../ws'
 const joinRoom = (
   verifyToken: (token: string) => Promise<string>,
   roomGetter: RoomGetter,
-  roomAndParticipantsGetter: RoomAndParticipantGetter,
+  roomAndParticipantsGetter: RoomAndParticipantsGetter,
   addParticipant: (participant: RoomParticipant) => Promise<any>,
 ): WsEventIterableFunction<RoomJoinProps> => {
   async function* joinRoomIterableFunction({
@@ -33,7 +33,7 @@ const joinRoom = (
     console.log('GETTING ROOM', roomId)
     const room = await roomGetter(roomId)
 
-    if (room && roomId) {
+    if (room) {
       // validate user details
       console.log('VALIDATING USER DETAILS', userDetails)
       const details = validateUserDetails(userDetails)
@@ -61,7 +61,7 @@ const joinRoom = (
       )
 
       // send userJoined to all participants
-      console.log('YIELDING useJoined events')
+      console.log('YIELDING userJoined events')
       const message: WsMessage<RoomUserJoinedProps> = {
         action: 'userJoined',
         data: { participant: getRoomParticipantPublic(participant) },

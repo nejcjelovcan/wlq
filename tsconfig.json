@@ -6,7 +6,7 @@
     "sourceMap": true,
 
     "jsx": "react",
-    "target": "esnext",
+    "target": "es2018",
     "module": "esnext",
     "moduleResolution": "node",
 

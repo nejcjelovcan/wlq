@@ -1,5 +1,9 @@
 import { ValidationFieldErrorData } from '@wlq/wlq-model/src/validation'
-import { Room, RoomCreation } from '@wlq/wlq-model/src/room'
+import {
+  Room,
+  RoomCreation,
+  RoomParticipantPublic,
+} from '@wlq/wlq-model/src/room'
 import { RequestState } from '../../utils/api'
 
 export type RoomState = {
@@ -14,6 +18,10 @@ export type RoomState = {
     connected?: boolean
     error?: string
   }
+  roomSession: {
+    pid?: string
+    participants: RoomParticipantPublic[]
+  }
 }
 
 export const state: RoomState = {
@@ -21,4 +29,5 @@ export const state: RoomState = {
   roomCreationRequest: {},
   roomCreation: {},
   socket: {},
+  roomSession: { participants: [] },
 }

@@ -8,6 +8,7 @@ import verifyToken from '@wlq/wlq-api/src/user/verifyToken.helper'
 import { getRoomParticipantKeys } from '@wlq/wlq-model/src/room'
 import { APIGatewayProxyHandler } from 'aws-lambda'
 import AWS from 'aws-sdk'
+import awsWebsocketSendFunction from '../awsWebsocketSendFunction'
 import getRoomAndParticipantsByRoomId from '../getRoomAndParticipantsByRoomId'
 import getRoomByRoomId from '../getRoomByRoomId'
 import getWebsocketApi from '../getWebsocketApi'
@@ -20,12 +21,13 @@ export const handler: APIGatewayProxyHandler = async ({
   requestContext: { domainName, stage, connectionId },
   body,
 }) => {
-  console.log('JOIN ROOM', connectionId, body)
   if (connectionId && body) {
     const websocketApi = getWebsocketApi(domainName, stage)
+
     const {
       data: { token, roomId, userDetails },
     } = JSON.parse(body)
+
     if (token && roomId && userDetails) {
       const incomingEvent = newWsMessageEvent<RoomJoinProps>(
         connectionId,
@@ -51,13 +53,8 @@ export const handler: APIGatewayProxyHandler = async ({
             }).promise()
           },
         ),
-        async event =>
-          websocketApi
-            .postToConnection({
-              ConnectionId: event.connectionId,
-              Data: JSON.stringify(event.message),
-            })
-            .promise(),
+        // todo it can happen that ConnectionId is gone (GoneException: 410)
+        awsWebsocketSendFunction(websocketApi),
       )
     }
   }

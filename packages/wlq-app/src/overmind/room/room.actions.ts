@@ -1,4 +1,10 @@
-import { GetRoomResponseData, RoomJoinProps } from '@wlq/wlq-api/src/room'
+import {
+  GetRoomResponseData,
+  RoomJoinProps,
+  RoomSetParticipantsProps,
+  RoomUserJoinedProps,
+  RoomUserLeftProps,
+} from '@wlq/wlq-api/src/room'
 import { RoomCreation, validateRoomCreation } from '@wlq/wlq-model/src/room'
 import { ValidationError } from '@wlq/wlq-model/src/validation'
 import { Action, AsyncAction } from 'overmind'
@@ -95,30 +101,70 @@ export const roomOnOpen: Action = ({
   }
 }
 
-export const roomOnClose: Action = ({
-  state: {
-    room: { socket },
-  },
-}) => {
+export const roomOnClose: Action = ({ state: { room } }) => {
   console.log('WEBSOCKET CLOSE')
-  socket.loading = false
-  socket.connected = false
+  room.socket = { loading: false, connected: false }
+  room.roomSession = { participants: [] }
 }
 
-export const roomOnError: Action<Event> = (
+export const roomOnError: Action<Event> = ({ state: { room } }, event) => {
+  console.log('WEBSOCKET ERROR', event)
+  room.socket = { error: 'Socket error', connected: false, loading: false }
+  room.roomSession = { participants: [] }
+}
+
+export const roomOnMessage: Action<MessageEvent> = (
   {
-    state: {
-      room: { socket },
+    actions: {
+      room: { roomOnSetParticipants, roomOnUserJoined, roomOnUserLeft },
     },
   },
   event,
 ) => {
-  console.log('WEBSOCKET ERROR', event)
-  socket.error = 'Socket error'
+  try {
+    const message = JSON.parse(event.data)
+    console.log('ROOM ON MESSAGE', message)
+    switch (message.action) {
+      case 'setParticipants':
+        roomOnSetParticipants(message.data)
+        break
+      case 'userJoined':
+        roomOnUserJoined(message.data)
+        break
+      case 'userLeft':
+        roomOnUserLeft(message.data)
+    }
+  } catch (e) {}
 }
 
-export const roomOnMessage: Action<MessageEvent> = (_, event) => {
-  console.log('MESSAGE RECEIVED', event.data)
+export const roomOnSetParticipants: Action<RoomSetParticipantsProps> = (
+  { state: { room } },
+  data,
+) => {
+  room.roomSession = {
+    participants: data.participants,
+    pid: data.pid,
+  }
+}
+
+export const roomOnUserJoined: Action<RoomUserJoinedProps> = (
+  { state: { room } },
+  data,
+) => {
+  room.roomSession = {
+    participants: [...room.roomSession.participants, data.participant],
+  }
+}
+
+export const roomOnUserLeft: Action<RoomUserLeftProps> = (
+  { state: { room } },
+  data,
+) => {
+  room.roomSession = {
+    participants: room.roomSession.participants.filter(
+      p => p.pid !== data.participant.pid,
+    ),
+  }
 }
 
 export const joinRoom: Action = ({

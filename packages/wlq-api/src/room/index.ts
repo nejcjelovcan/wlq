@@ -2,24 +2,34 @@ import {
   Room,
   RoomParticipant,
   RoomParticipantPublic,
-} from '@wlq/wlq-model/src'
+} from '@wlq/wlq-model/src/room'
 
 export type RoomJoinProps = {
   token: string
   roomId: string
   userDetails: { [key: string]: any }
 }
+
+export type RoomLeaveProps = {
+  connectionId: string
+}
+
 export type RoomSetParticipantsProps = {
   participants: RoomParticipantPublic[]
   pid: string
 }
+
 export type RoomUserJoinedProps = {
+  participant: RoomParticipantPublic
+}
+
+export type RoomUserLeftProps = {
   participant: RoomParticipantPublic
 }
 
 export type RoomGetter = (roomId: string) => Promise<Room | undefined>
 
-export type RoomAndParticipantGetter = (
+export type RoomAndParticipantsGetter = (
   roomId: string,
 ) => Promise<[Room | undefined, RoomParticipant[]]>
 
@@ -30,3 +40,4 @@ export type GetRoomResponseData = {
 export { default as createRoom } from './createRoom'
 export { default as getRoom } from './getRoom'
 export { default as joinRoom } from './joinRoom'
+export { default as leaveRoom } from './leaveRoom'

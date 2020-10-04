@@ -121,6 +121,16 @@ resources:
         ProtocolType: WEBSOCKET
         RouteSelectionExpression: "$request.body.action"
 
+    GatewayResponseDefault4XX:
+      Type: "AWS::ApiGateway::GatewayResponse"
+      Properties:
+        ResponseParameters:
+        gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.httpOrigin}'"
+        gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: "ApiGatewayRestApi"
+
     RoomTable:
       Type: AWS::DynamoDB::Table
       Properties:

@@ -1,6 +1,7 @@
 import { Heading, Skeleton, Stack } from '@chakra-ui/core'
 
 import React, { useEffect } from 'react'
+import UserBadge from '../../components/UserBadge'
 import { useOvermind } from '../../overmind'
 
 const RoomDetails = () => {
@@ -9,6 +10,7 @@ const RoomDetails = () => {
       room: {
         currentRoom,
         socket: { loading, connected, error },
+        roomSession: { participants },
       },
     },
     actions: {
@@ -33,6 +35,9 @@ const RoomDetails = () => {
       </Skeleton>
       <Skeleton isLoaded={connected}>
         <Heading as="h2">Participants</Heading>
+        {participants.map(p => (
+          <UserBadge userDetails={p.details} />
+        ))}
       </Skeleton>
     </Stack>
   )
