@@ -24,7 +24,7 @@ export const handler: APIGatewayAuthorizerHandler = (
     .then(sub => {
       console.log(
         'Token verified!',
-        generatePolicy(sub, 'Allow', event.methodArn),
+        JSON.stringify(generatePolicy(sub, 'Allow', event.methodArn)),
       )
       callback(null, generatePolicy(sub, 'Allow', event.methodArn))
     })

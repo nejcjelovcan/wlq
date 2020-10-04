@@ -173,6 +173,12 @@ resources:
               ReadCapacityUnits: 1
               WriteCapacityUnits: 1
 
+  extensions:
+    AutorizeApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        AuthorizerResultTtlInSeconds: 0
+
 package:
   individually: true
   excludeDevDependencies: true
