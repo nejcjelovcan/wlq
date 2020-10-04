@@ -17,7 +17,7 @@ const PageHead = ({ loading, title, subtitle, showAlias }: PageHeadProps) => {
 
   return (
     <Flex direction="row" justifyContent="space-between" alignItems="center">
-      <Flex direction="row" alignItems="flex-end">
+      <Flex direction="row" alignItems="flex-end" height="3.2rem">
         <Box mr={2}>
           <Skeleton isLoaded={!loading}>
             <Heading>{title}</Heading>
