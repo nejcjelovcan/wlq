@@ -33,7 +33,7 @@ const joinRoom = (
     console.log('GETTING ROOM', roomId)
     const room = await roomGetter(roomId)
 
-    if (room) {
+    if (room && uid) {
       // validate user details
       console.log('VALIDATING USER DETAILS', userDetails)
       const details = validateUserDetails(userDetails)

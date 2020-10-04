@@ -45,13 +45,12 @@ export const handler: APIGatewayProxyHandler = async ({
           verifyToken,
           async roomId => getRoomByRoomId(DB, TableName, roomId),
           async roomId => getRoomAndParticipantsByRoomId(DB, TableName, roomId),
-          async participant => {
+          async participant =>
             DB.put({
               TableName,
               Item: { ...participant, ...getRoomParticipantKeys(participant) },
               ConditionExpression: 'attribute_not_exists(PK)',
-            }).promise()
-          },
+            }).promise(),
         ),
         // todo it can happen that ConnectionId is gone (GoneException: 410)
         awsWebsocketSendFunction(websocketApi),
