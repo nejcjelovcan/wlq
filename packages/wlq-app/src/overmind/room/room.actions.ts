@@ -2,6 +2,7 @@ import {
   GetRoomResponseData,
   RoomJoinProps,
   RoomSetParticipantsProps,
+  RoomUpdateRoomProps,
   RoomUserJoinedProps,
   RoomUserLeftProps,
 } from '@wlq/wlq-api/src/room'
@@ -116,7 +117,12 @@ export const roomOnError: Action<Event> = ({ state: { room } }, event) => {
 export const roomOnMessage: Action<MessageEvent> = (
   {
     actions: {
-      room: { roomOnSetParticipants, roomOnUserJoined, roomOnUserLeft },
+      room: {
+        roomOnSetParticipants,
+        roomOnUserJoined,
+        roomOnUserLeft,
+        roomOnRoomUpdate,
+      },
     },
   },
   event,
@@ -133,6 +139,10 @@ export const roomOnMessage: Action<MessageEvent> = (
         break
       case 'userLeft':
         roomOnUserLeft(message.data)
+        break
+      case 'roomUpdate':
+        roomOnRoomUpdate(message.data)
+        break
     }
   } catch (e) {}
 }
@@ -167,6 +177,15 @@ export const roomOnUserLeft: Action<RoomUserLeftProps> = (
   }
 }
 
+export const roomOnRoomUpdate: Action<RoomUpdateRoomProps> = (
+  { state: { room } },
+  roomUpdate,
+) => {
+  if (room.currentRoom) {
+    room.currentRoom = { ...room.currentRoom, ...roomUpdate }
+  }
+}
+
 export const joinRoom: Action = ({
   state: {
     user: { token, details },
@@ -177,9 +196,7 @@ export const joinRoom: Action = ({
   },
   effects: { websocket },
 }) => {
-  console.log('JOIN ROOM!', token, currentRoom?.ws, details)
   if (token && currentRoom?.ws && details && !socket.connected) {
-    console.log('JOINING!')
     socket.loading = true
     websocket.initialize(currentRoom?.ws)
     websocket.setOnOpen(() => {
@@ -208,4 +225,11 @@ export const leaveRoom: Action = ({
   if (connected) {
     websocket.close()
   }
+}
+
+export const startGame: Action = ({ effects: { websocket } }) => {
+  websocket.sendMessage({
+    action: 'startGame',
+    data: {},
+  })
 }

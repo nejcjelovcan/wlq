@@ -1,12 +1,14 @@
 import { nanoid } from 'nanoid'
+import { PosedQuestion } from '../collection'
 import { ValidationError, Validator } from '../validation'
 
 export interface Room {
   type: 'Room'
   name: string
   roomId: string
-  state: 'Idle' | 'Game'
+  state: 'Idle' | 'Question' | 'Answer'
   listed: boolean
+  question?: PosedQuestion
   ws?: string
 }
 

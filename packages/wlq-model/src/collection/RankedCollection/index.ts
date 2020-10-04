@@ -1,7 +1,6 @@
-import { Collection, CollectionItem } from './Collection'
-import { Question } from './Question'
+import { Collection, CollectionItem, Question } from '..'
 
-export interface RankedCollection extends Collection {
+export interface RankedCollection extends Collection<RankedCollectionItem> {
   type: 'RankedCollection'
   questions: RankedCollectionQuestion[]
 }
@@ -13,5 +12,7 @@ export interface RankedCollectionItem extends CollectionItem {
 }
 
 export interface RankedCollectionQuestion extends Question {
-  type: 'RankedBottom' | 'RankedLeast' | 'RankedMost' | 'RankedTop'
+  type: 'RankedLeast' | 'RankedMost'
 }
+
+export { default as prepareRankedCollections } from './prepareRankedCollections'

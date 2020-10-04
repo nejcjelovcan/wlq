@@ -9,6 +9,7 @@
     "target": "es2018",
     "module": "esnext",
     "moduleResolution": "node",
+    "lib": ["es2019"],
 
     "strict": true,
     "noImplicitAny": false,

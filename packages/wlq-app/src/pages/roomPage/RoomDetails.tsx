@@ -1,5 +1,4 @@
-import { Heading, Skeleton, Stack } from '@chakra-ui/core'
-
+import { Button, Heading, Skeleton, Stack } from '@chakra-ui/core'
 import React, { useEffect } from 'react'
 import UserBadge from '../../components/UserBadge'
 import { useOvermind } from '../../overmind'
@@ -14,7 +13,7 @@ const RoomDetails = () => {
       },
     },
     actions: {
-      room: { joinRoom, leaveRoom },
+      room: { joinRoom, leaveRoom, startGame },
     },
   } = useOvermind()
 
@@ -36,9 +35,14 @@ const RoomDetails = () => {
       <Skeleton isLoaded={connected}>
         <Heading as="h2">Participants</Heading>
         {participants.map(p => (
-          <UserBadge userDetails={p.details} />
+          <UserBadge key={p.pid} userDetails={p.details} />
         ))}
       </Skeleton>
+      {currentRoom?.state === 'Idle' && (
+        <Button size="lg" onClick={() => startGame()}>
+          Start game
+        </Button>
+      )}
     </Stack>
   )
 }

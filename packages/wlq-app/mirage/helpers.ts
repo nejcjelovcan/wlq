@@ -31,5 +31,5 @@ export const getRoomParticipantByConnectionId = (
 ): RoomParticipant | undefined => {
   const participant = schema.findBy('participant', { connectionId })
   if (!participant) return undefined
-  return { ...((participant?.attrs.attrs as unknown) as RoomParticipant) }
+  return { ...((participant?.attrs as unknown) as RoomParticipant) }
 }

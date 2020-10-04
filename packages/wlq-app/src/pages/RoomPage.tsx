@@ -1,4 +1,4 @@
-import { Stack } from '@chakra-ui/core'
+import { Alert, Stack } from '@chakra-ui/core'
 import { useRouter } from 'next/dist/client/router'
 import React, { useEffect } from 'react'
 import PageHead from '../components/PageHead'
@@ -14,7 +14,10 @@ const RoomPage = () => {
 
   const {
     state: {
-      room: { currentRoom },
+      room: {
+        currentRoom,
+        getRoomRequest: { error },
+      },
     },
     actions: {
       room: { getRoom },
@@ -36,10 +39,10 @@ const RoomPage = () => {
 
   // fetch room if rid is set but no currentRoom
   useEffect(() => {
-    if (roomNotLoaded && token && rid) {
+    if (roomNotLoaded && token && rid && !error) {
       getRoom(rid)
     }
-  }, [roomNotLoaded, token, getRoom, rid])
+  }, [roomNotLoaded, token, getRoom, rid, error])
 
   return (
     <Stack spacing={4}>
@@ -48,7 +51,8 @@ const RoomPage = () => {
         title={roomNotLoaded ? 'Room name' : currentRoom?.name ?? 'New room'}
       />
       {!rid && <RoomCreationForm userDetailsReady={ready} />}
-      {rid && <RoomDetails />}
+      {rid && !error && <RoomDetails />}
+      {error && <Alert status="error">{error}</Alert>}
     </Stack>
   )
 }

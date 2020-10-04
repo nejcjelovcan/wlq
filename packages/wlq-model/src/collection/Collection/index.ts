@@ -1,7 +1,7 @@
 import { Question } from '../Question'
 
 export interface Collection<I extends CollectionItem = CollectionItem> {
-  type: string
+  type: 'TaggedCollection' | 'RankedCollection'
   name: string
   category: string
   difficulty: 'Easy' | 'Medium' | 'Hard'

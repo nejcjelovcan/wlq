@@ -1,6 +1,7 @@
 import {
   joinRoom,
   leaveRoom,
+  startGame,
   newWsMessageEvent,
   wsEventConsumer,
   WsSendFunction,
@@ -30,8 +31,10 @@ const makeWsServer = async (schema: ServerSchema) => {
     const send: WsSendFunction = async ({ connectionId, message }) => {
       socket.send(JSON.stringify(message))
     }
-    const roomAndParticipantsGetter = async roomId =>
+    const roomAndParticipantsGetter = async (roomId: string) =>
       getRoomAndParticipantsByRoomId(schema, roomId)
+    const roomParticipantGetter = async (connectionId: string) =>
+      getRoomParticipantByConnectionId(schema, connectionId)
 
     socket.on('message', async message => {
       const { action, data } = JSON.parse(message.toString())
@@ -48,14 +51,26 @@ const makeWsServer = async (schema: ServerSchema) => {
             send,
           )
           return
+        case 'startGame':
+          await wsEventConsumer(
+            newWsMessageEvent('connectionId', 'startGame', {}),
+            startGame(
+              roomParticipantGetter,
+              roomAndParticipantsGetter,
+              async ({ roomId }, update) => {
+                schema.findBy('room', { roomId }).update(update)
+                return getRoomByRoomId(schema, roomId)
+              },
+            ),
+            send,
+          )
       }
     })
     socket.on('close', async () => {
       await wsEventConsumer(
         newWsMessageEvent('connectionId', 'leaveRoom', {}),
         leaveRoom(
-          async connectionId =>
-            getRoomParticipantByConnectionId(schema, connectionId),
+          roomParticipantGetter,
           async participant =>
             schema
               .findBy('participant', {
