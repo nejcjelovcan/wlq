@@ -175,7 +175,6 @@ resources:
 
   extensions:
     AutorizeApiGatewayAuthorizer:
-      Type: AWS::ApiGateway::Authorizer
       Properties:
         AuthorizerResultTtlInSeconds: 0
 
