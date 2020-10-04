@@ -1,7 +1,7 @@
 import {
-  RoomParticipant,
   getRoomParticipantPublic,
   newRoomParticipant,
+  RoomParticipant,
 } from '@wlq/wlq-model/src/room'
 import { validateUserDetails } from '@wlq/wlq-model/src/user'
 import {
@@ -27,13 +27,19 @@ const joinRoom = (
       data: { roomId, token, userDetails },
     },
   }) {
-    // verify token, get room
-    console.log('VERIFYING TOKEN', token)
-    const uid = await verifyToken(token)
-    console.log('GETTING ROOM', roomId)
+    // verify token
+    let uid: string
+    try {
+      console.log('VERIFYING TOKEN', token)
+      uid = await verifyToken(token)
+    } catch (e) {
+      throw new RestResponseError(403, 'Unauthorized')
+    }
+
+    // get room
     const room = await roomGetter(roomId)
 
-    if (room && uid) {
+    if (room) {
       // validate user details
       console.log('VALIDATING USER DETAILS', userDetails)
       const details = validateUserDetails(userDetails)

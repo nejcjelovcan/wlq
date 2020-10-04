@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "test": "yarn jest",
+    "coverage": "yarn jest --coverage",
     "test:watch": "yarn jest --watch-all"
   },
   "dependencies": {
