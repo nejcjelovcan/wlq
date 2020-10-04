@@ -59,14 +59,16 @@ const RoomDetails = () => {
       >
         <Skeleton isLoaded={connected}>
           <Stack spacing={4}>
-            {otherUsers.length === 0 && (
-              <InviteYourFiends text="There's no one here." />
-            )}
-
             {currentRoom?.state === 'Idle' && (
-              <Button size="lg" onClick={onStartGame}>
-                Start game
-              </Button>
+              <>
+                {otherUsers.length === 0 && (
+                  <InviteYourFiends text="There's no one here." />
+                )}
+
+                <Button size="lg" onClick={onStartGame}>
+                  Start game
+                </Button>
+              </>
             )}
 
             {currentRoom?.state === 'Question' && (
