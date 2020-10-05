@@ -6,6 +6,7 @@ import {
   WsSendFunction,
 } from '@wlq/wlq-api/src'
 import startGame from '@wlq/wlq-api/src/room/startGame'
+import answerQuestion from '@wlq/wlq-api/src/room/answerQuestion'
 import { Server as SocketServer, WebSocket } from 'mock-socket'
 import { ServerSchema } from './'
 import {
@@ -66,6 +67,21 @@ const makeWsServer = async (schema: ServerSchema) => {
             ),
             send,
           )
+          return
+        case 'answerQuestion':
+          await wsEventConsumer(
+            newWsMessageEvent('connectionId', 'answerQuestion', data),
+            answerQuestion(
+              roomParticipantGetter,
+              roomAndParticipantsGetter,
+              async ({ roomId }, update) => {
+                schema.findBy('room', { roomId }).update(update)
+                return getRoomByRoomId(schema, roomId)
+              },
+            ),
+            send,
+          )
+          return
       }
     })
     socket.on('close', async () => {

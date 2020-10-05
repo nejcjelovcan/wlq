@@ -1,10 +1,10 @@
+import { getPosedQuestionPublic } from '@wlq/wlq-model/src/collection'
 import {
   getAllCollections,
   poseQuestion,
 } from '@wlq/wlq-model/src/data/geography'
-import { getPosedQuestionPublic } from '@wlq/wlq-model/src/collection'
 import { Room, RoomParticipant } from '@wlq/wlq-model/src/room'
-import { RoomAndParticipantsGetter, RoomUpdateRoomProps } from '.'
+import { RoomAndParticipantsGetter, RoomPoseQuestionProps } from '.'
 import { WsEventIterableFunction, WsMessage } from '../ws'
 
 const startGame = (
@@ -30,16 +30,15 @@ const startGame = (
         const roomUpdate: Partial<Room> = {
           state: 'Question',
           question,
-          questionPublic: getPosedQuestionPublic(question),
+          answers: {},
         }
         room = await updateRoom(room, roomUpdate)
 
         console.log('Broadcasting roomUpdate message')
-        const message: WsMessage<RoomUpdateRoomProps> = {
-          action: 'roomUpdate',
+        const message: WsMessage<RoomPoseQuestionProps> = {
+          action: 'poseQuestion',
           data: {
-            state: roomUpdate.state,
-            questionPublic: roomUpdate.question,
+            question: getPosedQuestionPublic(question),
           },
         }
         yield participants.map(({ connectionId }) => ({

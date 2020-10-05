@@ -39,7 +39,7 @@ const joinRoom = (
     // get room
     const room = await roomGetter(roomId)
 
-    if (room) {
+    if (room && room.state === 'Idle') {
       // validate user details
       console.log('VALIDATING USER DETAILS', userDetails)
       const details = validateUserDetails(userDetails)

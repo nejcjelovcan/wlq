@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Flex,
-  Heading,
   Skeleton,
   Stack,
   useDisclosure,
@@ -11,6 +10,7 @@ import React, { useCallback, useEffect } from 'react'
 import UserBadge from '../../components/UserBadge'
 import { useOvermind } from '../../overmind'
 import InviteYourFiends from './roomDetails/InviteYourFriends'
+import RoomQuestion from './roomDetails/RoomQuestion'
 import StartGameModal from './roomDetails/StartGameModal'
 
 const RoomDetails = () => {
@@ -19,23 +19,26 @@ const RoomDetails = () => {
       room: {
         currentRoom,
         socket: { loading, connected, error },
-        roomSession: { participants, pid },
+        roomSession: { participants, pid, currentQuestion, usersAnswered },
       },
     },
     actions: {
-      room: { joinRoom, leaveRoom, startGame },
+      room: { joinRoom, leaveRoom, startGame, cleanRoomData },
     },
   } = useOvermind()
 
+  // When currentRoom changes we call joinRoom()
   useEffect(() => {
     if (currentRoom && !loading && !connected && !error) {
       joinRoom()
       return () => {
         leaveRoom()
+        cleanRoomData()
       }
     }
     return () => {}
-  }, [currentRoom, loading, connected, error, joinRoom, leaveRoom])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentRoom])
 
   const otherUsers = participants.filter(p => p.pid !== pid)
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -70,16 +73,8 @@ const RoomDetails = () => {
                 </Button>
               </>
             )}
-
-            {currentRoom?.state === 'Question' && (
-              <>
-                <Heading as="h2" textAlign="center">
-                  {currentRoom?.questionPublic?.questionText}
-                </Heading>
-                {currentRoom?.questionPublic?.options.map(option => (
-                  <Button key={option.name}>{option.name}</Button>
-                ))}
-              </>
+            {currentRoom?.state === 'Question' && currentQuestion && (
+              <RoomQuestion />
             )}
           </Stack>
         </Skeleton>
@@ -87,10 +82,14 @@ const RoomDetails = () => {
 
       <Box position="fixed" bottom={0} width={{ base: '100%', sm: '30em' }}>
         <Flex justifyContent="center" flexWrap="wrap">
-          {otherUsers.map(p => (
+          {otherUsers.map(({ pid, details }) => (
             <UserBadge
-              key={p.pid}
-              userDetails={p.details}
+              grayscale={
+                currentRoom?.state === 'Question' &&
+                !usersAnswered.includes(pid)
+              }
+              key={pid}
+              userDetails={details}
               showAlias={currentRoom?.state === 'Idle'}
               mr={4}
               mb={4}

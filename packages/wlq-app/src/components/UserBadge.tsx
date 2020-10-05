@@ -12,11 +12,13 @@ import EmojiIcon from './EmojiIcon'
 export type UserBadgeProps = {
   userDetails: Partial<UserDetails>
   showAlias?: boolean
+  grayscale?: boolean
 } & BoxProps
 
 const UserBadge = ({
   userDetails,
   showAlias = true,
+  grayscale = false,
   ...props
 }: UserBadgeProps) => {
   const colorScheme = userDetails?.color ?? 'gray'
@@ -40,6 +42,7 @@ const UserBadge = ({
       height="3.2rem"
       sx={userBadgeStyle}
       px="0.5rem"
+      style={{ filter: grayscale ? 'grayscale(100%)' : undefined }}
       {...props}
     >
       <EmojiIcon

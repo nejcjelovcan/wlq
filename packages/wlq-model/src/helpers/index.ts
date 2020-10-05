@@ -19,3 +19,5 @@ export const shuffleArray = <T>(arr: T[]) =>
 
 export const getIndefiniteArticle = (word: string) =>
   /^(a|e|i|o|u)/i.test(word) ? 'an' : 'a'
+
+export { default as uniqueBy } from './uniqueBy.helper'

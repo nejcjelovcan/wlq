@@ -1,3 +1,4 @@
+import { PosedQuestionPublic } from '@wlq/wlq-model/src/collection'
 import {
   Room,
   RoomParticipant,
@@ -19,7 +20,9 @@ export type RoomSetParticipantsProps = {
   pid: string
 }
 
-export type RoomUpdateRoomProps = Partial<Room>
+export type RoomPoseQuestionProps = {
+  question: PosedQuestionPublic
+}
 
 export type RoomUserJoinedProps = {
   participant: RoomParticipantPublic
@@ -41,6 +44,14 @@ export type RoomParticipantGetter = (
 
 export type GetRoomResponseData = {
   room: Room
+}
+
+export type RoomAnswerQuestionProps = {
+  answer: string
+}
+
+export type RoomUserAnsweredProps = {
+  pid: string
 }
 
 export { default as createRoom } from './createRoom'

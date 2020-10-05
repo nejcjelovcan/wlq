@@ -1,9 +1,10 @@
-import { ValidationFieldErrorData } from '@wlq/wlq-model/src/validation'
+import { PosedQuestionPublic } from '@wlq/wlq-model/src/collection'
 import {
   Room,
   RoomCreation,
   RoomParticipantPublic,
 } from '@wlq/wlq-model/src/room'
+import { ValidationFieldErrorData } from '@wlq/wlq-model/src/validation'
 import { RequestState } from '../../utils/api'
 
 export type RoomState = {
@@ -21,6 +22,10 @@ export type RoomState = {
   roomSession: {
     pid?: string
     participants: RoomParticipantPublic[]
+    currentQuestion?: PosedQuestionPublic
+    currentAnswer?: string
+    usersAnswered: string[]
+    itemAnswers: { [name: string]: string[] }
   }
 }
 
@@ -29,5 +34,5 @@ export const state: RoomState = {
   roomCreationRequest: {},
   roomCreation: {},
   socket: {},
-  roomSession: { participants: [] },
+  roomSession: { participants: [], usersAnswered: [], itemAnswers: {} },
 }
