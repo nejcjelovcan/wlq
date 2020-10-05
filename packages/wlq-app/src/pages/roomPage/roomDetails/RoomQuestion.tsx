@@ -1,4 +1,4 @@
-import { Button, Flex, Heading } from '@chakra-ui/core'
+import { Box, Button, Flex, Heading } from '@chakra-ui/core'
 import React from 'react'
 import UserBadge from '../../../components/UserBadge'
 import { useOvermind } from '../../../overmind'
@@ -32,9 +32,11 @@ const RoomQuestion = () => {
           >
             {option.name}
           </Button>
-          {answered && currentAnswer === option.name && details && (
-            <UserBadge userDetails={details} showAlias={false} />
-          )}
+          <Box>
+            {answered && currentAnswer === option.name && details && (
+              <UserBadge userDetails={details} showAlias={false} />
+            )}
+          </Box>
         </Flex>
       ))}
     </>

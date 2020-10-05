@@ -34,10 +34,12 @@ const answerQuestion = (
         const option = room.question?.options.find(opt => opt.name === answer)
         const alreadyAnswered = participant.pid in (room.answers ?? {})
         if (option && !alreadyAnswered) {
-          const roomUpdate: Partial<Room> = {
+          let roomUpdate: Partial<Room> = {
             answers: { ...room.answers, [participant.pid]: answer },
           }
           console.log('Updating room')
+          // const change = roomUpdateStateChange(room, participants, roomUpdate)
+          // roomUpdate = change[0]
           room = await updateRoom(room, roomUpdate)
 
           console.log('Broadcasting userAnswered')
@@ -53,6 +55,14 @@ const answerQuestion = (
               connectionId,
               message,
             }))
+
+          // broadcast any state change updates
+          // for (const message of change[1]) {
+          //   yield participants.map(({ connectionId }) => ({
+          //     connectionId,
+          //     message,
+          //   }))
+          // }
         } else {
           if (alreadyAnswered) {
             console.error('User already answered')

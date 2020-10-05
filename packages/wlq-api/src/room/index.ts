@@ -1,4 +1,7 @@
-import { PosedQuestionPublic } from '@wlq/wlq-model/src/collection'
+import {
+  CollectionItem,
+  PosedQuestionPublic,
+} from '@wlq/wlq-model/src/collection'
 import {
   Room,
   RoomParticipant,
@@ -52,6 +55,10 @@ export type RoomAnswerQuestionProps = {
 
 export type RoomUserAnsweredProps = {
   pid: string
+}
+
+export type RoomSetAnswerProps = {
+  answer: CollectionItem
 }
 
 export { default as createRoom } from './createRoom'

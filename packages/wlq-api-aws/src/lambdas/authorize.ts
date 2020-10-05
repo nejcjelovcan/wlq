@@ -1,4 +1,4 @@
-import verifyToken from '@wlq/wlq-api/src/user/verifyToken.helper'
+import verifyToken from '@wlq/wlq-api/src/user/helpers/verifyToken.helper'
 import { APIGatewayAuthorizerHandler } from 'aws-lambda'
 import generatePolicy from '../generatePolicy'
 

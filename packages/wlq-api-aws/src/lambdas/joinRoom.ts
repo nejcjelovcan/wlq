@@ -4,7 +4,7 @@ import {
   RoomJoinProps,
   wsEventConsumer,
 } from '@wlq/wlq-api/src'
-import verifyToken from '@wlq/wlq-api/src/user/verifyToken.helper'
+import verifyToken from '@wlq/wlq-api/src/user/helpers/verifyToken.helper'
 import { getRoomParticipantKeys } from '@wlq/wlq-model/src/room'
 import { APIGatewayProxyHandler } from 'aws-lambda'
 import AWS from 'aws-sdk'
