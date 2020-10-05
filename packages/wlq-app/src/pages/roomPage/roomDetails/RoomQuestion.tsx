@@ -20,15 +20,14 @@ const RoomQuestion = () => {
 
   return (
     <>
-      <Heading as="h2" size="lg" textAlign="center">
+      <Heading as="h2" size="lg">
         {currentQuestion?.questionText}
       </Heading>
       {currentQuestion?.options.map(option => (
-        <Flex direction="row" justifyContent="space-between">
+        <Flex key={option.name} direction="row" justifyContent="space-between">
           <Button
             flexGrow={answered ? 0 : 1}
             borderRadius="full"
-            key={option.name}
             onClick={() => answerQuestion(option.name)}
           >
             {option.name}

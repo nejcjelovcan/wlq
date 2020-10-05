@@ -17,7 +17,6 @@ const RoomPage = () => {
       room: {
         currentRoom,
         getRoomRequest: { error: getRoomError },
-        socket: { error: socketError },
       },
     },
     actions: {
@@ -46,7 +45,7 @@ const RoomPage = () => {
     }
   }, [roomLoaded, token, getRoom, rid, getRoomError])
 
-  const error = getRoomError || socketError
+  const error = getRoomError
   const loading = !ready || (hasRoomId && !error && !roomLoaded)
   const title = !hasRoomId ? 'New Game' : error ? 'Error' : 'Room name'
 

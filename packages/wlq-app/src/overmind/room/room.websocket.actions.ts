@@ -45,6 +45,7 @@ export const roomOnMessage: Action<MessageEvent> = (
         roomOnSetParticipants,
         roomOnUserJoined,
         roomOnUserLeft,
+        roomOnUserAnswered,
         roomOnPoseQuestion,
         roomOnError,
       },
@@ -67,6 +68,9 @@ export const roomOnMessage: Action<MessageEvent> = (
         break
       case 'poseQuestion':
         roomOnPoseQuestion(message.data)
+        break
+      case 'userAnswered':
+        roomOnUserAnswered(message.data)
         break
       case 'error':
         roomOnError(message.data.error)
