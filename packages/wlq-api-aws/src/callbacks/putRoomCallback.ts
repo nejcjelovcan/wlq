@@ -5,14 +5,14 @@ import { DatabaseProps } from '../DatabaseProps'
 const putRoomCallback = ({
   DB,
   TableName,
-}: DatabaseProps): PutRoomCallback => async room => {
+}: DatabaseProps): PutRoomCallback => async (room, update = false) => {
   await DB.put({
     TableName,
     Item: {
       ...room,
       ...getRoomKeys(room),
     },
-    ConditionExpression: 'attribute_not_exists(PK)',
+    ConditionExpression: update ? undefined : 'attribute_not_exists(PK)',
   }).promise()
   return { ...room, ws: `wss://${process.env.WEBSOCKET_ENDPOINT}` }
 }

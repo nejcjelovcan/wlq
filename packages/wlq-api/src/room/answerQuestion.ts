@@ -32,7 +32,7 @@ const answerQuestion = (
           answers: { ...room.answers, [participant.pid]: answer },
         }
         console.log('Updating room')
-        room = await putRoom({ ...room, ...roomUpdate })
+        room = await putRoom({ ...room, ...roomUpdate }, true)
 
         const broadcast: WebsocketBroadcast<UserAnsweredPayload> = {
           channel: room.roomId,

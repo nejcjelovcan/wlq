@@ -7,7 +7,7 @@ const createRoom = async (
   putRoom: PutRoomCallback,
 ): Promise<RestResponse<GetRoomResponseData>> => {
   let room = newRoom(validateRoomCreation(request.data))
-  room = await putRoom(room)
+  room = await putRoom(room, false)
   return { statusCode: 200, data: { room } }
 }
 

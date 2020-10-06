@@ -57,7 +57,7 @@ export type UserAnsweredPayload = WebsocketPayload<
 
 export type GetRoomCallback = (roomId: string) => Promise<Room | undefined>
 
-export type PutRoomCallback = (room: Room) => Promise<Room>
+export type PutRoomCallback = (room: Room, update: boolean) => Promise<Room>
 
 export type GetParticipantCallback = (
   connectionId: string,

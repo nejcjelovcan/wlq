@@ -29,6 +29,7 @@ export const getParticipant = (
   return { ...((participant?.attrs as unknown) as RoomParticipant) }
 }
 
+// TODO raise 400 if room already exists and update=false
 export const putRoom = (
   schema: ServerSchema,
 ): PutRoomCallback => async room => ({

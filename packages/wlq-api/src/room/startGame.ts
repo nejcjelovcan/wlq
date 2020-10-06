@@ -33,7 +33,7 @@ const startGame = (
         question,
         answers: {},
       }
-      room = await putRoom({ ...room, ...roomUpdate })
+      room = await putRoom({ ...room, ...roomUpdate }, true)
 
       console.log('Broadcasting roomUpdate message')
       const broadcast: WebsocketBroadcast<PoseQuestionPayload> = {
