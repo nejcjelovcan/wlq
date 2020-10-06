@@ -1,67 +1,76 @@
-import {
-  CollectionItem,
-  PosedQuestionPublic,
-} from '@wlq/wlq-model/src/collection'
+import { PosedQuestionPublic } from '@wlq/wlq-model/src/collection'
 import {
   Room,
   RoomParticipant,
   RoomParticipantPublic,
 } from '@wlq/wlq-model/src/room'
+import { WebsocketPayload } from '../websocket'
 
-export type RoomJoinProps = {
-  token: string
-  roomId: string
-  userDetails: { [key: string]: any }
-}
-
-export type RoomLeaveProps = {
-  connectionId: string
-}
-
-export type RoomSetParticipantsProps = {
-  participants: RoomParticipantPublic[]
-  pid: string
-}
-
-export type RoomPoseQuestionProps = {
-  question: PosedQuestionPublic
-}
-
-export type RoomUserJoinedProps = {
-  participant: RoomParticipantPublic
-}
-
-export type RoomUserLeftProps = {
-  participant: RoomParticipantPublic
-}
-
-export type RoomGetter = (roomId: string) => Promise<Room | undefined>
-
-export type RoomAndParticipantsGetter = (
-  roomId: string,
-) => Promise<[Room | undefined, RoomParticipant[]]>
-
-export type RoomParticipantGetter = (
-  connectionId: string,
-) => Promise<RoomParticipant | undefined>
+// Rest interfaces
 
 export type GetRoomResponseData = {
   room: Room
 }
 
-export type RoomAnswerQuestionProps = {
-  answer: string
-}
+// Websocket interfaces
 
-export type RoomUserAnsweredProps = {
-  pid: string
-}
+export type JoinRoomPayload = WebsocketPayload<
+  'joinRoom',
+  { token: string; roomId: string; userDetails: { [key: string]: any } }
+>
 
-export type RoomSetAnswerProps = {
-  answer: CollectionItem
-}
+export type UserJoinedPayload = WebsocketPayload<
+  'userJoined',
+  { participant: RoomParticipantPublic }
+>
 
-export { default as createRoom } from './createRoom'
-export { default as getRoom } from './getRoom'
-export { default as joinRoom } from './joinRoom'
-export { default as leaveRoom } from './leaveRoom'
+export type LeaveRoomPayload = WebsocketPayload<'leaveRoom'>
+
+export type UserLeftPayload = WebsocketPayload<
+  'userLeft',
+  { participant: RoomParticipantPublic }
+>
+
+export type SetParticipantsPayload = WebsocketPayload<
+  'setParticipants',
+  { participants: RoomParticipantPublic[]; pid: string }
+>
+
+export type StartGamePayload = WebsocketPayload<'startGame'>
+
+export type PoseQuestionPayload = WebsocketPayload<
+  'poseQuestion',
+  { question: PosedQuestionPublic }
+>
+
+export type AnswerQuestionPayload = WebsocketPayload<
+  'answerQuestion',
+  { answer: string }
+>
+
+export type UserAnsweredPayload = WebsocketPayload<
+  'userAnswered',
+  { pid: string }
+>
+
+// Callbacks
+
+export type GetRoomCallback = (roomId: string) => Promise<Room | undefined>
+
+export type PutRoomCallback = (room: Room, update: boolean) => Promise<Room>
+
+export type GetParticipantCallback = (
+  connectionId: string,
+) => Promise<RoomParticipant | undefined>
+
+export type GetRoomParticipantsCallback = (
+  roomId: string,
+) => Promise<RoomParticipant[]>
+
+export type PutParticipantCallback = (
+  participant: RoomParticipant,
+) => Promise<RoomParticipant>
+
+export type DeleteParticipantCallback = (
+  participant: RoomParticipant,
+) => Promise<void>

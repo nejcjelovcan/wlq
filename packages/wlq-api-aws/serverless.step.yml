@@ -1,6 +1,7 @@
 service: wlq-api-aws
 
-# Expected env variables: see .env
+# Expected env variables:
+# SITE_DOMAIN (sub)domain of the root service (static site - wql-app-aws)
 
 frameworkVersion: "2"
 
@@ -24,11 +25,12 @@ provider:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     ROOM_TABLE_NAME: ${self:custom.roomTableName}
     ALLOW_ORIGIN: ${self:custom.httpOrigin}
-    BROADCAST_TOPIC: ${self:custom.broadcastTopic}
+    BROADCAST_TOPIC: ${self:custom.broadcastTopicArn}
     WEBSOCKET_ENDPOINT:
       Fn::Join:
         - ""
-        - - Ref: WebsocketsApi
+        - - wss://
+          - Ref: WebsocketsApi
           - .execute-api.
           - Ref: AWS::Region
           - .amazonaws.com/
@@ -42,7 +44,6 @@ provider:
         - dynamodb:PutItem
         - dynamodb:DeleteItem
         - dynamodb:BatchGetItem
-
         # - dynamodb:Scan
         # - dynamodb:UpdateItem
 
@@ -50,30 +51,16 @@ provider:
         - { "Fn::GetAtt": ["RoomTable", "Arn"] }
         - Fn::Join: ["/", [{ "Fn::GetAtt": ["RoomTable", "Arn"] }, "index/*"]]
 
-    - Effect: Allow
-      Action:
-        - SNS:Publish
-      Resource:
-        - Fn::Join:
-            [
-              "",
-              [
-                "arn:aws:sns:${self:provider.region}:",
-                { "Ref": "AWS::AccountId" },
-                ":${self:custom.broadcastTopic}",
-              ],
-            ]
-
 plugins:
   - serverless-webpack
+  - serverless-step-functions
 
 custom:
   hostedZoneId: ${env:HOSTED_ZONE_ID}
   siteName: ${env:API_DOMAIN}
   httpOrigin: https://${env:SITE_DOMAIN}
   acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
-  roomTableName: ${self:service}-RoomTable-${self:provider.stage}
-  broadcastTopic: "${self:service}-broadcast-${self:provider.stage}"
+  roomTableName: ${self:service}-RoomTable-${self:provider.stage, 'dev'}
   webpack:
     webpackConfig: "./webpack.config.js"
     includeModules: true
@@ -125,6 +112,16 @@ functions:
       - websocket:
           route: $default
 
+  # roomSocketUpdate:
+  #   handler: src/lambdas/roomSocketUpdate.handler
+  #   events:
+  #     - websocket:
+  #         route: joinRoom
+  #     - websocket:
+  #         route: startGame
+  #     - websocket:
+  #         route: answerQuestion
+
   joinRoom:
     handler: src/lambdas/joinRoom.handler
     events:
@@ -143,29 +140,107 @@ functions:
       - websocket:
           route: answerQuestion
 
-  broadcastTopic:
-    maximumRetryAttempts: 0
-    handler: src/lambdas/broadcastTopic.handler
-    events:
-      - sns:
-          arn:
-            Ref: BroadcastTopic
-          topicName: ${self:custom.broadcastTopic}
-          filterPolicy:
-            action:
-              - userJoined
-              - userLeft
-              - userAnswered
-              - poseQuestion
-              - error
-              - setParticipants
+  # roomTopicUpdate:
+  #   handler: src/lambdas/roomTopicUpdate.handler
+  #   events:
+  #     - sns:
+  #         arn:
+  #           Ref: RoomTopic
+  # broadcastTopicUpdate:
+  #   handler: src/lambdas/broadcastTopicUpdate.handler
+  #   events:
+  #     - sns:
+  #         arn:
+  #           Ref: BroadcastTopic
+  # roomIdleFailure:
+  #   handler: src/roomIdle/roomIdleFailure.handler
+  # roomIdleUserJoined:
+  #   handler: src/roomIdle/roomIdleUserJoined.handler
+
+# stepFunctions:
+#   stateMachines:
+#     RoomIdle:
+#       definition:
+#         Comment: Room idles by waiting for tasktoken
+#         StartAt: RoomIdle
+#         States:
+#           RoomIdle:
+#             Type: Task
+#             Resource: "arn:aws:states:::sns:publish.waitForTaskToken"
+#             Parameters:
+#               TopicArn:
+#                 Ref: RoomTopic
+#               Message:
+#                 action: roomJoinToken
+#                 data.roomId.$: $.data.roomId
+#                 data.token.$: $$.Task.Token
+#                 TaskToken.$: $$.Task.Token
+#               TimeoutSeconds: $.data.timeoutSeconds
+#             Next: UserJoined
+#             Catch:
+#               - ErrorEquals:
+#                   - States.ALL
+#                 Next: Failure
+#           UserJoined:
+#             Type: Task
+#             Resource:
+#               Fn::GetAtt: [roomIdleUserJoined, Arn]
+#             Next: RoomIdle
+#           Failure:
+#             Type: Task
+#             Resource:
+#               Fn::GetAtt: [roomIdleFailure, Arn]
+#             Next: End
+#           End:
+#             Type: Succeed
+# RoomIdle:
+#   definition:
+#     Comment: >-
+#       Room idling state machine in which the room will give SNS queue a token for
+#       users to join or call roomIdleFailure after a given timeout.
+#     StartAt: RoomIdle
+#     States:
+#       RoomIdle:
+#         Type: Task
+#         Resource: "arn:aws:states:::sns:publish.waitForTaskToken"
+#         Parameters:
+#           TopicArn:
+#             Ref: RoomTopic
+#           Message:
+#             action: roomJoinToken
+#             data.roomId.$: $.data.roomId
+#             data.token.$: $$.Task.Token
+#             TaskToken.$: $$.Task.Token
+#           TimeoutSeconds: $.data.timeoutSeconds
+#         Next: UserJoined
+#         Catch:
+#           - ErrorEquals:
+#               - States.ALL
+#             Next: Failure
+#       UserJoined:
+#         Type: Task
+#         Resource:
+#           Fn::GetAtt: [roomIdleUserJoined, Arn]
+#         Next: RoomIdle
+#       Failure:
+#         Type: Task
+#         Resource:
+#           Fn::GetAtt: [roomIdleFailure, Arn]
+#         Next: End
+#       End:
+#         Type: Succeed
 
 resources:
   Resources:
-    BroadcastTopic:
-      Type: AWS::SNS::Topic
-      Properties:
-        TopicName: ${self:custom.broadcastTopic}
+    # RoomTopic:
+    #   Type: AWS::SNS::Topic
+    #   Properties:
+    #     TopicName: room
+
+    # BroadcastTopic:
+    #   Type: AWS::SNS::Topic
+    #   Properties:
+    #     TopicName: broadcast
 
     WebsocketsApi:
       Type: AWS::ApiGatewayV2::Api
@@ -188,6 +263,11 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.roomTableName}
+        # Instead of streams, SQS seems a better option
+        # 1. streams do a lot of lambda calling that we don't need (and can't filter out in StreamSpecification)
+        # 2. SQS supports delayed queue, which we will need for room timing mechanics
+        # StreamSpecification:
+        #   StreamViewType: NEW_AND_OLD_IMAGES
         AttributeDefinitions:
           - AttributeName: PK
             AttributeType: S

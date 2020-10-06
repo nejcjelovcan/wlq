@@ -1,10 +1,11 @@
+import { GetRoomCallback } from '@wlq/wlq-api/src/room'
 import { getRoomKeys, Room } from '@wlq/wlq-model/src/room'
+import { DatabaseProps } from '../DatabaseProps'
 
-const getRoomByRoomId = async (
-  DB: AWS.DynamoDB.DocumentClient,
-  TableName: string,
-  roomId: string,
-): Promise<Room | undefined> => {
+const getRoomByRoomIdCallback = ({
+  DB,
+  TableName,
+}: DatabaseProps): GetRoomCallback => async (roomId: string) => {
   // TODO room's listed property should be a sparse index, not a part of GSI
   // (then we also won't need batchGet here)
   const result = await DB.batchGet({
@@ -23,8 +24,11 @@ const getRoomByRoomId = async (
     Array.isArray(result.Responses[TableName]) &&
     result.Responses[TableName].length === 1
   ) {
-    return result.Responses[TableName][0] as Room
+    return {
+      ...(result.Responses[TableName][0] as Room),
+      ws: `wss://${process.env.WEBSOCKET_ENDPOINT}`,
+    }
   }
   return undefined
 }
-export default getRoomByRoomId
+export default getRoomByRoomIdCallback

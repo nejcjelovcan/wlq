@@ -1,5 +1,6 @@
 import getToken from '@wlq/wlq-api/src/user/getToken'
 import { APIGatewayProxyHandler } from 'aws-lambda'
-import { respond } from '../respond'
+import awsRestRespond from '../wrappers/awsRestRespond'
 
-export const handler: APIGatewayProxyHandler = async () => respond(getToken)
+export const handler: APIGatewayProxyHandler = async () =>
+  awsRestRespond(getToken)
