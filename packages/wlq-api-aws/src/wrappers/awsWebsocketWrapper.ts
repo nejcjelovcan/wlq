@@ -6,12 +6,30 @@ import {
   WebsocketEventHandler,
   WebsocketPayload,
   WebsocketErrorPayload,
+  WebsocketBroadcast,
 } from '@wlq/wlq-api/src/websocket'
 import { ValidationError } from '@wlq/wlq-model/src/validation'
 import { APIGatewayProxyResult } from 'aws-lambda'
 import AWS from 'aws-sdk'
-import getWebsocketApiGateway from '../getWebsocketApi'
 
+const publish = async (
+  event: WebsocketEvent | WebsocketBroadcast,
+  topic: string,
+) =>
+  getSns()
+    .publish({
+      Subject: event.action,
+      Message: JSON.stringify(event),
+      TopicArn: topic,
+      MessageAttributes: {
+        action: { DataType: 'String', StringValue: event.action },
+      },
+    })
+    .promise()
+
+// TODO It would be great if we could specify when calling whether
+// the payloads are sent to broadcast topic on SNS or immediately
+// broadcasted (regardless of .channel or .connectionId)
 const awsWebsocketWrapper = async <P extends WebsocketPayload>(
   incomingEvent: WebsocketEvent<P>,
   websocketEventData: Pick<
@@ -24,45 +42,12 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
     const events = await eventHandler(incomingEvent)
     console.log(`Wrapper returned ${events.length} events`)
     for (const event of events) {
-      if ('connectionId' in event && event.connectionId) {
-        try {
-          console.log(
-            'Posting event to websocket',
-            websocketEventData.websocketEndpoint,
-            event.connectionId,
-            event.action,
-          )
-          await getWebsocketApiGateway(websocketEventData.websocketEndpoint)
-            .postToConnection({
-              ConnectionId: event.connectionId,
-              Data: JSON.stringify({ action: event.action, data: event.data }),
-            })
-            .promise()
-        } catch (e) {
-          console.error('awsWebsocketHandler postToConnection error')
-          console.log(e)
-        }
-      } else if ('channel' in event && event.channel) {
-        try {
-          console.log('Publishing event to SNS', event.channel, event.action)
-          await getSns()
-            .publish({
-              Subject: event.action,
-              Message: JSON.stringify(event),
-              TopicArn: websocketEventData.BroadcastTopicArn,
-              MessageAttributes: {
-                action: { DataType: 'String', StringValue: event.action },
-              },
-            })
-            .promise()
-        } catch (e) {
-          console.error('awsWebsocketHandler publish to SNS error')
-          console.log(e)
-          console.log('TopicArn', websocketEventData.BroadcastTopicArn)
-        }
-      } else {
-        console.error('awsWebsocketHandler invalid websocket event')
-        console.log(event)
+      console.log('Posting to SNS', event)
+      try {
+        await publish(event, websocketEventData.BroadcastTopicArn)
+      } catch (e) {
+        console.error('awsWebsocketHandler SNS publish error')
+        console.log(e)
       }
     }
     return { statusCode: 200, headers: COMMON_HEADERS, body: '{}' }
@@ -78,12 +63,10 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
         data: { error: e.message },
       }
       try {
-        await getWebsocketApiGateway(websocketEventData.websocketEndpoint)
-          .postToConnection({
-            ConnectionId: incomingEvent.connectionId,
-            Data: websocketError,
-          })
-          .promise()
+        await publish(
+          { connectionId: incomingEvent.connectionId, ...websocketError },
+          websocketEventData.BroadcastTopicArn,
+        )
       } catch (e) {}
     }
 

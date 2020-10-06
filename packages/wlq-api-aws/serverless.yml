@@ -157,6 +157,8 @@ functions:
               - userLeft
               - userAnswered
               - poseQuestion
+              - error
+              - setParticipants
 
 resources:
   Resources:
