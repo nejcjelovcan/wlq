@@ -144,7 +144,7 @@ functions:
           route: answerQuestion
 
   broadcastTopic:
-    handler: src/lambdas/broadcastTopic.dispatch
+    handler: src/lambdas/broadcastTopic.handler
     events:
       - sns:
           arn:
