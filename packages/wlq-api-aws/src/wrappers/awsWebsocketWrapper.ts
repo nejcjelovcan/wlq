@@ -15,6 +15,7 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
 ): Promise<APIGatewayProxyResult> => {
   try {
     const events = await eventHandler(incomingEvent)
+    console.log(`Wrapper returned ${events.length} events`)
     for (const event of events) {
       if ('connectionId' in event && event.connectionId) {
         try {
