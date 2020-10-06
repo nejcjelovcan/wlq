@@ -161,6 +161,9 @@ functions:
               - error
               - setParticipants
 
+  issueQuestionToken:
+    handler: src/lambdas/issueQuestionToken.handler
+
   revealAnswer:
     handler: src/lambdas/revealAnswer.handler
 

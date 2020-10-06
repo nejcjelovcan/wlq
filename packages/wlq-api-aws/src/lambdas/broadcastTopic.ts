@@ -1,9 +1,6 @@
-import getRoomParticipantsCallback from '@wlq/wlq-api-aws/src/callbacks/getRoomParticipantsCallback'
-import getWebsocketApiGateway from '@wlq/wlq-api-aws/src/getWebsocketApi'
-import {
-  WebsocketBroadcast,
-  WebsocketEvent,
-} from '@wlq/wlq-api/lib/esm/websocket'
+import getRoomParticipantsCallback from '../callbacks/getRoomParticipantsCallback'
+import getWebsocketApiGateway from '../getWebsocketApi'
+import { WebsocketBroadcast, WebsocketEvent } from '@wlq/wlq-api/src/websocket'
 import { SNSHandler } from 'aws-lambda'
 import getDatabaseProps from '../getDatabaseProps'
 
