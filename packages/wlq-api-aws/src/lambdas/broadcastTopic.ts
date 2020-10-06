@@ -55,7 +55,7 @@ export const handler: SNSHandler = async event => {
             }
           })
           if (promises.length > 0) {
-            Promise.all(promises)
+            await Promise.all(promises)
           } else {
             console.error('broadcastTopic No participants')
             console.log(message)
