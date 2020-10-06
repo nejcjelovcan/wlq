@@ -191,7 +191,7 @@ stepFunctions:
               Payload:
                 roomId: $.channel
                 questionToken: $$.Task.Token
-            TimeoutSeconds: $.data.questionTime
+            TimeoutSecondsPath: $.data.questionTime
             Next: AllUsersAnswered
             ResultPath: $.output
             Catch:
