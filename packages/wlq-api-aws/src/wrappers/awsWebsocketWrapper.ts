@@ -35,6 +35,8 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
         }
       } else if ('channel' in event && event.channel) {
         try {
+          console.log('Publishing event to SNS')
+          console.log(event)
           await getSns()
             .publish({
               Subject: event.action,
