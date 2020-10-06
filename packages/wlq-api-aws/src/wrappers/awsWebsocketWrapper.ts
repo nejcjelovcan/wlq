@@ -49,6 +49,9 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
           console.log(e)
           console.log('TopicArn', websocketEventData.BroadcastTopicArn)
         }
+      } else {
+        console.error('awsWebsocketHandler invalid websocket event')
+        console.log(event)
       }
     }
     return { statusCode: 200, headers: COMMON_HEADERS, body: '{}' }
