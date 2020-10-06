@@ -23,6 +23,11 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
     for (const event of events) {
       if ('connectionId' in event && event.connectionId) {
         try {
+          console.log(
+            'Posting event to websocket',
+            event.connectionId,
+            event.action,
+          )
           await getWebsocketApiGateway(websocketEventData.websocketEndpoint)
             .postToConnection({
               ConnectionId: event.connectionId,
@@ -35,13 +40,15 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
         }
       } else if ('channel' in event && event.channel) {
         try {
-          console.log('Publishing event to SNS')
-          console.log(event)
+          console.log('Publishing event to SNS', event.channel, event.action)
           await getSns()
             .publish({
               Subject: event.action,
               Message: JSON.stringify(event),
               TopicArn: websocketEventData.BroadcastTopicArn,
+              MessageAttributes: {
+                action: { DataType: 'String', StringValue: event.action },
+              },
             })
             .promise()
         } catch (e) {
