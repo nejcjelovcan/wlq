@@ -18,10 +18,7 @@ export const handler: APIGatewayProxyHandler = async event => {
     data: { token, roomId, userDetails },
   } = extractFromWebsocketEvent(event)
 
-  console.log('JOIN ROOM HANDLER', connectionId, token, roomId, userDetails)
-
   if (connectionId && token && roomId && userDetails) {
-    console.log('CALLING AWS WEBSOCKET WRAPPER')
     return await awsWebsocketWrapper(
       {
         connectionId,
@@ -36,6 +33,9 @@ export const handler: APIGatewayProxyHandler = async event => {
         getRoomParticipantsCallback(DbProps),
       ),
     )
+  } else {
+    console.error('joinRoom Bad Request')
+    console.log(event.body)
   }
   return { statusCode: 400, headers: COMMON_HEADERS, body: '{}' }
 }

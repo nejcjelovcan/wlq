@@ -6,7 +6,8 @@ const extractFromWebsocketEvent = ({
 }: APIGatewayProxyEvent) => {
   let data: { [key: string]: any } = {}
   if (body) {
-    data = JSON.parse(body)
+    // body is WebsocketPayload (but the action is already in routeKey)
+    data = JSON.parse(body)?.data ?? {}
   }
   return {
     connectionId,
