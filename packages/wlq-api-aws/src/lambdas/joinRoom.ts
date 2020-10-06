@@ -19,7 +19,7 @@ export const handler: APIGatewayProxyHandler = async event => {
   } = extractFromWebsocketEvent(event)
 
   if (connectionId && token && roomId && userDetails) {
-    return awsWebsocketWrapper(
+    return await awsWebsocketWrapper(
       {
         connectionId,
         action: 'joinRoom',
