@@ -6,6 +6,8 @@ export interface WebsocketPayload<
   data: D
 }
 
+export type WebsocketErrorPayload = WebsocketPayload<'error', { error: string }>
+
 export type WebsocketEvent<
   P extends WebsocketPayload = WebsocketPayload
 > = P & {

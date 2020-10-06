@@ -35,6 +35,7 @@ const StartGameModal = ({
             Do you really want to start the game all by yourself?
           </ModalBody>
           <ModalFooter>
+            <Button onClick={onClose}>Cancel</Button>
             <Button
               ref={focusRef}
               onClick={() => {
@@ -45,7 +46,6 @@ const StartGameModal = ({
             >
               Start game!
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </ModalOverlay>

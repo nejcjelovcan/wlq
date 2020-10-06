@@ -1,10 +1,13 @@
 import { AwsWebsocketEventData } from '@wlq/wlq-api-aws/src/extractFromWebsocketEvent'
 import { COMMON_HEADERS } from '@wlq/wlq-api-aws/src/wrappers/awsRestRespond'
+import { RestResponseError } from '@wlq/wlq-api/lib/esm'
 import {
   WebsocketEvent,
   WebsocketEventHandler,
   WebsocketPayload,
+  WebsocketErrorPayload,
 } from '@wlq/wlq-api/src/websocket'
+import { ValidationError } from '@wlq/wlq-model/lib/esm'
 import { APIGatewayProxyResult } from 'aws-lambda'
 import AWS from 'aws-sdk'
 import getWebsocketApiGateway from '../getWebsocketApi'
@@ -66,6 +69,24 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
   } catch (e) {
     console.error('awsWebsocketHandler error')
     console.log(e)
+
+    // In some cases when eventHandlers raise descriptive exceptions,
+    // we want to send those errors to the user
+    if (e instanceof RestResponseError || e instanceof ValidationError) {
+      const websocketError: WebsocketErrorPayload = {
+        action: 'error',
+        data: { error: e.message },
+      }
+      try {
+        await getWebsocketApiGateway(websocketEventData.websocketEndpoint)
+          .postToConnection({
+            ConnectionId: incomingEvent.connectionId,
+            Data: websocketError,
+          })
+          .promise()
+      } catch (e) {}
+    }
+
     return { statusCode: 500, headers: COMMON_HEADERS, body: '{}' }
   }
 }
