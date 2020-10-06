@@ -25,6 +25,7 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
         try {
           console.log(
             'Posting event to websocket',
+            websocketEventData.websocketEndpoint,
             event.connectionId,
             event.action,
           )

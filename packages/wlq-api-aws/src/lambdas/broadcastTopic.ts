@@ -28,7 +28,12 @@ export const handler: SNSHandler = async event => {
         case 'userJoined':
         case 'userLeft':
         case 'userAnswered':
-          console.log('Broadcasting message to websockets', channel, message)
+          console.log(
+            'Broadcasting message to websockets',
+            process.env.WEBSOCKET_ENDPOINT,
+            channel,
+            message,
+          )
           const participants = await getParticipants(channel)
           const promises = participants.map(ConnectionId =>
             websocketApi
