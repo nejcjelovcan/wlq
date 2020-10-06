@@ -2,7 +2,7 @@ import startGame from '@wlq/wlq-api/src/room/startGame'
 import { APIGatewayProxyHandler } from 'aws-lambda'
 import getParticipantCallback from '../callbacks/getParticipantCallback'
 import getRoomByRoomIdCallback from '../callbacks/getRoomByRoomIdCallback'
-import putRoomCallback from '../callbacks/putRoomCallback'
+import setRoomQuestionCallback from '../callbacks/setRoomQuestionCallback'
 import extractFromWebsocketEvent from '../extractFromWebsocketEvent'
 import getDatabaseProps from '../getDatabaseProps'
 import { COMMON_HEADERS } from '../wrappers/awsRestRespond'
@@ -25,7 +25,7 @@ export const handler: APIGatewayProxyHandler = async (event, context) => {
       startGame(
         getParticipantCallback(DbProps),
         getRoomByRoomIdCallback(DbProps),
-        putRoomCallback(DbProps),
+        setRoomQuestionCallback(DbProps),
       ),
     )
   }

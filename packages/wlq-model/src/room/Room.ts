@@ -11,6 +11,7 @@ export interface Room {
   question?: PosedQuestion
   answers?: { [pid: string]: string }
   ws?: string
+  _questionToken?: string
 }
 
 export type RoomCreation = Pick<Room, 'name' | 'listed'>

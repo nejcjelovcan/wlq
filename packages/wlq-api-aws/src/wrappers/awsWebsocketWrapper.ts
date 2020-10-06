@@ -12,7 +12,7 @@ import { ValidationError } from '@wlq/wlq-model/src/validation'
 import { APIGatewayProxyResult } from 'aws-lambda'
 import AWS from 'aws-sdk'
 
-const publish = async (
+export const publish = async (
   event: WebsocketEvent | WebsocketBroadcast,
   topic: string,
 ) =>

@@ -66,6 +66,7 @@ provider:
 
 plugins:
   - serverless-webpack
+  - serverless-step-functions
 
 custom:
   hostedZoneId: ${env:HOSTED_ZONE_ID}
@@ -159,6 +160,58 @@ functions:
               - poseQuestion
               - error
               - setParticipants
+
+  revealAnswer:
+    handler: src/lambdas/revealAnswer.handler
+
+stepFunctions:
+  stateMachines:
+    roomQuestionTimeout:
+      events:
+        - sns:
+          arn:
+            Ref: BroadcastTopic
+          topicName: ${self:custom.broadcastTopic}
+          filterPolicy:
+            action:
+              - poseQuestion
+      definition:
+        Comment: Room issues a questionToken to be sent after all users answer, otherwise times out after certain time
+        StartAt: IssueQuestionToken
+        States:
+          IssueQuestionToken:
+            Type: Task
+            Resource: "arn:aws:states:::lambda:invoke.waitForTaskToken"
+            Parameters:
+              FunctionName:
+                Fn::GetAtt: [issueQuestionToken, Arn]
+                Payload:
+                  roomId: $.channel
+                  questionToken: $$.Task.Token
+              TimeoutSeconds: $.data.questionTime
+            Next: AllUsersAnswered
+            ResultPath: $.output
+            Catch:
+              - ErrorEquals:
+                  - States.ALL
+                Next: QuestionTimedOut
+                ResultPath: $.error
+          AllUsersAnswered:
+            Type: Pass
+            Next: RevealAnswer
+          QuestionTimedOut:
+            Type: Pass
+            Next: RevealAnswer
+          RevealAnswer:
+            Type: Task
+            Resource: "arn:aws:states:::lambda:invoke"
+            Parameters:
+              FunctionName:
+                Fn::GetAtt: [revealAnswer, Arn]
+                Payload:
+                  roomId: $.channel
+          End:
+            Type: Succeed
 
 resources:
   Resources:

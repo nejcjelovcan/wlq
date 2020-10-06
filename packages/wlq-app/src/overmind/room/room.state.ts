@@ -1,4 +1,7 @@
-import { PosedQuestionPublic } from '@wlq/wlq-model/src/collection'
+import {
+  CollectionItem,
+  PosedQuestionPublic,
+} from '@wlq/wlq-model/src/collection'
 import {
   Room,
   RoomCreation,
@@ -23,7 +26,8 @@ export type RoomState = {
     pid?: string
     participants: RoomParticipantPublic[]
     currentQuestion?: PosedQuestionPublic
-    currentAnswer?: string
+    currentAnswer?: CollectionItem
+    participantAnswer?: string
     usersAnswered: string[]
     itemAnswers: { [name: string]: string[] }
   }

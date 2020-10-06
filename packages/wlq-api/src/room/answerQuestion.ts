@@ -1,9 +1,11 @@
-import { Room } from '@wlq/wlq-model/src/room'
+import AWS from 'aws-sdk'
+
 import {
+  AddRoomAnswerCallback,
   AnswerQuestionPayload,
   GetParticipantCallback,
   GetRoomCallback,
-  PutRoomCallback,
+  GetRoomParticipantsCallback,
   UserAnsweredPayload,
 } from '.'
 import { WebsocketBroadcast, WebsocketEventHandler } from '../websocket'
@@ -11,7 +13,8 @@ import { WebsocketBroadcast, WebsocketEventHandler } from '../websocket'
 const answerQuestion = (
   getParticipant: GetParticipantCallback,
   getRoomByRoomId: GetRoomCallback,
-  putRoom: PutRoomCallback,
+  addRoomAnswer: AddRoomAnswerCallback,
+  getRoomParticipants: GetRoomParticipantsCallback,
 ): WebsocketEventHandler<AnswerQuestionPayload> => async ({
   connectionId,
   data: { answer },
@@ -28,11 +31,27 @@ const answerQuestion = (
       const alreadyAnswered = participant.pid in (room.answers ?? {})
 
       if (option && !alreadyAnswered) {
-        let roomUpdate: Partial<Room> = {
-          answers: { ...room.answers, [participant.pid]: answer },
-        }
         console.log('Updating room')
-        room = await putRoom({ ...room, ...roomUpdate }, true)
+        const { answers } = await addRoomAnswer(
+          room.roomId,
+          participant.pid,
+          answer,
+        )
+
+        console.log('Check if everybody answered')
+        const participants = await getRoomParticipants(room.roomId)
+        if (
+          Object.keys(answers ?? {}).length === participants.length &&
+          room._questionToken
+        ) {
+          console.log('Send Task success to step function')
+          await new AWS.StepFunctions()
+            .sendTaskSuccess({
+              taskToken: room._questionToken,
+              output: room.roomId,
+            })
+            .promise()
+        }
 
         const broadcast: WebsocketBroadcast<UserAnsweredPayload> = {
           channel: room.roomId,

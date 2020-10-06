@@ -101,8 +101,8 @@ export const answerQuestion: Action<string> = (
   },
   answer,
 ) => {
-  if (currentRoom?.state === 'Question' && !roomSession.currentAnswer) {
-    roomSession.currentAnswer = answer
+  if (currentRoom?.state === 'Question' && !roomSession.participantAnswer) {
+    roomSession.participantAnswer = answer
     roomSession.usersAnswered.push(roomSession.pid!)
     websocket.sendPayload<AnswerQuestionPayload>({
       action: 'answerQuestion',

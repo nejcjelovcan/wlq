@@ -9,14 +9,14 @@ const RoomQuestion = () => {
       user: { details },
       room: {
         currentRoom,
-        roomSession: { currentQuestion, currentAnswer },
+        roomSession: { currentQuestion, participantAnswer },
       },
     },
     actions: {
       room: { answerQuestion },
     },
   } = useOvermind()
-  const answered = currentRoom?.state === 'Answer' || !!currentAnswer
+  const answered = currentRoom?.state === 'Answer' || !!participantAnswer
 
   return (
     <>
@@ -33,7 +33,7 @@ const RoomQuestion = () => {
             {option.name}
           </Button>
           <Box>
-            {answered && currentAnswer === option.name && details && (
+            {answered && participantAnswer === option.name && details && (
               <UserBadge userDetails={details} showAlias={false} />
             )}
           </Box>

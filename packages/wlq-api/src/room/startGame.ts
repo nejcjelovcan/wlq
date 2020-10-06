@@ -3,12 +3,11 @@ import {
   getAllCollections,
   poseQuestion,
 } from '@wlq/wlq-model/src/data/geography'
-import { Room } from '@wlq/wlq-model/src/room'
 import {
   GetParticipantCallback,
   GetRoomCallback,
   PoseQuestionPayload,
-  PutRoomCallback,
+  SetRoomQuestionCallback,
   StartGamePayload,
 } from '.'
 import { WebsocketBroadcast, WebsocketEventHandler } from '../websocket'
@@ -16,7 +15,7 @@ import { WebsocketBroadcast, WebsocketEventHandler } from '../websocket'
 const startGame = (
   getParticipant: GetParticipantCallback,
   getRoomByRoomId: GetRoomCallback,
-  putRoom: PutRoomCallback,
+  setRoomQuestion: SetRoomQuestionCallback,
 ): WebsocketEventHandler<StartGamePayload> => async ({ connectionId }) => {
   console.log('Getting participant')
   const participant = await getParticipant(connectionId)
@@ -28,18 +27,13 @@ const startGame = (
     if (room && room.state === 'Idle') {
       console.log('Updating room')
       const question = poseQuestion(getAllCollections())
-      const roomUpdate: Partial<Room> = {
-        state: 'Question',
-        question,
-        answers: {},
-      }
-      room = await putRoom({ ...room, ...roomUpdate }, true)
+      await setRoomQuestion(room.roomId, question)
 
       console.log('Broadcasting roomUpdate message')
       const broadcast: WebsocketBroadcast<PoseQuestionPayload> = {
         channel: room.roomId,
         action: 'poseQuestion',
-        data: { question: getPosedQuestionPublic(question) },
+        data: { question: getPosedQuestionPublic(question), questionTime: 15 },
       }
       return [broadcast]
     }
