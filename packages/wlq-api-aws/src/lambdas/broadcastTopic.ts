@@ -39,7 +39,6 @@ export const handler: SNSHandler = async event => {
         connectionIds,
         message,
       )
-
       const promises = connectionIds.map(async ConnectionId => {
         try {
           console.log('Broadcasting to', ConnectionId)
