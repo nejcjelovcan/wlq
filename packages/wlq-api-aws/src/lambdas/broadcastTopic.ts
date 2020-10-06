@@ -9,15 +9,11 @@ import getDatabaseProps from '../getDatabaseProps'
 
 const DbProps = getDatabaseProps()
 
-const getRoomConnectionIds = ((cache: { [roomId: string]: string[] }) => async (
-  roomId: string,
-): Promise<string[]> => {
-  if (!cache[roomId])
-    cache[roomId] = (await getRoomParticipantsCallback(DbProps)(roomId)).map(
-      p => p.connectionId,
-    )
-  return cache[roomId]
-})({})
+const getRoomConnectionIds = async (roomId: string): Promise<string[]> => {
+  return (await getRoomParticipantsCallback(DbProps)(roomId)).map(
+    p => p.connectionId,
+  )
+}
 
 export const handler: SNSHandler = async event => {
   for (const record of event.Records) {
