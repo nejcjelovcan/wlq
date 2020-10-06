@@ -188,9 +188,9 @@ stepFunctions:
             Parameters:
               FunctionName:
                 Fn::GetAtt: [issueQuestionToken, Arn]
-                Payload:
-                  roomId: $.channel
-                  questionToken: $$.Task.Token
+              Payload:
+                roomId: $.channel
+                questionToken: $$.Task.Token
               TimeoutSeconds: $.data.questionTime
             Next: AllUsersAnswered
             ResultPath: $.output
@@ -211,8 +211,9 @@ stepFunctions:
             Parameters:
               FunctionName:
                 Fn::GetAtt: [revealAnswer, Arn]
-                Payload:
-                  roomId: $.channel
+              Payload:
+                roomId: $.channel
+            Next: End
           End:
             Type: Succeed
 
