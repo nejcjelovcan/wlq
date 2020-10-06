@@ -1,5 +1,5 @@
-import getDatabaseProps from '@wlq/wlq-api-aws/src/getDatabaseProps'
-import awsWebsocketWrapper from '@wlq/wlq-api-aws/src/wrappers/awsWebsocketWrapper'
+import getDatabaseProps from '../getDatabaseProps'
+import awsWebsocketWrapper from '../wrappers/awsWebsocketWrapper'
 import leaveRoom from '@wlq/wlq-api/src/room/leaveRoom'
 import { APIGatewayProxyHandler } from 'aws-lambda'
 import deleteParticipantCallback from '../callbacks/deleteParticipantCallback'
@@ -9,13 +9,9 @@ import { COMMON_HEADERS } from '../wrappers/awsRestRespond'
 
 const DbProps = getDatabaseProps()
 
-// TODO We should disconnect clients that haven't joinRoom in a short time
-export const handler: APIGatewayProxyHandler = async event => {
-  const {
-    connectionId,
-    routeKey,
-    websocketEndpoint,
-  } = extractFromWebsocketEvent(event)
+export const handler: APIGatewayProxyHandler = async (event, context) => {
+  const websocketEventData = extractFromWebsocketEvent(event, context)
+  const { connectionId, routeKey } = websocketEventData
 
   switch (routeKey) {
     case '$connect':
@@ -27,7 +23,7 @@ export const handler: APIGatewayProxyHandler = async event => {
       if (connectionId) {
         return awsWebsocketWrapper(
           { connectionId, action: 'leaveRoom', data: {} },
-          websocketEndpoint,
+          websocketEventData,
           leaveRoom(
             getParticipantCallback(DbProps),
             deleteParticipantCallback(DbProps),

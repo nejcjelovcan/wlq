@@ -42,7 +42,7 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
     const events = await eventHandler(incomingEvent)
     console.log(`Wrapper returned ${events.length} events`)
     for (const event of events) {
-      console.log('Posting to SNS', event)
+      console.log('Posting to SNS')
       try {
         await publish(event, websocketEventData.BroadcastTopicArn)
       } catch (e) {
@@ -52,9 +52,6 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
     }
     return { statusCode: 200, headers: COMMON_HEADERS, body: '{}' }
   } catch (e) {
-    console.error('awsWebsocketHandler error')
-    console.log(e)
-
     // In some cases when eventHandlers raise descriptive exceptions,
     // we want to send those errors to the user
     if (e instanceof RestResponseError || e instanceof ValidationError) {
@@ -68,6 +65,9 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
           websocketEventData.BroadcastTopicArn,
         )
       } catch (e) {}
+    } else {
+      console.error('awsWebsocketWrapper error')
+      console.log(e)
     }
 
     return { statusCode: 500, headers: COMMON_HEADERS, body: '{}' }

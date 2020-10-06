@@ -13,16 +13,13 @@ const extractFromWebsocketEvent = (
     requestContext: { domainName, stage, connectionId, routeKey },
     body,
   }: APIGatewayProxyEvent,
-  context?: Context,
+  context: Context,
 ): AwsWebsocketEventData => {
-  let BroadcastTopicArn = ''
-  if (context) {
-    const functionArnCols = context.invokedFunctionArn.split(':')
-    const region = functionArnCols[3]
-    const accountId = functionArnCols[4]
-    BroadcastTopicArn = `arn:aws:sns:${region}:${accountId}:${process.env
-      .BROADCAST_TOPIC!}`
-  }
+  const functionArnCols = context.invokedFunctionArn.split(':')
+  const region = functionArnCols[3]
+  const accountId = functionArnCols[4]
+  const BroadcastTopicArn = `arn:aws:sns:${region}:${accountId}:${process.env
+    .BROADCAST_TOPIC!}`
 
   let data: { [key: string]: any } = {}
   if (body) {
