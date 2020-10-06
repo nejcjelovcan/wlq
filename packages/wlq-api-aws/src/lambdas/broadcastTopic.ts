@@ -29,12 +29,7 @@ export const handler: SNSHandler = async event => {
 
     const websocketApi = getWebsocketApiGateway(process.env.WEBSOCKET_ENDPOINT!)
     if (connectionIds.length > 0) {
-      console.log(
-        'Broadcasting message to websockets',
-        process.env.WEBSOCKET_ENDPOINT,
-        connectionIds,
-        message,
-      )
+      console.log('Broadcasting message', message)
       const promises = connectionIds.map(async ConnectionId => {
         try {
           console.log('Broadcasting to', ConnectionId)
@@ -50,7 +45,6 @@ export const handler: SNSHandler = async event => {
         } catch (e) {
           console.error('broadcastTopic Could not send to websocket')
           console.log(e)
-          console.log(message)
         }
       })
 
@@ -58,11 +52,9 @@ export const handler: SNSHandler = async event => {
         await Promise.all(promises)
       } else {
         console.error('broadcastTopic No participants')
-        console.log(message)
       }
     } else {
       console.error('broadcastTopic No recipients')
-      console.log(message)
     }
   }
 }
