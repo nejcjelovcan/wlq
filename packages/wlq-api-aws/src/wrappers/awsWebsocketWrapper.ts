@@ -1,13 +1,13 @@
 import { AwsWebsocketEventData } from '@wlq/wlq-api-aws/src/extractFromWebsocketEvent'
 import { COMMON_HEADERS } from '@wlq/wlq-api-aws/src/wrappers/awsRestRespond'
-import { RestResponseError } from '@wlq/wlq-api/lib/esm'
+import { RestResponseError } from '@wlq/wlq-api/src/rest'
 import {
   WebsocketEvent,
   WebsocketEventHandler,
   WebsocketPayload,
   WebsocketErrorPayload,
 } from '@wlq/wlq-api/src/websocket'
-import { ValidationError } from '@wlq/wlq-model/lib/esm'
+import { ValidationError } from '@wlq/wlq-model/src/validation'
 import { APIGatewayProxyResult } from 'aws-lambda'
 import AWS from 'aws-sdk'
 import getWebsocketApiGateway from '../getWebsocketApi'
