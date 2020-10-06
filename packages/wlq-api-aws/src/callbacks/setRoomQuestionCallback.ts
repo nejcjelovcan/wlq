@@ -19,7 +19,7 @@ const setRoomQuestionCallback = ({
     ExpressionAttributeValues: {
       ':question': question,
       ':answers': {},
-      state: 'Question',
+      ':state': 'Question',
     },
   }).promise()
 
