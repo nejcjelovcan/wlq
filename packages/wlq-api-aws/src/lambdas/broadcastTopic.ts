@@ -28,6 +28,7 @@ export const handler: SNSHandler = async event => {
         case 'userJoined':
         case 'userLeft':
         case 'userAnswered':
+        case 'poseQuestion':
           console.log(
             'Broadcasting message to websockets',
             process.env.WEBSOCKET_ENDPOINT,
@@ -46,7 +47,18 @@ export const handler: SNSHandler = async event => {
               })
               .promise(),
           )
-          if (promises.length > 0) await Promise.all(promises)
+          if (promises.length > 0)
+            await Promise.all(
+              promises.map(async promise => {
+                // wrap promises in try-catch so that they don't cancel other
+                // postToConnections
+                try {
+                  await promise
+                } catch (e) {
+                  console.error('broadcastTopic Could not send to websocket')
+                }
+              }),
+            )
           sent = true
           break
       }
