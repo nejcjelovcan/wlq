@@ -134,6 +134,7 @@ functions:
       - sns:
           arn:
             Ref: BroadcastTopic
+          topicName: broadcast
           filterPolicy:
             action:
               - userJoined
