@@ -24,11 +24,12 @@ provider:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     ROOM_TABLE_NAME: ${self:custom.roomTableName}
     ALLOW_ORIGIN: ${self:custom.httpOrigin}
+    BROADCAST_TOPIC:
+      Ref: BroadcastTopic
     WEBSOCKET_ENDPOINT:
       Fn::Join:
         - ""
-        - - wss://
-          - Ref: WebsocketsApi
+        - - Ref: WebsocketsApi
           - .execute-api.
           - Ref: AWS::Region
           - .amazonaws.com/
@@ -127,8 +128,25 @@ functions:
       - websocket:
           route: answerQuestion
 
+  broadcastTopic:
+    handler: src/lambdas/broadcastTopic.dispatch
+    events:
+      - sns:
+          arn:
+            Ref: BroadcastTopic
+          filterPolicy:
+            action:
+              - userJoined
+              - userLeft
+              - userAnswered
+
 resources:
   Resources:
+    BroadcastTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: broadcast
+
     WebsocketsApi:
       Type: AWS::ApiGatewayV2::Api
       Properties:

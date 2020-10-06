@@ -26,7 +26,7 @@ const getRoomByRoomIdCallback = ({
   ) {
     return {
       ...(result.Responses[TableName][0] as Room),
-      ws: process.env.WEBSOCKET_ENDPOINT,
+      ws: `wss://${process.env.WEBSOCKET_ENDPOINT}`,
     }
   }
   return undefined

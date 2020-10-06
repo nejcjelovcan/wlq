@@ -14,6 +14,6 @@ const putRoomCallback = ({
     },
     ConditionExpression: 'attribute_not_exists(PK)',
   }).promise()
-  return { ...room, ws: process.env.WEBSOCKET_ENDPOINT }
+  return { ...room, ws: `wss://${process.env.WEBSOCKET_ENDPOINT}` }
 }
 export default putRoomCallback
