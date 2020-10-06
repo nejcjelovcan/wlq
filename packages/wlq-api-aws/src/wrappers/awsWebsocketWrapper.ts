@@ -45,6 +45,7 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
         } catch (e) {
           console.error('awsWebsocketHandler publish to SNS error')
           console.log(e)
+          console.log('TopicArn', websocketEventData.BroadcastTopicArn)
         }
       }
     }
