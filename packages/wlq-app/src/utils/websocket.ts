@@ -1,4 +1,4 @@
-import { WsMessage } from '@wlq/wlq-api/src/ws'
+import { WebsocketPayload } from '@wlq/wlq-api/src/websocket'
 
 const websocket = (() => {
   let socket: WebSocket
@@ -26,7 +26,7 @@ const websocket = (() => {
       console.log('WEBSOCKET SEND', data)
       if (socket) socket.send(data)
     },
-    sendMessage<D extends object>(message: WsMessage<D>) {
+    sendPayload<P extends WebsocketPayload>(message: P) {
       this.send(JSON.stringify(message))
     },
   }

@@ -1,8 +1,9 @@
 import { JWK, JWT } from 'jose'
+import { TokenVerifier } from '..'
 
 const KEY = JWK.asKey(process.env.API_OCT_SECRET_KEY!)
 
-const verifyToken = async (token: string): Promise<string> => {
+const verifyToken: TokenVerifier = async token => {
   return new Promise<string>((resolve, reject) => {
     try {
       console.log('verifying token', token)

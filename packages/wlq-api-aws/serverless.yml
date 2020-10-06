@@ -1,7 +1,6 @@
 service: wlq-api-aws
 
-# Expected env variables:
-# SITE_DOMAIN (sub)domain of the root service (static site - wql-app-aws)
+# Expected env variables: see .env
 
 frameworkVersion: "2"
 
@@ -151,11 +150,6 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.roomTableName}
-        # Instead of streams, SQS seems a better option
-        # 1. streams do a lot of lambda calling that we don't need (and can't filter out in StreamSpecification)
-        # 2. SQS supports delayed queue, which we will need for room timing mechanics
-        # StreamSpecification:
-        #   StreamViewType: NEW_AND_OLD_IMAGES
         AttributeDefinitions:
           - AttributeName: PK
             AttributeType: S

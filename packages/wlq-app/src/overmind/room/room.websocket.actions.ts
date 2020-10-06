@@ -1,4 +1,4 @@
-import { RoomJoinProps } from '@wlq/wlq-api/src/room'
+import { JoinRoomPayload } from '@wlq/wlq-api/src/room'
 import { Action } from 'overmind'
 import websocket from '../../utils/websocket'
 
@@ -13,7 +13,7 @@ export const roomOnOpen: Action = ({
     console.log('WEBSOCKET OPEN')
     socket.loading = false
     socket.connected = true
-    websocket.sendMessage<RoomJoinProps>({
+    websocket.sendPayload<JoinRoomPayload>({
       action: 'joinRoom',
       data: { token, roomId: currentRoom?.roomId, userDetails: details },
     })

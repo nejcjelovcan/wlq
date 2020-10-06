@@ -1,12 +1,12 @@
 import {
-  RoomAnswerQuestionProps,
-  RoomPoseQuestionProps,
-  RoomSetParticipantsProps,
-  RoomUserAnsweredProps,
-  RoomUserJoinedProps,
-  RoomUserLeftProps,
+  AnswerQuestionPayload,
+  PoseQuestionPayload,
+  SetParticipantsPayload,
+  StartGamePayload,
+  UserAnsweredPayload,
+  UserJoinedPayload,
+  UserLeftPayload,
 } from '@wlq/wlq-api/src/room'
-import { newWsMessage } from '@wlq/wlq-api/src/ws'
 import { uniqueBy } from '@wlq/wlq-model/src/helpers'
 import { RoomCreation, validateRoomCreation } from '@wlq/wlq-model/src/room'
 import { ValidationError } from '@wlq/wlq-model/src/validation'
@@ -34,7 +34,7 @@ export const cleanRoomData: Action = ({ state: { room } }) => {
   room.roomSession = { participants: [], usersAnswered: [], itemAnswers: {} }
 }
 
-export const roomOnSetParticipants: Action<RoomSetParticipantsProps> = (
+export const roomOnSetParticipants: Action<SetParticipantsPayload['data']> = (
   { state: { room } },
   data,
 ) => {
@@ -42,7 +42,7 @@ export const roomOnSetParticipants: Action<RoomSetParticipantsProps> = (
   room.roomSession.pid = data.pid
 }
 
-export const roomOnUserJoined: Action<RoomUserJoinedProps> = (
+export const roomOnUserJoined: Action<UserJoinedPayload['data']> = (
   { state: { room } },
   data,
 ) => {
@@ -52,7 +52,7 @@ export const roomOnUserJoined: Action<RoomUserJoinedProps> = (
   )
 }
 
-export const roomOnUserLeft: Action<RoomUserLeftProps> = (
+export const roomOnUserLeft: Action<UserLeftPayload['data']> = (
   { state: { room } },
   data,
 ) => {
@@ -61,7 +61,7 @@ export const roomOnUserLeft: Action<RoomUserLeftProps> = (
   )
 }
 
-export const roomOnPoseQuestion: Action<RoomPoseQuestionProps> = (
+export const roomOnPoseQuestion: Action<PoseQuestionPayload['data']> = (
   {
     state: {
       room: { currentRoom, roomSession },
@@ -78,7 +78,7 @@ export const roomOnPoseQuestion: Action<RoomPoseQuestionProps> = (
   }
 }
 
-export const roomOnUserAnswered: Action<RoomUserAnsweredProps> = (
+export const roomOnUserAnswered: Action<UserAnsweredPayload['data']> = (
   {
     state: {
       room: { currentRoom, roomSession },
@@ -104,14 +104,15 @@ export const answerQuestion: Action<string> = (
   if (currentRoom?.state === 'Question' && !roomSession.currentAnswer) {
     roomSession.currentAnswer = answer
     roomSession.usersAnswered.push(roomSession.pid!)
-    websocket.sendMessage<RoomAnswerQuestionProps>(
-      newWsMessage('answerQuestion', { answer }),
-    )
+    websocket.sendPayload<AnswerQuestionPayload>({
+      action: 'answerQuestion',
+      data: { answer: answer },
+    })
   }
 }
 
 export const startGame: Action = ({ effects: { websocket } }) => {
-  websocket.sendMessage({
+  websocket.sendPayload<StartGamePayload>({
     action: 'startGame',
     data: {},
   })

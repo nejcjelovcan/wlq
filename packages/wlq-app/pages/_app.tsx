@@ -8,7 +8,7 @@ import { config } from '../src/overmind'
 import theme from '../src/theme'
 
 if (process.env.NODE_ENV === 'development') {
-  require('../mirage').makeServer({ environment: 'development' })
+  require('../mirage/server').makeServer({ environment: 'development' })
 }
 
 const overmind = createOvermind(config, {

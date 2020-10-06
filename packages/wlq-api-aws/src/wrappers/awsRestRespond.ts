@@ -10,7 +10,7 @@ export const COMMON_HEADERS = {
 const formatBody = (data: { [key: string]: any }) =>
   JSON.stringify(data, null, '  ')
 
-export const respond: RestRespondFunction<APIGatewayProxyResult> = async responseGenerator => {
+const restRespond: RestRespondFunction<APIGatewayProxyResult> = async responseGenerator => {
   try {
     let response = responseGenerator()
     if (response instanceof Promise) response = await response
@@ -40,3 +40,4 @@ export const respond: RestRespondFunction<APIGatewayProxyResult> = async respons
     }
   }
 }
+export default restRespond

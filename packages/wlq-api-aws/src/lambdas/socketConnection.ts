@@ -1,22 +1,21 @@
+import getDatabaseProps from '@wlq/wlq-api-aws/src/getDatabaseProps'
+import awsWebsocketWrapper from '@wlq/wlq-api-aws/src/wrappers/awsWebsocketWrapper'
 import leaveRoom from '@wlq/wlq-api/src/room/leaveRoom'
-import { newWsMessageEvent, wsEventConsumer } from '@wlq/wlq-api/src/ws'
-import { getRoomParticipantKeys } from '@wlq/wlq-model/src/room'
 import { APIGatewayProxyHandler } from 'aws-lambda'
-import AWS from 'aws-sdk'
-import awsWebsocketSendFunction from '../awsWebsocketSendFunction'
-import getRoomAndParticipantsByRoomId from '../getRoomAndParticipantsByRoomId'
-import getRoomParticipantByConnectionId from '../getRoomParticipantByConnectionId'
-import getWebsocketApi from '../getWebsocketApi'
-import { COMMON_HEADERS } from '../respond'
+import deleteParticipantCallback from '../callbacks/deleteParticipantCallback'
+import getParticipantCallback from '../callbacks/getParticipantCallback'
+import extractFromWebsocketEvent from '../extractFromWebsocketEvent'
+import { COMMON_HEADERS } from '../wrappers/awsRestRespond'
 
-const TableName = process.env.ROOM_TABLE_NAME!
-const DB = new AWS.DynamoDB.DocumentClient()
+const DbProps = getDatabaseProps()
 
 // TODO We should disconnect clients that haven't joinRoom in a short time
-export const handler: APIGatewayProxyHandler = async ({
-  requestContext: { connectionId, routeKey, domainName, stage },
-}) => {
-  const websocketApi = getWebsocketApi(domainName, stage)
+export const handler: APIGatewayProxyHandler = async event => {
+  const {
+    connectionId,
+    routeKey,
+    websocketEndpoint,
+  } = extractFromWebsocketEvent(event)
 
   switch (routeKey) {
     case '$connect':
@@ -24,21 +23,17 @@ export const handler: APIGatewayProxyHandler = async ({
       break
     case '$disconnect':
       console.log('DISCONNECT')
-      const incomingEvent = newWsMessageEvent(connectionId!, 'leaveRoom', {})
-      await wsEventConsumer(
-        incomingEvent,
-        leaveRoom(
-          async cid => getRoomParticipantByConnectionId(DB, TableName, cid),
-          async participant =>
-            DB.delete({
-              TableName,
-              Key: getRoomParticipantKeys(participant),
-            }).promise(),
-          async roomId => getRoomAndParticipantsByRoomId(DB, TableName, roomId),
-        ),
-        awsWebsocketSendFunction(websocketApi),
-      )
-      break
+
+      if (connectionId) {
+        return awsWebsocketWrapper(
+          { connectionId, action: 'leaveRoom', data: {} },
+          websocketEndpoint,
+          leaveRoom(
+            getParticipantCallback(DbProps),
+            deleteParticipantCallback(DbProps),
+          ),
+        )
+      }
   }
 
   return { statusCode: 200, headers: COMMON_HEADERS, body: '{}' }
