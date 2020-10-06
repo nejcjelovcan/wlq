@@ -11,12 +11,12 @@ import awsWebsocketWrapper from '../wrappers/awsWebsocketWrapper'
 
 const DbProps = getDatabaseProps()
 
-export const handler: APIGatewayProxyHandler = async event => {
+export const handler: APIGatewayProxyHandler = async (event, context) => {
+  const websocketEventData = extractFromWebsocketEvent(event, context)
   const {
     connectionId,
-    websocketEndpoint,
     data: { token, roomId, userDetails },
-  } = extractFromWebsocketEvent(event)
+  } = websocketEventData
 
   if (connectionId && token && roomId && userDetails) {
     return await awsWebsocketWrapper(
@@ -25,7 +25,7 @@ export const handler: APIGatewayProxyHandler = async event => {
         action: 'joinRoom',
         data: { token, roomId, userDetails },
       },
-      websocketEndpoint,
+      websocketEventData,
       joinRoom(
         getRoomByRoomIdCallback(DbProps),
         verifyToken,

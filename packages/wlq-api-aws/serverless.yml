@@ -24,8 +24,7 @@ provider:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     ROOM_TABLE_NAME: ${self:custom.roomTableName}
     ALLOW_ORIGIN: ${self:custom.httpOrigin}
-    BROADCAST_TOPIC:
-      Ref: BroadcastTopic
+    BROADCAST_TOPIC: $self:custom.{broadcastTopic}
     WEBSOCKET_ENDPOINT:
       Fn::Join:
         - ""
@@ -43,12 +42,27 @@ provider:
         - dynamodb:PutItem
         - dynamodb:DeleteItem
         - dynamodb:BatchGetItem
+
         # - dynamodb:Scan
         # - dynamodb:UpdateItem
 
       Resource:
         - { "Fn::GetAtt": ["RoomTable", "Arn"] }
         - Fn::Join: ["/", [{ "Fn::GetAtt": ["RoomTable", "Arn"] }, "index/*"]]
+
+    - Effect: Allow
+      Action:
+        - SNS:Publish
+      Resource:
+        - Fn::Join:
+            [
+              "",
+              [
+                "arn:aws:sns:${self:provider.region}:",
+                { "Ref": "AWS::AccountId" },
+                ":${self:custom.broadcastTopic}",
+              ],
+            ]
 
 plugins:
   - serverless-webpack
@@ -58,7 +72,8 @@ custom:
   siteName: ${env:API_DOMAIN}
   httpOrigin: https://${env:SITE_DOMAIN}
   acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
-  roomTableName: ${self:service}-RoomTable-${self:provider.stage, 'dev'}
+  roomTableName: ${self:service}-RoomTable-${self:provider.stage}
+  broadcastTopic: "${self:service}-broadcast-${self:provider.stage}"
   webpack:
     webpackConfig: "./webpack.config.js"
     includeModules: true
@@ -134,7 +149,7 @@ functions:
       - sns:
           arn:
             Ref: BroadcastTopic
-          topicName: broadcast
+          topicName: ${self:custom.broadcastTopic}
           filterPolicy:
             action:
               - userJoined
@@ -146,7 +161,7 @@ resources:
     BroadcastTopic:
       Type: AWS::SNS::Topic
       Properties:
-        TopicName: broadcast
+        TopicName: ${self:custom.broadcastTopic}
 
     WebsocketsApi:
       Type: AWS::ApiGatewayV2::Api

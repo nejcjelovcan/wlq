@@ -1,9 +1,29 @@
-import { APIGatewayProxyEvent } from 'aws-lambda'
+import { APIGatewayProxyEvent, Context } from 'aws-lambda'
 
-const extractFromWebsocketEvent = ({
-  requestContext: { domainName, stage, connectionId, routeKey },
-  body,
-}: APIGatewayProxyEvent) => {
+export type AwsWebsocketEventData = {
+  connectionId?: string
+  routeKey?: string
+  data: { [key: string]: any }
+  websocketEndpoint: string
+  BroadcastTopicArn: string
+}
+
+const extractFromWebsocketEvent = (
+  {
+    requestContext: { domainName, stage, connectionId, routeKey },
+    body,
+  }: APIGatewayProxyEvent,
+  context?: Context,
+): AwsWebsocketEventData => {
+  let BroadcastTopicArn = ''
+  if (context) {
+    const functionArnCols = context.invokedFunctionArn.split(':')
+    const region = functionArnCols[3]
+    const accountId = functionArnCols[4]
+    BroadcastTopicArn = `arn:aws:sns:${region}:${accountId}:${process.env
+      .BROADCAST_TOPIC!}`
+  }
+
   let data: { [key: string]: any } = {}
   if (body) {
     // body is WebsocketPayload (but the action is already in routeKey)
@@ -14,6 +34,7 @@ const extractFromWebsocketEvent = ({
     routeKey,
     data,
     websocketEndpoint: `${domainName}/${stage}`,
+    BroadcastTopicArn,
   }
 }
 export default extractFromWebsocketEvent

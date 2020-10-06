@@ -10,12 +10,12 @@ import awsWebsocketWrapper from '../wrappers/awsWebsocketWrapper'
 
 const DbProps = getDatabaseProps()
 
-export const handler: APIGatewayProxyHandler = async event => {
+export const handler: APIGatewayProxyHandler = async (event, context) => {
+  const websocketEventData = extractFromWebsocketEvent(event, context)
   const {
     connectionId,
-    websocketEndpoint,
     data: { answer },
-  } = extractFromWebsocketEvent(event)
+  } = websocketEventData
 
   if (connectionId && answer) {
     return awsWebsocketWrapper(
@@ -24,7 +24,7 @@ export const handler: APIGatewayProxyHandler = async event => {
         action: 'answerQuestion',
         data: { answer },
       },
-      websocketEndpoint,
+      websocketEventData,
       answerQuestion(
         getParticipantCallback(DbProps),
         getRoomByRoomIdCallback(DbProps),

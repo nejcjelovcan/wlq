@@ -1,3 +1,4 @@
+import { AwsWebsocketEventData } from '@wlq/wlq-api-aws/src/extractFromWebsocketEvent'
 import { COMMON_HEADERS } from '@wlq/wlq-api-aws/src/wrappers/awsRestRespond'
 import {
   WebsocketEvent,
@@ -10,7 +11,10 @@ import getWebsocketApiGateway from '../getWebsocketApi'
 
 const awsWebsocketWrapper = async <P extends WebsocketPayload>(
   incomingEvent: WebsocketEvent<P>,
-  websocketEndpoint: string,
+  websocketEventData: Pick<
+    AwsWebsocketEventData,
+    'websocketEndpoint' | 'BroadcastTopicArn'
+  >,
   eventHandler: WebsocketEventHandler<P>,
 ): Promise<APIGatewayProxyResult> => {
   try {
@@ -19,7 +23,7 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
     for (const event of events) {
       if ('connectionId' in event && event.connectionId) {
         try {
-          await getWebsocketApiGateway(websocketEndpoint)
+          await getWebsocketApiGateway(websocketEventData.websocketEndpoint)
             .postToConnection({
               ConnectionId: event.connectionId,
               Data: JSON.stringify({ action: event.action, data: event.data }),
@@ -35,7 +39,7 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
             .publish({
               Subject: event.action,
               Message: JSON.stringify(event),
-              TopicArn: process.env.BROADCAST_TOPIC!,
+              TopicArn: websocketEventData.BroadcastTopicArn,
             })
             .promise()
         } catch (e) {
