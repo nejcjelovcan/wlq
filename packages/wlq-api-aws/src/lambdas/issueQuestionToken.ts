@@ -1,5 +1,5 @@
-import setRoomQuestionTokenCallback from '@wlq/wlq-api-aws/src/callbacks/setRoomQuestionTokenCallback'
-import getDatabaseProps from '@wlq/wlq-api-aws/src/getDatabaseProps'
+import setRoomQuestionTokenCallback from '../callbacks/setRoomQuestionTokenCallback'
+import getDatabaseProps from '../getDatabaseProps'
 
 const DbProps = getDatabaseProps()
 

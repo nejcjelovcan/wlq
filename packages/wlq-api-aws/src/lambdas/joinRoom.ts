@@ -1,4 +1,3 @@
-import { COMMON_HEADERS } from '../wrappers/awsRestRespond'
 import joinRoom from '@wlq/wlq-api/src/room/joinRoom'
 import verifyToken from '@wlq/wlq-api/src/user/helpers/verifyToken.helper'
 import { APIGatewayProxyHandler } from 'aws-lambda'
@@ -7,6 +6,7 @@ import getRoomParticipantsCallback from '../callbacks/getRoomParticipantsCallbac
 import putParticipantCallback from '../callbacks/putParticipantCallback'
 import extractFromWebsocketEvent from '../extractFromWebsocketEvent'
 import getDatabaseProps from '../getDatabaseProps'
+import { COMMON_HEADERS } from '../wrappers/awsRestRespond'
 import awsWebsocketWrapper from '../wrappers/awsWebsocketWrapper'
 
 const DbProps = getDatabaseProps()

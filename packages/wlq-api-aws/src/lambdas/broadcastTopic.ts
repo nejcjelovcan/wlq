@@ -1,8 +1,8 @@
-import getRoomParticipantsCallback from '../callbacks/getRoomParticipantsCallback'
-import getWebsocketApiGateway from '../getWebsocketApi'
 import { WebsocketBroadcast, WebsocketEvent } from '@wlq/wlq-api/src/websocket'
 import { SNSHandler } from 'aws-lambda'
+import getRoomParticipantsCallback from '../callbacks/getRoomParticipantsCallback'
 import getDatabaseProps from '../getDatabaseProps'
+import getWebsocketApiGateway from '../getWebsocketApi'
 
 const DbProps = getDatabaseProps()
 

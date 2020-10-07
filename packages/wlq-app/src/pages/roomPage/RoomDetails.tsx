@@ -5,6 +5,7 @@ import {
   Flex,
   Skeleton,
   Stack,
+  Text,
   useDisclosure,
 } from '@chakra-ui/core'
 import React, { useCallback, useEffect } from 'react'
@@ -85,8 +86,12 @@ const RoomDetails = () => {
                   </Button>
                 </>
               )}
-              {currentRoom?.state === 'Question' && currentQuestion && (
-                <RoomQuestion />
+              {currentRoom?.state === 'Question' ||
+                (currentRoom?.state === 'Answer' && currentQuestion && (
+                  <RoomQuestion />
+                ))}
+              {currentRoom?.state === 'Finished' && (
+                <Text>Game is finished</Text>
               )}
             </Stack>
           )}

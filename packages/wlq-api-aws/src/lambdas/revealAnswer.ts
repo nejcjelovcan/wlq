@@ -1,11 +1,14 @@
 import { Context } from 'aws-lambda'
 import getRoomByRoomIdCallback from '../callbacks/getRoomByRoomIdCallback'
 import setRoomStateCallback from '../callbacks/setRoomStateCallback'
+import startExecutionCallback from '../callbacks/startExecutionCallback'
 import { getBroadcastTopic } from '../extractFromWebsocketEvent'
 import getDatabaseProps from '../getDatabaseProps'
 import { publish } from '../wrappers/awsWebsocketWrapper'
 
 const DbProps = getDatabaseProps()
+
+const ANSWER_WAIT_TIME = 5
 
 export const handler = async (
   event: { [key: string]: unknown },
@@ -16,6 +19,10 @@ export const handler = async (
     console.log('Updating room state')
     await setRoomStateCallback(DbProps)(event.roomId, 'Answer')
     const room = await getRoomByRoomIdCallback(DbProps)(event.roomId)
+    await startExecutionCallback(process.env.ROOM_ANSWER_WAIT!, {
+      roomId: event.roomId,
+      waitTime: ANSWER_WAIT_TIME,
+    })
     console.log('Room', room)
     if (room && room.question) {
       console.log('Publishing revealAnswer')

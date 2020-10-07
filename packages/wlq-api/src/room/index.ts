@@ -67,6 +67,8 @@ export type SetQuestionTokenPayload = WebsocketPayload<
   { questionToken: string }
 >
 
+export type GameFinishedPayload = WebsocketPayload<'gameFinished', {}>
+
 // Callbacks
 
 export type GetRoomCallback = (roomId: string) => Promise<Room | undefined>
@@ -123,3 +125,5 @@ export type SendTaskSuccessCallback = (
   taskToken: string,
   output: string,
 ) => Promise<unknown>
+
+export type SetRoomFinishedCallback = (roomId: string) => Promise<unknown>

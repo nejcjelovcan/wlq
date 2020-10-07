@@ -1,5 +1,6 @@
 import {
   AnswerQuestionPayload,
+  GameFinishedPayload,
   PoseQuestionPayload,
   RevealAnswerPayload,
   SetParticipantsPayload,
@@ -105,6 +106,16 @@ export const roomOnRevealAnswer: Action<RevealAnswerPayload['data']> = (
     currentRoom.state = 'Answer'
     currentRoom.answers = userAnswers
     roomSession.currentAnswer = answer
+  }
+}
+
+export const roomOnGameFinished: Action<GameFinishedPayload['data']> = ({
+  state: {
+    room: { currentRoom },
+  },
+}) => {
+  if (currentRoom) {
+    currentRoom.state = 'Finished'
   }
 }
 

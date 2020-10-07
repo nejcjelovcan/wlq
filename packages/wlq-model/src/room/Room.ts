@@ -6,7 +6,7 @@ export interface Room {
   type: 'Room'
   name: string
   roomId: string
-  state: 'Idle' | 'Question' | 'Answer'
+  state: 'Idle' | 'Question' | 'Answer' | 'Finished'
   listed: boolean
   question?: PosedQuestion
   answers?: { [pid: string]: string }

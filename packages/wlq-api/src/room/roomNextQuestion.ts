@@ -4,8 +4,10 @@ import {
   poseQuestion,
 } from '@wlq/wlq-model/src/data/geography'
 import {
+  GameFinishedPayload,
   GetRoomCallback,
   PoseQuestionPayload,
+  SetRoomFinishedCallback,
   SetRoomQuestionCallback,
   StartExecutionCallback,
 } from '.'
@@ -17,6 +19,7 @@ const roomNextQuestion = (
   getRoomByRoomId: GetRoomCallback,
   setRoomQuestion: SetRoomQuestionCallback,
   startExecution: StartExecutionCallback,
+  setRoomFinished: SetRoomFinishedCallback,
 ) => async (roomId: string): Promise<WebsocketEventHandlerReturn> => {
   let room = await getRoomByRoomId(roomId)
 
@@ -48,6 +51,13 @@ const roomNextQuestion = (
       return [broadcast]
     } else {
       console.log('Out of questions')
+      await setRoomFinished(room.roomId)
+      const broadcast: WebsocketBroadcast<GameFinishedPayload> = {
+        channel: room.roomId,
+        action: 'gameFinished',
+        data: {},
+      }
+      return [broadcast]
     }
   }
 

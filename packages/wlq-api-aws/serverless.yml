@@ -160,26 +160,32 @@ functions:
           topicName: ${self:custom.broadcastTopic}
           filterPolicy:
             action:
+              - setParticipants
               - userJoined
               - userLeft
               - userAnswered
-              - revealAnswer
               - poseQuestion
+              - revealAnswer
+              - gameFinished
               - error
-              - setParticipants
 
   issueQuestionToken:
     handler: src/lambdas/issueQuestionToken.handler
 
   revealAnswer:
     handler: src/lambdas/revealAnswer.handler
+    environment:
+      ROOM_ANSWER_WAIT: ${self:resources.Outputs.RoomAnswerWait.Value}
+
+  roomNextQuestion:
+    handler: src/lambdas/roomNextQuestion.handler
 
 stepFunctions:
   stateMachines:
     RoomQuestionTimeout:
       name: RoomQuestionTimeout
       definition:
-        Comment: Room issues a questionToken to be sent after all users answer, otherwise times out after certain time
+        Comment: Issues a questionToken for a given room to be sent after all users answer, otherwise times out after certain time
         StartAt: IssueQuestionToken
         States:
           IssueQuestionToken:
@@ -216,6 +222,27 @@ stepFunctions:
             Next: End
           End:
             Type: Succeed
+    RoomAnswerWait:
+      name: RoomAnswerWait
+      definitions:
+        Comment: Waits a bit and then poses next question (or finishes game)
+        StartAt: "Wait"
+        States:
+          Wait:
+            Type: Wait
+            SecondsPath: $.waitTime
+            Next: RoomNextQuestion
+          PoseNextQuestion:
+            Type: Task
+            Resource: "arn:aws:states:::lambda:invoke"
+            Parameters:
+              FunctionName:
+                Fn::GetAtt: [roomNextQuestion, Arn]
+              Payload:
+                roomId.$: $.roomId
+            Next: End
+          End:
+            Type: Success
 
 resources:
   Resources:
@@ -276,6 +303,10 @@ resources:
     RoomQuestionTimeout:
       Value:
         Ref: RoomQuestionTimeout
+
+    RoomAnswerWait:
+      Value:
+        Ref: RoomAnswerWait
 
 package:
   individually: true
