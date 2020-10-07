@@ -206,7 +206,7 @@ stepFunctions:
                 Fn::GetAtt: [issueQuestionToken, Arn]
               Payload:
                 roomId.$: $.roomId
-                questionToken: $$.Task.Token
+                questionToken.$: $$.Task.Token
             TimeoutSecondsPath: $.questionTime
             Next: AllUsersAnswered
             ResultPath: $.output

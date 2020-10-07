@@ -38,12 +38,16 @@ const answerQuestion = (
           answer,
         )
 
-        console.log('Check if everybody answered')
         const participants = await getRoomParticipants(room.roomId)
-        if (
-          Object.keys(answers ?? {}).length === participants.length &&
-          room._questionToken
-        ) {
+
+        const answersCount = Object.keys(answers ?? {}).length
+        console.log(
+          'Check if everybody answered',
+          answersCount,
+          participants.length,
+          room._questionToken,
+        )
+        if (answersCount === participants.length && room._questionToken) {
           console.log('Sending task success')
           await SendTaskSuccessCallback(
             room._questionToken,

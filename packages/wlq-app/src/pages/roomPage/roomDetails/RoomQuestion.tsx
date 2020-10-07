@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading } from '@chakra-ui/core'
+import { Button, Center, Flex, Heading, HStack } from '@chakra-ui/core'
 import React from 'react'
 import UserBadge from '../../../components/UserBadge'
 import { useOvermind } from '../../../overmind'
@@ -50,18 +50,20 @@ const RoomQuestion = () => {
               // flexGrow={answered ? 0 : 1}
               isDisabled={answered}
               borderRadius="full"
-              variant={participantAnswer === option.name ? 'solid' : 'outline'}
+              variant={color ? 'solid' : 'outline'}
               colorScheme={color}
               onClick={() => answerQuestion(option.name)}
             >
               {option.name}
             </Button>
             {revealed && (
-              <Box>
-                {getParticipantsForAnswer(option.name).map(p => (
-                  <UserBadge userDetails={p.details} showAlias={false} />
-                ))}
-              </Box>
+              <Center>
+                <HStack spacing={1}>
+                  {getParticipantsForAnswer(option.name).map(p => (
+                    <UserBadge userDetails={p.details} showAlias={false} />
+                  ))}
+                </HStack>
+              </Center>
             )}
           </Flex>
         )
