@@ -29,7 +29,6 @@ export type RoomState = {
     currentAnswer?: CollectionItem
     participantAnswer?: string
     usersAnswered: string[]
-    itemAnswers: { [name: string]: string[] }
   }
 }
 
@@ -38,5 +37,5 @@ export const state: RoomState = {
   roomCreationRequest: {},
   roomCreation: {},
   socket: {},
-  roomSession: { participants: [], usersAnswered: [], itemAnswers: {} },
+  roomSession: { participants: [], usersAnswered: [] },
 }

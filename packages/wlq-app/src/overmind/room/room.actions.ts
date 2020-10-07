@@ -1,6 +1,7 @@
 import {
   AnswerQuestionPayload,
   PoseQuestionPayload,
+  RevealAnswerPayload,
   SetParticipantsPayload,
   StartGamePayload,
   UserAnsweredPayload,
@@ -31,7 +32,7 @@ export const setRoomCreation: Action<Partial<RoomCreation>> = (
 
 export const cleanRoomData: Action = ({ state: { room } }) => {
   room.currentRoom = undefined
-  room.roomSession = { participants: [], usersAnswered: [], itemAnswers: {} }
+  room.roomSession = { participants: [], usersAnswered: [] }
 }
 
 export const roomOnSetParticipants: Action<SetParticipantsPayload['data']> = (
@@ -74,7 +75,7 @@ export const roomOnPoseQuestion: Action<PoseQuestionPayload['data']> = (
     roomSession.currentQuestion = question
     roomSession.currentAnswer = undefined
     roomSession.usersAnswered = []
-    roomSession.itemAnswers = {}
+    currentRoom.answers = {}
   }
 }
 
@@ -89,6 +90,21 @@ export const roomOnUserAnswered: Action<UserAnsweredPayload['data']> = (
   if (currentRoom) {
     currentRoom.state = 'Question'
     roomSession.usersAnswered.push(pid)
+  }
+}
+
+export const roomOnRevealAnswer: Action<RevealAnswerPayload['data']> = (
+  {
+    state: {
+      room: { currentRoom, roomSession },
+    },
+  },
+  { answer, userAnswers },
+) => {
+  if (currentRoom) {
+    currentRoom.state = 'Answer'
+    currentRoom.answers = userAnswers
+    roomSession.currentAnswer = answer
   }
 }
 

@@ -17,7 +17,7 @@ export const createRoom: AsyncAction = async ({
       room.roomCreation,
     )
     room.currentRoom = createdRoom.room
-    room.roomSession = { participants: [], usersAnswered: [], itemAnswers: {} }
+    room.roomSession = { participants: [], usersAnswered: [] }
     room.socket = {}
 
     // TODO
@@ -53,7 +53,7 @@ export const getRoom: AsyncAction<string> = async (
       },
     )
     room.currentRoom = responseData.room
-    room.roomSession = { participants: [], usersAnswered: [], itemAnswers: {} }
+    room.roomSession = { participants: [], usersAnswered: [] }
     room.socket = {}
   } catch (e) {
     room.getRoomRequest.error = e.message

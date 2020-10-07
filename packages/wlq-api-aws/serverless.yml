@@ -211,7 +211,7 @@ stepFunctions:
               FunctionName:
                 Fn::GetAtt: [revealAnswer, Arn]
               Payload:
-                roomId: $.channel
+                roomId: $.roomId
             Next: End
           End:
             Type: Succeed

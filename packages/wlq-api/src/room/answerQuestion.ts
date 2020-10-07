@@ -44,6 +44,7 @@ const answerQuestion = (
           Object.keys(answers ?? {}).length === participants.length &&
           room._questionToken
         ) {
+          console.log('Sending task success')
           await SendTaskSuccessCallback(
             room._questionToken,
             'Everybody answered',
