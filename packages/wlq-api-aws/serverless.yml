@@ -224,7 +224,7 @@ stepFunctions:
             Type: Succeed
     RoomAnswerWait:
       name: RoomAnswerWait
-      definitions:
+      definition:
         Comment: Waits a bit and then poses next question (or finishes game)
         StartAt: "Wait"
         States:
