@@ -1,11 +1,8 @@
-import getRoomParticipantsCallback from '@wlq/wlq-api-aws/src/callbacks/getRoomParticipantsCallback'
-import getWebsocketApiGateway from '@wlq/wlq-api-aws/src/getWebsocketApi'
-import {
-  WebsocketBroadcast,
-  WebsocketEvent,
-} from '@wlq/wlq-api/lib/esm/websocket'
+import { WebsocketBroadcast, WebsocketEvent } from '@wlq/wlq-api/src/websocket'
 import { SNSHandler } from 'aws-lambda'
+import getRoomParticipantsCallback from '../callbacks/getRoomParticipantsCallback'
 import getDatabaseProps from '../getDatabaseProps'
+import getWebsocketApiGateway from '../getWebsocketApi'
 
 const DbProps = getDatabaseProps()
 
@@ -47,14 +44,10 @@ export const handler: SNSHandler = async event => {
           console.log(e)
         }
       })
-
-      if (promises.length > 0) {
-        await Promise.all(promises)
-      } else {
-        console.error('broadcastTopic No participants')
-      }
+      await Promise.all(promises)
     } else {
       console.error('broadcastTopic No recipients')
+      console.log(message)
     }
   }
 }

@@ -7,9 +7,9 @@ import Layout from '../src/components/Layout'
 import { config } from '../src/overmind'
 import theme from '../src/theme'
 
-if (process.env.NODE_ENV === 'development') {
-  require('../mirage/server').makeServer({ environment: 'development' })
-}
+// if (process.env.NODE_ENV === 'development') {
+//   require('../mirage/server').makeServer({ environment: 'development' })
+// }
 
 const overmind = createOvermind(config, {
   devtools: process.env.NODE_ENV === 'development',

@@ -8,6 +8,13 @@ export type AwsWebsocketEventData = {
   BroadcastTopicArn: string
 }
 
+export const getBroadcastTopic = (context: Context) => {
+  const functionArnCols = context.invokedFunctionArn.split(':')
+  const region = functionArnCols[3]
+  const accountId = functionArnCols[4]
+  return `arn:aws:sns:${region}:${accountId}:${process.env.BROADCAST_TOPIC!}`
+}
+
 const extractFromWebsocketEvent = (
   {
     requestContext: { domainName, stage, connectionId, routeKey },
@@ -15,12 +22,7 @@ const extractFromWebsocketEvent = (
   }: APIGatewayProxyEvent,
   context: Context,
 ): AwsWebsocketEventData => {
-  const functionArnCols = context.invokedFunctionArn.split(':')
-  const region = functionArnCols[3]
-  const accountId = functionArnCols[4]
-  const BroadcastTopicArn = `arn:aws:sns:${region}:${accountId}:${process.env
-    .BROADCAST_TOPIC!}`
-
+  const BroadcastTopicArn = getBroadcastTopic(context)
   let data: { [key: string]: any } = {}
   if (body) {
     // body is WebsocketPayload (but the action is already in routeKey)

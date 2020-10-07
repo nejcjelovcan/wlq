@@ -1,11 +1,11 @@
-import getDatabaseProps from '../getDatabaseProps'
-import awsWebsocketWrapper from '../wrappers/awsWebsocketWrapper'
 import leaveRoom from '@wlq/wlq-api/src/room/leaveRoom'
 import { APIGatewayProxyHandler } from 'aws-lambda'
 import deleteParticipantCallback from '../callbacks/deleteParticipantCallback'
 import getParticipantCallback from '../callbacks/getParticipantCallback'
 import extractFromWebsocketEvent from '../extractFromWebsocketEvent'
+import getDatabaseProps from '../getDatabaseProps'
 import { COMMON_HEADERS } from '../wrappers/awsRestRespond'
+import awsWebsocketWrapper from '../wrappers/awsWebsocketWrapper'
 
 const DbProps = getDatabaseProps()
 

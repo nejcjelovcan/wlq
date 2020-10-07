@@ -1,4 +1,4 @@
-import { GetParticipantCallback } from '@wlq/wlq-api/lib/esm'
+import { GetParticipantCallback } from '@wlq/wlq-api/src/room'
 import { RoomParticipant } from '@wlq/wlq-model/src/room'
 import { DatabaseProps } from '../DatabaseProps'
 

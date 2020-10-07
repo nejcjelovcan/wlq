@@ -1,9 +1,10 @@
-import { Room } from '@wlq/wlq-model/src/room'
 import {
+  AddRoomAnswerCallback,
   AnswerQuestionPayload,
   GetParticipantCallback,
   GetRoomCallback,
-  PutRoomCallback,
+  GetRoomParticipantsCallback,
+  SendTaskSuccessCallback,
   UserAnsweredPayload,
 } from '.'
 import { WebsocketBroadcast, WebsocketEventHandler } from '../websocket'
@@ -11,7 +12,9 @@ import { WebsocketBroadcast, WebsocketEventHandler } from '../websocket'
 const answerQuestion = (
   getParticipant: GetParticipantCallback,
   getRoomByRoomId: GetRoomCallback,
-  putRoom: PutRoomCallback,
+  addRoomAnswer: AddRoomAnswerCallback,
+  getRoomParticipants: GetRoomParticipantsCallback,
+  SendTaskSuccessCallback: SendTaskSuccessCallback,
 ): WebsocketEventHandler<AnswerQuestionPayload> => async ({
   connectionId,
   data: { answer },
@@ -28,11 +31,27 @@ const answerQuestion = (
       const alreadyAnswered = participant.pid in (room.answers ?? {})
 
       if (option && !alreadyAnswered) {
-        let roomUpdate: Partial<Room> = {
-          answers: { ...room.answers, [participant.pid]: answer },
-        }
         console.log('Updating room')
-        room = await putRoom({ ...room, ...roomUpdate }, true)
+        const { answers } = await addRoomAnswer(
+          room.roomId,
+          participant.pid,
+          answer,
+        )
+
+        const participants = await getRoomParticipants(room.roomId)
+
+        const answersCount = Object.keys(answers ?? {}).length
+        console.log(
+          'Check if everybody answered',
+          answersCount,
+          participants.length,
+        )
+        if (answersCount >= participants.length && room._questionToken) {
+          console.log('Sending task success')
+          await SendTaskSuccessCallback(room._questionToken, {
+            output: 'Everybody answered',
+          })
+        }
 
         const broadcast: WebsocketBroadcast<UserAnsweredPayload> = {
           channel: room.roomId,

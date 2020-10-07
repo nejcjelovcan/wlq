@@ -1,10 +1,10 @@
-import AWS from 'aws-sdk'
+import ApiGatewayManagementApi from 'aws-sdk/clients/apigatewaymanagementapi'
 
 const getWebsocketApiGateway = ((cache: {
-  [key: string]: AWS.ApiGatewayManagementApi
-}) => (websocketEndpoint: string): AWS.ApiGatewayManagementApi => {
+  [key: string]: ApiGatewayManagementApi
+}) => (websocketEndpoint: string): ApiGatewayManagementApi => {
   if (!cache[websocketEndpoint]) {
-    cache[websocketEndpoint] = new AWS.ApiGatewayManagementApi({
+    cache[websocketEndpoint] = new ApiGatewayManagementApi({
       apiVersion: '2018-11-29',
       endpoint: websocketEndpoint,
     })

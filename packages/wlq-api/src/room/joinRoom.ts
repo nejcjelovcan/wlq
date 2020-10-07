@@ -40,8 +40,9 @@ const joinRoom = (
   const room = await getRoomByRoomId(roomId)
 
   if (!room) throw new RestResponseError(400, 'Failed to join room')
-  if (room.state !== 'Idle')
-    throw new RestResponseError(400, 'Failed to join room: Game in progress')
+
+  // if (room.state !== 'Idle')
+  //   throw new RestResponseError(400, 'Failed to join room: Game in progress')
 
   // validate user details
   console.log('VALIDATING USER DETAILS', userDetails)

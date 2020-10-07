@@ -1,8 +1,10 @@
 import answerQuestion from '@wlq/wlq-api/src/room/answerQuestion'
 import { APIGatewayProxyHandler } from 'aws-lambda'
+import addRoomAnswerCallback from '../callbacks/addRoomAnswerCallback'
 import getParticipantCallback from '../callbacks/getParticipantCallback'
 import getRoomByRoomIdCallback from '../callbacks/getRoomByRoomIdCallback'
-import putRoomCallback from '../callbacks/putRoomCallback'
+import getRoomParticipantsCallback from '../callbacks/getRoomParticipantsCallback'
+import sendTaskSuccessCallback from '../callbacks/sendTaskSuccessCallback'
 import extractFromWebsocketEvent from '../extractFromWebsocketEvent'
 import getDatabaseProps from '../getDatabaseProps'
 import { COMMON_HEADERS } from '../wrappers/awsRestRespond'
@@ -28,7 +30,9 @@ export const handler: APIGatewayProxyHandler = async (event, context) => {
       answerQuestion(
         getParticipantCallback(DbProps),
         getRoomByRoomIdCallback(DbProps),
-        putRoomCallback(DbProps),
+        addRoomAnswerCallback(DbProps),
+        getRoomParticipantsCallback(DbProps),
+        sendTaskSuccessCallback,
       ),
     )
   }

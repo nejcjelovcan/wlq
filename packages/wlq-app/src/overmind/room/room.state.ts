@@ -1,4 +1,7 @@
-import { PosedQuestionPublic } from '@wlq/wlq-model/src/collection'
+import {
+  CollectionItem,
+  PosedQuestionPublic,
+} from '@wlq/wlq-model/src/collection'
 import {
   Room,
   RoomCreation,
@@ -23,9 +26,9 @@ export type RoomState = {
     pid?: string
     participants: RoomParticipantPublic[]
     currentQuestion?: PosedQuestionPublic
-    currentAnswer?: string
+    currentAnswer?: CollectionItem
+    participantAnswer?: string
     usersAnswered: string[]
-    itemAnswers: { [name: string]: string[] }
   }
 }
 
@@ -34,5 +37,5 @@ export const state: RoomState = {
   roomCreationRequest: {},
   roomCreation: {},
   socket: {},
-  roomSession: { participants: [], usersAnswered: [], itemAnswers: {} },
+  roomSession: { participants: [], usersAnswered: [] },
 }

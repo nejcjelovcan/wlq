@@ -6,23 +6,25 @@ export interface Room {
   type: 'Room'
   name: string
   roomId: string
-  state: 'Idle' | 'Question' | 'Answer'
+  state: 'Idle' | 'Question' | 'Answer' | 'Finished'
   listed: boolean
   question?: PosedQuestion
   answers?: { [pid: string]: string }
   ws?: string
+  questionCount: number
+  atQuestionNumber: number
+  _questionToken?: string
 }
 
 export type RoomCreation = Pick<Room, 'name' | 'listed'>
 
 export const getRoomPK = ({ roomId }: Pick<Room, 'roomId'>) => roomId
 
-export const getRoomSK = ({ listed }: Pick<Room, 'listed'>) =>
-  `##${listed ? 'LISTED' : 'UNLISTED'}`
+export const getRoomSK = () => `#METADATA`
 
-export const getRoomKeys = (room: Pick<Room, 'roomId' | 'listed'>) => ({
+export const getRoomKeys = (room: Pick<Room, 'roomId'>) => ({
   PK: getRoomPK(room),
-  SK: getRoomSK(room),
+  SK: getRoomSK(),
 })
 
 export const validateRoomCreation: Validator<RoomCreation> = obj => {
@@ -49,5 +51,7 @@ export const newRoom = ({ name, listed }: RoomCreation): Room => {
     name,
     state: 'Idle',
     listed,
+    questionCount: 10,
+    atQuestionNumber: 0,
   }
 }

@@ -1,6 +1,8 @@
 import {
   AnswerQuestionPayload,
+  GameFinishedPayload,
   PoseQuestionPayload,
+  RevealAnswerPayload,
   SetParticipantsPayload,
   StartGamePayload,
   UserAnsweredPayload,
@@ -31,7 +33,7 @@ export const setRoomCreation: Action<Partial<RoomCreation>> = (
 
 export const cleanRoomData: Action = ({ state: { room } }) => {
   room.currentRoom = undefined
-  room.roomSession = { participants: [], usersAnswered: [], itemAnswers: {} }
+  room.roomSession = { participants: [], usersAnswered: [] }
 }
 
 export const roomOnSetParticipants: Action<SetParticipantsPayload['data']> = (
@@ -74,7 +76,8 @@ export const roomOnPoseQuestion: Action<PoseQuestionPayload['data']> = (
     roomSession.currentQuestion = question
     roomSession.currentAnswer = undefined
     roomSession.usersAnswered = []
-    roomSession.itemAnswers = {}
+    roomSession.participantAnswer = undefined
+    currentRoom.answers = {}
   }
 }
 
@@ -92,6 +95,31 @@ export const roomOnUserAnswered: Action<UserAnsweredPayload['data']> = (
   }
 }
 
+export const roomOnRevealAnswer: Action<RevealAnswerPayload['data']> = (
+  {
+    state: {
+      room: { currentRoom, roomSession },
+    },
+  },
+  { answer, userAnswers },
+) => {
+  if (currentRoom) {
+    currentRoom.state = 'Answer'
+    currentRoom.answers = userAnswers
+    roomSession.currentAnswer = answer
+  }
+}
+
+export const roomOnGameFinished: Action<GameFinishedPayload['data']> = ({
+  state: {
+    room: { currentRoom },
+  },
+}) => {
+  if (currentRoom) {
+    currentRoom.state = 'Finished'
+  }
+}
+
 export const answerQuestion: Action<string> = (
   {
     state: {
@@ -101,8 +129,8 @@ export const answerQuestion: Action<string> = (
   },
   answer,
 ) => {
-  if (currentRoom?.state === 'Question' && !roomSession.currentAnswer) {
-    roomSession.currentAnswer = answer
+  if (currentRoom?.state === 'Question' && !roomSession.participantAnswer) {
+    roomSession.participantAnswer = answer
     roomSession.usersAnswered.push(roomSession.pid!)
     websocket.sendPayload<AnswerQuestionPayload>({
       action: 'answerQuestion',

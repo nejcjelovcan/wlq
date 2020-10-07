@@ -1,4 +1,8 @@
-import { PosedQuestionPublic } from '@wlq/wlq-model/src/collection'
+import {
+  CollectionItem,
+  PosedQuestion,
+  PosedQuestionPublic,
+} from '@wlq/wlq-model/src/collection'
 import {
   Room,
   RoomParticipant,
@@ -40,7 +44,7 @@ export type StartGamePayload = WebsocketPayload<'startGame'>
 
 export type PoseQuestionPayload = WebsocketPayload<
   'poseQuestion',
-  { question: PosedQuestionPublic }
+  { question: PosedQuestionPublic; questionTime: number }
 >
 
 export type AnswerQuestionPayload = WebsocketPayload<
@@ -52,6 +56,18 @@ export type UserAnsweredPayload = WebsocketPayload<
   'userAnswered',
   { pid: string }
 >
+
+export type RevealAnswerPayload = WebsocketPayload<
+  'revealAnswer',
+  { answer: CollectionItem; userAnswers: { [pid: string]: string } }
+>
+
+export type SetQuestionTokenPayload = WebsocketPayload<
+  'setQuestionToken',
+  { questionToken: string }
+>
+
+export type GameFinishedPayload = WebsocketPayload<'gameFinished', {}>
 
 // Callbacks
 
@@ -74,3 +90,40 @@ export type PutParticipantCallback = (
 export type DeleteParticipantCallback = (
   participant: RoomParticipant,
 ) => Promise<void>
+
+export type AddRoomAnswerCallback = (
+  roomId: string,
+  pid: string,
+  answer: string,
+) => Promise<Pick<Room, 'answers'>>
+
+export type SetRoomQuestionCallback = (
+  roomId: string,
+  question: PosedQuestion,
+) => Promise<unknown>
+
+export type SetRoomQuestionTokenCallback = (
+  roomId: string,
+  questionToken: string,
+) => Promise<unknown>
+
+export type SetRoomStateCallback = (
+  roomId: string,
+  state: string,
+) => Promise<unknown>
+
+export type SendQuestionTimerSuccessCallback = (
+  taskToken: string,
+) => Promise<unknown>
+
+export type StartExecutionCallback = (
+  stepFunctionArn: string,
+  input: object,
+) => Promise<unknown>
+
+export type SendTaskSuccessCallback = (
+  taskToken: string,
+  output: object,
+) => Promise<unknown>
+
+export type SetRoomFinishedCallback = (roomId: string) => Promise<unknown>
