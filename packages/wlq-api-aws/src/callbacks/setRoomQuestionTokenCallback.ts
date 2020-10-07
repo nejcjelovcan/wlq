@@ -12,8 +12,10 @@ const setRoomQuestionTokenCallback = ({
   DB.update({
     TableName,
     Key: getRoomKeys({ roomId }),
-    UpdateExpression: 'SET _questionToken = :questionToken',
-
+    UpdateExpression: 'SET #questionToken = :questionToken',
+    ExpressionAttributeNames: {
+      '#questionToken': '_questionToken',
+    },
     ExpressionAttributeValues: {
       ':questionToken': questionToken,
     },
