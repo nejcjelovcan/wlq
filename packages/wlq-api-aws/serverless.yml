@@ -76,7 +76,7 @@ plugins:
 custom:
   hostedZoneId: ${env:HOSTED_ZONE_ID}
   siteName: ${env:API_DOMAIN}
-  httpOrigin: https://${env:SITE_DOMAIN}
+  httpOrigin: "*" # https://${env:SITE_DOMAIN}
   acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
   roomTableName: ${self:service}-RoomTable-${self:provider.stage}
   broadcastTopic: "${self:service}-broadcast-${self:provider.stage}"

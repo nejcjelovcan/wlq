@@ -1,4 +1,6 @@
+import DynamoDB from 'aws-sdk/clients/dynamodb'
+
 export type DatabaseProps = {
-  DB: AWS.DynamoDB.DocumentClient
+  DB: DynamoDB.DocumentClient
   TableName: string
 }

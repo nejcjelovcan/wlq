@@ -7,7 +7,7 @@ import {
 } from '@wlq/wlq-api/src/websocket'
 import { ValidationError } from '@wlq/wlq-model/src/validation'
 import { APIGatewayProxyResult } from 'aws-lambda'
-import AWS from 'aws-sdk'
+import SNS from 'aws-sdk/clients/sns'
 import { AwsWebsocketEventData } from '../extractFromWebsocketEvent'
 import { COMMON_HEADERS } from '../wrappers/awsRestRespond'
 
@@ -72,8 +72,8 @@ const awsWebsocketWrapper = async <E>(
 }
 export default awsWebsocketWrapper
 
-let getSnsCache: AWS.SNS
-const getSns = (): AWS.SNS => {
-  if (!getSnsCache) getSnsCache = new AWS.SNS()
+let getSnsCache: SNS
+const getSns = (): SNS => {
+  if (!getSnsCache) getSnsCache = new SNS()
   return getSnsCache
 }

@@ -76,6 +76,7 @@ export const roomOnPoseQuestion: Action<PoseQuestionPayload['data']> = (
     roomSession.currentQuestion = question
     roomSession.currentAnswer = undefined
     roomSession.usersAnswered = []
+    roomSession.participantAnswer = undefined
     currentRoom.answers = {}
   }
 }

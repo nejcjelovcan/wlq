@@ -1,8 +1,8 @@
 import { SendTaskSuccessCallback } from '@wlq/wlq-api/src/room'
-import AWS from 'aws-sdk'
+import StepFunctions from 'aws-sdk/clients/stepfunctions'
 
 const sendTaskSuccessCallback: SendTaskSuccessCallback = (taskToken, output) =>
-  new AWS.StepFunctions()
+  new StepFunctions()
     .sendTaskSuccess({
       taskToken,
       output: JSON.stringify(output),

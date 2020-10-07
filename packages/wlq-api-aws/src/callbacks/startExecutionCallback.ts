@@ -1,11 +1,11 @@
 import { StartExecutionCallback } from '@wlq/wlq-api/src/room'
-import AWS from 'aws-sdk'
+import StepFunctions from 'aws-sdk/clients/stepfunctions'
 
 const startExecutionCallback: StartExecutionCallback = (
   stepFunctionArn,
   input,
 ) =>
-  new AWS.StepFunctions()
+  new StepFunctions()
     .startExecution({
       stateMachineArn: stepFunctionArn,
       input: JSON.stringify(input),
