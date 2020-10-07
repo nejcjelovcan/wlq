@@ -43,11 +43,12 @@ const answerQuestion = (
         const answersCount = Object.keys(answers ?? {}).length
         console.log(
           'Check if everybody answered',
+          participant.pid,
+          answers,
           answersCount,
           participants.length,
-          room._questionToken,
         )
-        if (answersCount === participants.length && room._questionToken) {
+        if (answersCount >= participants.length && room._questionToken) {
           console.log('Sending task success')
           await SendTaskSuccessCallback(room._questionToken, {
             output: 'Everybody answered',
