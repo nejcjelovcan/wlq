@@ -19,6 +19,7 @@ export const handler = async (
     console.log('Updating room state')
     await setRoomStateCallback(DbProps)(event.roomId, 'Answer')
     const room = await getRoomByRoomIdCallback(DbProps)(event.roomId)
+    console.log('Starting step function execution')
     await startExecutionCallback(process.env.ROOM_ANSWER_WAIT!, {
       roomId: event.roomId,
       waitTime: ANSWER_WAIT_TIME,

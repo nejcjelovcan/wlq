@@ -179,6 +179,8 @@ functions:
 
   roomNextQuestion:
     handler: src/lambdas/roomNextQuestion.handler
+    environment:
+      ROOM_QUESTION_TIMEOUT: ${self:resources.Outputs.RoomQuestionTimeout.Value}
 
 stepFunctions:
   stateMachines:

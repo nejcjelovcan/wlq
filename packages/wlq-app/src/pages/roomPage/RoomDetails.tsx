@@ -86,10 +86,9 @@ const RoomDetails = () => {
                   </Button>
                 </>
               )}
-              {currentRoom?.state === 'Question' ||
-                (currentRoom?.state === 'Answer' && currentQuestion && (
-                  <RoomQuestion />
-                ))}
+              {(currentRoom?.state === 'Question' ||
+                currentRoom?.state === 'Answer') &&
+                currentQuestion && <RoomQuestion />}
               {currentRoom?.state === 'Finished' && (
                 <Text>Game is finished</Text>
               )}
