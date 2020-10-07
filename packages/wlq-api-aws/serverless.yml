@@ -42,9 +42,7 @@ provider:
         - dynamodb:PutItem
         - dynamodb:DeleteItem
         - dynamodb:BatchGetItem
-
-        # - dynamodb:Scan
-        # - dynamodb:UpdateItem
+        - dynamodb:UpdateItem
 
       Resource:
         - { "Fn::GetAtt": ["RoomTable", "Arn"] }
