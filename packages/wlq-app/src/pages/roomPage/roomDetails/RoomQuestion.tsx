@@ -51,7 +51,7 @@ const RoomQuestion = () => {
           >
             <Button
               flexGrow={revealed ? 0 : 1}
-              isDisabled={revealed}
+              disabled={answered}
               borderRadius="full"
               variant={
                 color || participantAnswer === option.name ? 'solid' : 'outline'
