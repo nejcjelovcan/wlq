@@ -1,6 +1,6 @@
 import { SetRoomQuestionCallback } from '@wlq/wlq-api/src/room'
 import { PosedQuestion } from '@wlq/wlq-model/src/collection'
-import { getRoomPK } from '@wlq/wlq-model/src/room'
+import { getRoomKeys } from '@wlq/wlq-model/src/room'
 import { DatabaseProps } from '../DatabaseProps'
 
 const setRoomQuestionCallback = ({
@@ -12,7 +12,7 @@ const setRoomQuestionCallback = ({
 ) =>
   DB.update({
     TableName,
-    Key: { PK: getRoomPK({ roomId }) },
+    Key: getRoomKeys({ roomId }),
     UpdateExpression:
       'SET question = :question, answers = :answers, #state = :state',
     ExpressionAttributeNames: { '#state': 'state' },

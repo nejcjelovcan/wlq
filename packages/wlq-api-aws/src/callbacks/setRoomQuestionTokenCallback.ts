@@ -1,5 +1,5 @@
 import { SetRoomQuestionTokenCallback } from '@wlq/wlq-api/src/room'
-import { getRoomPK } from '@wlq/wlq-model/src/room'
+import { getRoomKeys } from '@wlq/wlq-model/src/room'
 import { DatabaseProps } from '../DatabaseProps'
 
 const setRoomQuestionTokenCallback = ({
@@ -11,7 +11,7 @@ const setRoomQuestionTokenCallback = ({
 ) =>
   DB.update({
     TableName,
-    Key: { PK: getRoomPK({ roomId }) },
+    Key: getRoomKeys({ roomId }),
     UpdateExpression: 'SET _questionToken = :questionToken',
 
     ExpressionAttributeValues: {
