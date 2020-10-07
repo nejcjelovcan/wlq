@@ -214,7 +214,7 @@ stepFunctions:
               - ErrorEquals:
                   - States.ALL
                 Next: QuestionTimedOut
-                ResultPath: $.error
+                ResultPath: $.output
           AllUsersAnswered:
             Type: Pass
             Next: RevealAnswer
@@ -229,7 +229,6 @@ stepFunctions:
                 Fn::GetAtt: [revealAnswer, Arn]
               Payload:
                 roomId.$: $.roomId
-                error.$: $.error
                 output.$: $.output
             Next: End
           End:

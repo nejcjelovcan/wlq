@@ -50,7 +50,9 @@ const RoomQuestion = () => {
               // flexGrow={answered ? 0 : 1}
               isDisabled={answered}
               borderRadius="full"
-              variant={color ? 'solid' : 'outline'}
+              variant={
+                color || participantAnswer === option.name ? 'solid' : 'outline'
+              }
               colorScheme={color}
               onClick={() => answerQuestion(option.name)}
             >
