@@ -188,7 +188,7 @@ stepFunctions:
               FunctionName:
                 Fn::GetAtt: [issueQuestionToken, Arn]
               Payload:
-                roomId: $.roomId
+                roomId.$: $.roomId
                 questionToken: $$.Task.Token
             TimeoutSecondsPath: $.questionTime
             Next: AllUsersAnswered
@@ -211,7 +211,7 @@ stepFunctions:
               FunctionName:
                 Fn::GetAtt: [revealAnswer, Arn]
               Payload:
-                roomId: $.roomId
+                roomId.$: $.roomId
             Next: End
           End:
             Type: Succeed

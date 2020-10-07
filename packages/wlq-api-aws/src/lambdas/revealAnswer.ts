@@ -31,5 +31,5 @@ export const handler = async (
     }
     // answer: CollectionItem; userAnswers: { [pid: string]: string }
   }
-  return { channel: event.roomId }
+  return { roomId: event.roomId }
 }
