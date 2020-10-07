@@ -1,5 +1,5 @@
 import { AddRoomAnswerCallback } from '@wlq/wlq-api/src/room'
-import { Room, getRoomKeys } from '@wlq/wlq-model/src/room'
+import { getRoomKeys } from '@wlq/wlq-model/src/room'
 import { DatabaseProps } from '../DatabaseProps'
 
 const addRoomAnswerCallback = ({
@@ -16,9 +16,9 @@ const addRoomAnswerCallback = ({
     UpdateExpression: 'SET answers.#pid = :answer',
     ExpressionAttributeNames: { '#pid': pid },
     ExpressionAttributeValues: { ':answer': answer },
-    ReturnValues: 'UPDATED_NEW',
+    ReturnValues: 'ALL_NEW',
   }).promise()
-  return result.Attributes as Pick<Room, 'answers'>
+  return { answers: result.Attributes?.answers ?? {} }
 }
 
 export default addRoomAnswerCallback
