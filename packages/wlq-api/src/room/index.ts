@@ -123,7 +123,7 @@ export type StartExecutionCallback = (
 
 export type SendTaskSuccessCallback = (
   taskToken: string,
-  output: string,
+  output: object,
 ) => Promise<unknown>
 
 export type SetRoomFinishedCallback = (roomId: string) => Promise<unknown>

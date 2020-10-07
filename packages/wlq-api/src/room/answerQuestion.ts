@@ -49,10 +49,9 @@ const answerQuestion = (
         )
         if (answersCount === participants.length && room._questionToken) {
           console.log('Sending task success')
-          await SendTaskSuccessCallback(
-            room._questionToken,
-            'Everybody answered',
-          )
+          await SendTaskSuccessCallback(room._questionToken, {
+            output: 'Everybody answered',
+          })
         }
 
         const broadcast: WebsocketBroadcast<UserAnsweredPayload> = {
