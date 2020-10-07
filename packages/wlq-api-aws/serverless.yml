@@ -186,7 +186,6 @@ functions:
 
   roomNextQuestion:
     handler: src/lambdas/roomNextQuestion.handler
-    name: ${self:provider.stage}-roomNextQuestion
     environment:
       ROOM_QUESTION_TIMEOUT: ${self:resources.Outputs.RoomQuestionTimeout.Value}
 
