@@ -14,8 +14,8 @@ const setRoomQuestionCallback = ({
     TableName,
     Key: { PK: getRoomPK({ roomId }) },
     UpdateExpression:
-      'SET question = :question, answers = :answers, state = :state',
-
+      'SET question = :question, answers = :answers, #state = :state',
+    ExpressionAttributeNames: { '#state': 'state' },
     ExpressionAttributeValues: {
       ':question': question,
       ':answers': {},

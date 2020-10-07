@@ -12,8 +12,8 @@ const setRoomStateCallback = ({
   DB.update({
     TableName,
     Key: { PK: getRoomPK({ roomId }) },
-    UpdateExpression: 'SET state = :state',
-
+    UpdateExpression: 'SET #state = :state',
+    ExpressionAttributeNames: { '#state': 'state' },
     ExpressionAttributeValues: {
       ':state': state,
     },
