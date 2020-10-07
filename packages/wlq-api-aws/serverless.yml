@@ -88,7 +88,7 @@ custom:
         - Ref: AWS::Region
         - Ref: AWS::AccountId
         - function
-        - ${roomNextQuestionFunctionName}
+        - ${self:custom.roomNextQuestionFunctionName}
   webpack:
     webpackConfig: "./webpack.config.js"
     includeModules: true
