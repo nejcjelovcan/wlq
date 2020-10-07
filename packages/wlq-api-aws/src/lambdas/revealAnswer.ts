@@ -16,7 +16,9 @@ export const handler = async (
     console.log('Updating room state')
     await setRoomStateCallback(DbProps)(event.roomId, 'Answer')
     const room = await getRoomByRoomIdCallback(DbProps)(event.roomId)
+    console.log('Room', room)
     if (room && room.question) {
+      console.log('Publishing revealAnswer')
       await publish(
         {
           action: 'revealAnswer',
