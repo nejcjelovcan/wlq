@@ -43,8 +43,6 @@ const answerQuestion = (
         const answersCount = Object.keys(answers ?? {}).length
         console.log(
           'Check if everybody answered',
-          participant.pid,
-          answers,
           answersCount,
           participants.length,
         )
