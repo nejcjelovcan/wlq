@@ -232,7 +232,7 @@ stepFunctions:
             Type: Wait
             SecondsPath: $.waitTime
             Next: RoomNextQuestion
-          PoseNextQuestion:
+          RoomNextQuestion:
             Type: Task
             Resource: "arn:aws:states:::lambda:invoke"
             Parameters:
