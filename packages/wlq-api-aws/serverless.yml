@@ -169,6 +169,7 @@ functions:
 stepFunctions:
   stateMachines:
     RoomQuestionTimeout:
+      name: RoomQuestionTimeout
       definition:
         Comment: Room issues a questionToken to be sent after all users answer, otherwise times out after certain time
         StartAt: IssueQuestionToken
