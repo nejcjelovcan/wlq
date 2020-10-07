@@ -1,5 +1,5 @@
 import { AddRoomAnswerCallback } from '@wlq/wlq-api/src/room'
-import { Room, getRoomPK } from '@wlq/wlq-model/src/room'
+import { Room, getRoomKeys } from '@wlq/wlq-model/src/room'
 import { DatabaseProps } from '../DatabaseProps'
 
 const addRoomAnswerCallback = ({
@@ -12,7 +12,7 @@ const addRoomAnswerCallback = ({
 ) => {
   const result = await DB.update({
     TableName,
-    Key: { PK: getRoomPK({ roomId }) },
+    Key: getRoomKeys({ roomId }),
     UpdateExpression: 'SET answers.#pid = :answer',
     ExpressionAttributeNames: { '#pid': pid },
     ExpressionAttributeValues: { ':answer': answer },

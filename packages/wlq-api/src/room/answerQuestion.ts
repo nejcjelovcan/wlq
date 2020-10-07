@@ -1,11 +1,10 @@
-import AWS from 'aws-sdk'
-
 import {
   AddRoomAnswerCallback,
   AnswerQuestionPayload,
   GetParticipantCallback,
   GetRoomCallback,
   GetRoomParticipantsCallback,
+  SendQuestionTimerSuccessCallback,
   UserAnsweredPayload,
 } from '.'
 import { WebsocketBroadcast, WebsocketEventHandler } from '../websocket'
@@ -15,6 +14,7 @@ const answerQuestion = (
   getRoomByRoomId: GetRoomCallback,
   addRoomAnswer: AddRoomAnswerCallback,
   getRoomParticipants: GetRoomParticipantsCallback,
+  sendQuestionTimerSuccess: SendQuestionTimerSuccessCallback,
 ): WebsocketEventHandler<AnswerQuestionPayload> => async ({
   connectionId,
   data: { answer },
@@ -44,13 +44,7 @@ const answerQuestion = (
           Object.keys(answers ?? {}).length === participants.length &&
           room._questionToken
         ) {
-          console.log('Send Task success to step function')
-          await new AWS.StepFunctions()
-            .sendTaskSuccess({
-              taskToken: room._questionToken,
-              output: room.roomId,
-            })
-            .promise()
+          await sendQuestionTimerSuccess(room._questionToken)
         }
 
         const broadcast: WebsocketBroadcast<UserAnsweredPayload> = {
