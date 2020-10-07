@@ -80,13 +80,15 @@ custom:
   acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
   roomTableName: ${self:service}-RoomTable-${self:provider.stage}
   broadcastTopic: "${self:service}-broadcast-${self:provider.stage}"
+  roomNextQuestionFunctionName: ${self:service}-${self:provider.stage}-roomNextQuestion
   roomNextQuestionArn:
     Fn::Join:
       - ":"
       - - arn:aws:lambda
         - Ref: AWS::Region
         - Ref: AWS::AccountId
-        - function:${self:service}-${self:provider.stage}-roomNextQuestion
+        - function
+        - ${roomNextQuestionFunctionName}
   webpack:
     webpackConfig: "./webpack.config.js"
     includeModules: true
@@ -187,7 +189,7 @@ functions:
 
   roomNextQuestion:
     handler: src/lambdas/roomNextQuestion.handler
-    name: ${self:provider.stage}-roomNextQuestion
+    name: ${self:custom.roomNextQuestionFunctionName}
     environment:
       ROOM_QUESTION_TIMEOUT: ${self:resources.Outputs.RoomQuestionTimeout.Value}
 
