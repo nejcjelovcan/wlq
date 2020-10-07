@@ -20,7 +20,7 @@ const roomNextQuestion = (
   setRoomQuestion: SetRoomQuestionCallback,
   startExecution: StartExecutionCallback,
   setRoomFinished: SetRoomFinishedCallback,
-) => async (roomId: string): Promise<WebsocketEventHandlerReturn> => {
+) => async (roomId: string): WebsocketEventHandlerReturn => {
   let room = await getRoomByRoomId(roomId)
 
   if (room) {

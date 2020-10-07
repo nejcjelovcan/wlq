@@ -1,16 +1,15 @@
-import { AwsWebsocketEventData } from '@wlq/wlq-api-aws/src/extractFromWebsocketEvent'
-import { COMMON_HEADERS } from '@wlq/wlq-api-aws/src/wrappers/awsRestRespond'
 import { RestResponseError } from '@wlq/wlq-api/src/rest'
 import {
-  WebsocketEvent,
-  WebsocketEventHandler,
-  WebsocketPayload,
-  WebsocketErrorPayload,
   WebsocketBroadcast,
+  WebsocketErrorPayload,
+  WebsocketEvent,
+  WebsocketEventHandlerReturn,
 } from '@wlq/wlq-api/src/websocket'
 import { ValidationError } from '@wlq/wlq-model/src/validation'
 import { APIGatewayProxyResult } from 'aws-lambda'
 import AWS from 'aws-sdk'
+import { AwsWebsocketEventData } from '../extractFromWebsocketEvent'
+import { COMMON_HEADERS } from '../wrappers/awsRestRespond'
 
 export const publish = async (
   event: WebsocketEvent | WebsocketBroadcast,
@@ -30,13 +29,10 @@ export const publish = async (
 // TODO It would be great if we could specify when calling whether
 // the payloads are sent to broadcast topic on SNS or immediately
 // broadcasted (regardless of .channel or .connectionId)
-const awsWebsocketWrapper = async <P extends WebsocketPayload>(
-  incomingEvent: WebsocketEvent<P>,
-  websocketEventData: Pick<
-    AwsWebsocketEventData,
-    'websocketEndpoint' | 'BroadcastTopicArn'
-  >,
-  eventHandler: WebsocketEventHandler<P>,
+const awsWebsocketWrapper = async <E>(
+  incomingEvent: E,
+  websocketEventData: Pick<AwsWebsocketEventData, 'BroadcastTopicArn'>,
+  eventHandler: (incomingEvent: E) => WebsocketEventHandlerReturn,
 ): Promise<APIGatewayProxyResult> => {
   try {
     const events = await eventHandler(incomingEvent)
@@ -60,10 +56,11 @@ const awsWebsocketWrapper = async <P extends WebsocketPayload>(
         data: { error: e.message },
       }
       try {
-        await publish(
-          { connectionId: incomingEvent.connectionId, ...websocketError },
-          websocketEventData.BroadcastTopicArn,
-        )
+        if ('connectionId' in incomingEvent)
+          await publish(
+            { connectionId: incomingEvent['connectionId'], ...websocketError },
+            websocketEventData.BroadcastTopicArn,
+          )
       } catch (e) {}
     } else {
       console.error('awsWebsocketWrapper error')
