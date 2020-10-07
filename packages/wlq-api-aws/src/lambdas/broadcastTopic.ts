@@ -44,14 +44,10 @@ export const handler: SNSHandler = async event => {
           console.log(e)
         }
       })
-
-      if (promises.length > 0) {
-        await Promise.all(promises)
-      } else {
-        console.error('broadcastTopic No participants')
-      }
+      await Promise.all(promises)
     } else {
       console.error('broadcastTopic No recipients')
+      console.log(message)
     }
   }
 }

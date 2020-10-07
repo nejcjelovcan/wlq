@@ -11,7 +11,9 @@ export const handler = async (
   event: { [key: string]: unknown },
   context: Context,
 ) => {
+  console.log('Reveal answer', event)
   if (typeof event.roomId === 'string') {
+    console.log('Updating room state')
     await setRoomStateCallback(DbProps)(event.roomId, 'Answer')
     const room = await getRoomByRoomIdCallback(DbProps)(event.roomId)
     if (room && room.question) {
