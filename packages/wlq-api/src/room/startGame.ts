@@ -21,6 +21,7 @@ const startGame = (
       getRoomByRoomId,
       setRoomQuestion,
       startExecution,
+      async () => {},
     )(participant.roomId)
   }
   return []

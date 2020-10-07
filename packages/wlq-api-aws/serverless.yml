@@ -229,6 +229,8 @@ stepFunctions:
                 Fn::GetAtt: [revealAnswer, Arn]
               Payload:
                 roomId.$: $.roomId
+                error.$: $.error
+                output.$: $.output
             Next: End
           End:
             Type: Succeed

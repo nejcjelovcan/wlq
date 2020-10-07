@@ -14,5 +14,4 @@ export const handler = async (event: { [key: string]: unknown }) => {
       event.questionToken,
     )
   }
-  return { channel: event.roomId }
 }
