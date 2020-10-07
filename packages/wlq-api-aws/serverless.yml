@@ -242,7 +242,7 @@ stepFunctions:
                 roomId.$: $.roomId
             Next: End
           End:
-            Type: Success
+            Type: Succeed
 
 resources:
   Resources:
