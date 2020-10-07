@@ -50,5 +50,7 @@ export const newRoom = ({ name, listed }: RoomCreation): Room => {
     name,
     state: 'Idle',
     listed,
+    question: undefined,
+    answers: {},
   }
 }

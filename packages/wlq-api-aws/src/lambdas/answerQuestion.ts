@@ -1,3 +1,4 @@
+import getRoomParticipantsCallback from '@wlq/wlq-api-aws/src/callbacks/getRoomParticipantsCallback'
 import answerQuestion from '@wlq/wlq-api/src/room/answerQuestion'
 import { APIGatewayProxyHandler } from 'aws-lambda'
 import addRoomAnswerCallback from '../callbacks/addRoomAnswerCallback'
@@ -29,6 +30,7 @@ export const handler: APIGatewayProxyHandler = async (event, context) => {
         getParticipantCallback(DbProps),
         getRoomByRoomIdCallback(DbProps),
         addRoomAnswerCallback(DbProps),
+        getRoomParticipantsCallback(DbProps),
       ),
     )
   }
