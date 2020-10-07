@@ -35,13 +35,13 @@ const RoomQuestion = () => {
       </Heading>
       {currentQuestion?.options.map(option => {
         let color: string | undefined = undefined
+        const correct = currentAnswer?.name === option.name
         if (revealed) {
-          color =
-            currentAnswer?.name === option.name
-              ? 'green'
-              : participantAnswer === option.name
-              ? 'red'
-              : undefined
+          color = correct
+            ? 'green'
+            : participantAnswer === option.name
+            ? 'red'
+            : undefined
         }
         return (
           <Flex
@@ -69,6 +69,7 @@ const RoomQuestion = () => {
                       key={p.pid}
                       userDetails={p.details}
                       showAlias={false}
+                      grayscale={!correct}
                     />
                   ))}
                 </HStack>
