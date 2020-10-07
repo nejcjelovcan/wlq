@@ -163,6 +163,7 @@ functions:
               - userJoined
               - userLeft
               - userAnswered
+              - revealAnswer
               - poseQuestion
               - error
               - setParticipants
