@@ -65,6 +65,7 @@ provider:
     - Effect: "Allow"
       Action:
         - "states:StartExecution"
+        - "states:SendTaskSuccess"
       Resource:
         - "*"
 
