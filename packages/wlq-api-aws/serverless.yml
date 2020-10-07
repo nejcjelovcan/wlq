@@ -25,7 +25,6 @@ provider:
     ROOM_TABLE_NAME: ${self:custom.roomTableName}
     ALLOW_ORIGIN: ${self:custom.httpOrigin}
     BROADCAST_TOPIC: ${self:custom.broadcastTopic}
-    ROOM_QUESTION_TIMEOUT: ${self:resources.Outputs.RoomQuestionTimeout.Value}
     WEBSOCKET_ENDPOINT:
       Fn::Join:
         - ""
@@ -133,6 +132,8 @@ functions:
 
   startGame:
     handler: src/lambdas/startGame.handler
+    environment:
+      ROOM_QUESTION_TIMEOUT: ${self:resources.Outputs.RoomQuestionTimeout.Value}
     events:
       - websocket:
           route: startGame
