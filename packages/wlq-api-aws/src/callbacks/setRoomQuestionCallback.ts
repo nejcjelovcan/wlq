@@ -14,12 +14,13 @@ const setRoomQuestionCallback = ({
     TableName,
     Key: getRoomKeys({ roomId }),
     UpdateExpression:
-      'SET question = :question, answers = :answers, #state = :state',
+      'SET question = :question, answers = :answers, #state = :state, atQuestionNumber = atQuestionNumber + :inc',
     ExpressionAttributeNames: { '#state': 'state' },
     ExpressionAttributeValues: {
       ':question': question,
       ':answers': {},
       ':state': 'Question',
+      ':inc': 1,
     },
   }).promise()
 

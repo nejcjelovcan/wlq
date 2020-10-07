@@ -3,6 +3,7 @@ import { APIGatewayProxyHandler } from 'aws-lambda'
 import getParticipantCallback from '../callbacks/getParticipantCallback'
 import getRoomByRoomIdCallback from '../callbacks/getRoomByRoomIdCallback'
 import setRoomQuestionCallback from '../callbacks/setRoomQuestionCallback'
+import startExecutionCallback from '../callbacks/startExecutionCallback'
 import extractFromWebsocketEvent from '../extractFromWebsocketEvent'
 import getDatabaseProps from '../getDatabaseProps'
 import { COMMON_HEADERS } from '../wrappers/awsRestRespond'
@@ -26,6 +27,7 @@ export const handler: APIGatewayProxyHandler = async (event, context) => {
         getParticipantCallback(DbProps),
         getRoomByRoomIdCallback(DbProps),
         setRoomQuestionCallback(DbProps),
+        startExecutionCallback,
       ),
     )
   }

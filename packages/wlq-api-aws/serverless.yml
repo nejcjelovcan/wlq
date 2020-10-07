@@ -25,6 +25,7 @@ provider:
     ROOM_TABLE_NAME: ${self:custom.roomTableName}
     ALLOW_ORIGIN: ${self:custom.httpOrigin}
     BROADCAST_TOPIC: ${self:custom.broadcastTopic}
+    ROOM_QUESTION_TIMEOUT: ${self:resources.Outputs.RoomQuestionTimeout.Value}
     WEBSOCKET_ENDPOINT:
       Fn::Join:
         - ""
@@ -167,15 +168,7 @@ functions:
 
 stepFunctions:
   stateMachines:
-    roomQuestionTimeout:
-      events:
-        - sns:
-          arn:
-            Ref: BroadcastTopic
-          topicName: ${self:custom.broadcastTopic}
-          filterPolicy:
-            action:
-              - poseQuestion
+    RoomQuestionTimeout:
       definition:
         Comment: Room issues a questionToken to be sent after all users answer, otherwise times out after certain time
         StartAt: IssueQuestionToken
@@ -187,9 +180,9 @@ stepFunctions:
               FunctionName:
                 Fn::GetAtt: [issueQuestionToken, Arn]
               Payload:
-                roomId: $.channel
+                roomId: $.roomId
                 questionToken: $$.Task.Token
-            TimeoutSecondsPath: $.data.questionTime
+            TimeoutSecondsPath: $.questionTime
             Next: AllUsersAnswered
             ResultPath: $.output
             Catch:
@@ -269,6 +262,11 @@ resources:
             ProvisionedThroughput:
               ReadCapacityUnits: 1
               WriteCapacityUnits: 1
+
+  Outputs:
+    RoomQuestionTimeout:
+      Value:
+        Ref: RoomQuestionTimeout
 
 package:
   individually: true

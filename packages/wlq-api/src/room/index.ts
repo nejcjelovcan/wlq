@@ -113,3 +113,13 @@ export type SetRoomStateCallback = (
 export type SendQuestionTimerSuccessCallback = (
   taskToken: string,
 ) => Promise<unknown>
+
+export type StartExecutionCallback = (
+  stepFunctionArn: string,
+  input: object,
+) => Promise<unknown>
+
+export type SendTaskSuccessCallback = (
+  taskToken: string,
+  output: string,
+) => Promise<unknown>

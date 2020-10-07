@@ -11,6 +11,8 @@ export interface Room {
   question?: PosedQuestion
   answers?: { [pid: string]: string }
   ws?: string
+  questionCount: number
+  atQuestionNumber: number
   _questionToken?: string
 }
 
@@ -49,5 +51,7 @@ export const newRoom = ({ name, listed }: RoomCreation): Room => {
     name,
     state: 'Idle',
     listed,
+    questionCount: 10,
+    atQuestionNumber: 0,
   }
 }

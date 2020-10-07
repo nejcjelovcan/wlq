@@ -4,7 +4,7 @@ import {
   GetParticipantCallback,
   GetRoomCallback,
   GetRoomParticipantsCallback,
-  SendQuestionTimerSuccessCallback,
+  SendTaskSuccessCallback,
   UserAnsweredPayload,
 } from '.'
 import { WebsocketBroadcast, WebsocketEventHandler } from '../websocket'
@@ -14,7 +14,7 @@ const answerQuestion = (
   getRoomByRoomId: GetRoomCallback,
   addRoomAnswer: AddRoomAnswerCallback,
   getRoomParticipants: GetRoomParticipantsCallback,
-  sendQuestionTimerSuccess: SendQuestionTimerSuccessCallback,
+  SendTaskSuccessCallback: SendTaskSuccessCallback,
 ): WebsocketEventHandler<AnswerQuestionPayload> => async ({
   connectionId,
   data: { answer },
@@ -44,7 +44,10 @@ const answerQuestion = (
           Object.keys(answers ?? {}).length === participants.length &&
           room._questionToken
         ) {
-          await sendQuestionTimerSuccess(room._questionToken)
+          await SendTaskSuccessCallback(
+            room._questionToken,
+            'Everybody answered',
+          )
         }
 
         const broadcast: WebsocketBroadcast<UserAnsweredPayload> = {
