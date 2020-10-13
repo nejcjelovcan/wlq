@@ -16,7 +16,7 @@ const SettingsPage = () => {
   return (
     <Stack spacing={4}>
       <PageHead title="Settings" />
-      <UserDetailsForm onDone={() => router.push(next)} />
+      <UserDetailsForm onDone={() => router.replace(next)} />
     </Stack>
   )
 }
