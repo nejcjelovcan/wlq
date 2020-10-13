@@ -61,7 +61,7 @@ const UserDetailsForm = ({ onDone }: { onDone?: () => void }) => {
           <FormControl isInvalid={touched && !alias}>
             <FormLabel>Nickname</FormLabel>
             <Input
-              placeholder="choose a name or nickname"
+              placeholder="Enter your nickname"
               value={alias}
               onChange={event => {
                 setAlias(event.target.value)

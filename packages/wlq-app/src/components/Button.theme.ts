@@ -1,8 +1,12 @@
 import { mode } from '@chakra-ui/theme-tools'
 
 const ButtonTheme = {
-  baseStyle: { borderColor: 'white' },
-  defaultProps: { size: 'lg', variant: 'outline' },
+  baseStyle: { borderColor: 'black' },
+  defaultProps: {
+    size: 'lg',
+    variant: 'outline',
+    colorScheme: 'customGray',
+  },
   variants: {
     vibrant(props: Record<string, any>) {
       const { colorScheme: c } = props

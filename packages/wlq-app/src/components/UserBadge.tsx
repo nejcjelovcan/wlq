@@ -31,17 +31,11 @@ const UserBadge = ({
 
   return (
     <Flex
-      borderRadius="full"
-      textTransform="uppercase"
-      fontWeight="bold"
-      fontSize="xl"
-      transition="all 0.3s ease"
       alignItems="center"
       minWidth={showAlias ? '4rem' : '3.2rem'}
       maxWidth={showAlias ? '12rem' : '3.2rem'}
-      height="3.2rem"
+      pr={showAlias ? '4' : '0'}
       sx={userBadgeStyle}
-      px="0.5rem"
       style={{ filter: grayscale ? 'grayscale(100%)' : undefined }}
       {...props}
     >
@@ -54,7 +48,7 @@ const UserBadge = ({
 
       <Box
         zIndex="1"
-        px="0.5rem"
+        // px="0.5rem"
         transition="all 0.3s ease"
         position="relative"
         opacity={showAlias ? '100' : '0'}
