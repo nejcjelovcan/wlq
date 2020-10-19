@@ -32,6 +32,7 @@ export const setRoomCreation: Action<Partial<RoomCreation>> = (
 }
 
 export const cleanRoomData: Action = ({ state: { room } }) => {
+  room.roomCreation = { listed: true }
   room.currentRoom = undefined
   room.roomSession = { participants: [], usersAnswered: [] }
 }

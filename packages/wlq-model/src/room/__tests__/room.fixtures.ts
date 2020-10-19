@@ -10,7 +10,7 @@ import {
 } from '@wlq/wlq-model/src'
 
 export const roomFixture = (props: Partial<Room> = {}): Room => ({
-  ...newRoom({ name: 'Room', listed: true }),
+  ...newRoom({ listed: true }),
   ...props,
 })
 

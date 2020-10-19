@@ -5,7 +5,6 @@ import {
   FormErrorMessage,
   FormHelperText,
   FormLabel,
-  Input,
   Skeleton,
   Spinner,
   Stack,
@@ -13,7 +12,6 @@ import {
 } from '@chakra-ui/core'
 import React, { useCallback, useState } from 'react'
 import { useOvermind } from '../../overmind'
-import { useThrottleCallback } from '@react-hook/throttle'
 
 const RoomCreationForm = ({
   userDetailsReady,
@@ -34,13 +32,7 @@ const RoomCreationForm = ({
     },
   } = useOvermind()
 
-  const [name, setName] = useState(roomCreation?.name ?? '')
   const [listed, setListed] = useState(roomCreation?.listed ?? true)
-  const throttledSetRoomCreation = useThrottleCallback(
-    setRoomCreation,
-    10,
-    true,
-  )
 
   const onSubmit = useCallback(
     event => {
@@ -48,46 +40,15 @@ const RoomCreationForm = ({
       if (roomCreationValid) {
         createRoom()
       } else {
-        setRoomCreation({ ...roomCreation, name, listed })
+        setRoomCreation({ ...roomCreation, listed })
       }
     },
-    [
-      roomCreation,
-      roomCreationValid,
-      listed,
-      name,
-      setRoomCreation,
-      createRoom,
-    ],
+    [roomCreation, roomCreationValid, listed, setRoomCreation, createRoom],
   )
 
   return (
     <form action="?" onSubmit={onSubmit}>
       <Stack spacing={4}>
-        <Skeleton isLoaded={userDetailsReady}>
-          <FormControl
-            isInvalid={roomCreationError?.field === 'name'}
-            isReadOnly={loading}
-          >
-            <FormLabel htmlFor="room_name">Room name</FormLabel>
-            <Input
-              id="room_name"
-              name="room_name"
-              placeholder="choose a name for the new room"
-              value={name}
-              onChange={event => {
-                setName(event.target.value)
-                throttledSetRoomCreation({
-                  ...roomCreation,
-                  name: event.target.value,
-                })
-              }}
-            />
-            {roomCreationError?.field === 'name' && (
-              <FormErrorMessage>{roomCreationError?.message}</FormErrorMessage>
-            )}
-          </FormControl>
-        </Skeleton>
         <Skeleton isLoaded={userDetailsReady}>
           <FormControl
             isInvalid={roomCreationError?.field === 'listed'}

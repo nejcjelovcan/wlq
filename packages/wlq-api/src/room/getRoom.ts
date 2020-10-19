@@ -1,3 +1,4 @@
+import { getRoomPublic } from '@wlq/wlq-model/src/room'
 import { GetRoomResponseData, GetRoomCallback } from '.'
 import { RestRequest, RestResponse, RestResponseError } from '../rest'
 
@@ -9,7 +10,7 @@ const getRoom = async (
   if (!room) {
     throw new RestResponseError(404, 'Room not found')
   }
-  return { statusCode: 200, data: { room } }
+  return { statusCode: 200, data: { room: getRoomPublic(room) } }
 }
 
 export default getRoom

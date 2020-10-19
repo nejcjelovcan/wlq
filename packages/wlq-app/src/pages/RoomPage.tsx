@@ -47,13 +47,13 @@ const RoomPage = () => {
 
   const error = getRoomError
   const loading = !ready || (hasRoomId && !error && !roomLoaded)
-  const title = !hasRoomId ? 'New Game' : error ? 'Error' : 'Room name'
+  const title = !hasRoomId ? 'New Game' : error ? 'Error' : 'Geography'
 
   return (
     <Stack spacing={4} flexGrow={1}>
       <PageHead
         loading={loading}
-        title={currentRoom?.name ?? title}
+        title={title}
         showAlias={currentRoom ? currentRoom.state === 'Idle' : true}
       />
       {!hasRoomId && <RoomCreationForm userDetailsReady={ready} />}

@@ -6,9 +6,9 @@ describe('getRoom', () => {
   it('responds with room from roomGetter', async () => {
     await expect(
       getRoom({ data: { roomId: 'test' } }, async () => ({
-        ...newRoom({ name: 'TEST', listed: true }),
+        ...newRoom({ listed: true }),
       })),
-    ).resolves.toMatchObject({ data: { room: { name: 'TEST' } } })
+    ).resolves.toMatchObject({ data: { room: { listed: true } } })
   })
   it('throws ResponseError if roomGetter returns undefined', async () => {
     const promise = expect(

@@ -16,6 +16,10 @@ export type GetRoomResponseData = {
   room: Room
 }
 
+export type ListRoomsResponseData = {
+  rooms: Room[]
+}
+
 // Websocket interfaces
 
 export type JoinRoomPayload = WebsocketPayload<
@@ -127,3 +131,5 @@ export type SendTaskSuccessCallback = (
 ) => Promise<unknown>
 
 export type SetRoomFinishedCallback = (roomId: string) => Promise<unknown>
+
+export type ListRoomsCallback = () => Promise<Room[]>
