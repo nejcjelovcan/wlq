@@ -1,11 +1,5 @@
 service: wlq-app-aws
 
-# Expected env variables:
-# HOSTED_ZONE_ID
-# API_OCT_SECRET_KEY
-# SITE_DOMAIN (sub)domain of the root service (static site - wql-app-aws)
-# ACM_CERTIFICATE_ARN certificate ARN for given hosted zone
-
 frameworkVersion: "2"
 
 provider:
@@ -53,6 +47,7 @@ custom:
 
       - bucket: ${self:custom.siteName}
         prefix: _next/static
+        empty: true
         files:
           - source: ../wlq-app/.next/static/
             globs: "**/*.js"

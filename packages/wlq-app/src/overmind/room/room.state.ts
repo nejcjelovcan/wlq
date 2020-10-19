@@ -13,6 +13,8 @@ import { RequestState } from '../../utils/api'
 export type RoomState = {
   currentRoom?: Room
   getRoomRequest: RequestState
+  listRoomsRequest: RequestState
+  rooms: Room[]
   roomCreation: Partial<RoomCreation>
   roomCreationValid?: boolean
   roomCreationError?: ValidationFieldErrorData
@@ -34,8 +36,10 @@ export type RoomState = {
 
 export const state: RoomState = {
   getRoomRequest: {},
+  listRoomsRequest: {},
   roomCreationRequest: {},
-  roomCreation: {},
+  roomCreation: { listed: true },
   socket: {},
   roomSession: { participants: [], usersAnswered: [] },
+  rooms: [],
 }

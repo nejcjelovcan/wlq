@@ -14,7 +14,7 @@ const answerQuestion = (
   getRoomByRoomId: GetRoomCallback,
   addRoomAnswer: AddRoomAnswerCallback,
   getRoomParticipants: GetRoomParticipantsCallback,
-  SendTaskSuccessCallback: SendTaskSuccessCallback,
+  sendTaskSuccessCallback: SendTaskSuccessCallback,
 ): WebsocketEventHandler<AnswerQuestionPayload> => async ({
   connectionId,
   data: { answer },
@@ -48,7 +48,7 @@ const answerQuestion = (
         )
         if (answersCount >= participants.length && room._questionToken) {
           console.log('Sending task success')
-          await SendTaskSuccessCallback(room._questionToken, {
+          await sendTaskSuccessCallback(room._questionToken, {
             output: 'Everybody answered',
           })
         }

@@ -1,7 +1,5 @@
 service: wlq-api-aws
 
-# Expected env variables: see .env
-
 frameworkVersion: "2"
 
 provider:
@@ -12,19 +10,15 @@ provider:
   apiGateway:
     minimumCompressionSize: 1024
 
-  # CloudWatch Logs role ARN must be set in account settings to enable logging
-  # logs:
-  #   websocket:
-  #     level: INFO
-
   websocketApiName: websocket-chat-${self:provider.stage}
   websocketApiRouteSelectionExpression: $request.body.action
 
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
     ROOM_TABLE_NAME: ${self:custom.roomTableName}
-    ALLOW_ORIGIN: ${self:custom.httpOrigin}
+    HTTP_ORIGIN: ${self:custom.httpOrigin}
     BROADCAST_TOPIC: ${self:custom.broadcastTopic}
+    API_OCT_SECRET_KEY: ${env:API_OCT_SECRET_KEY}
     WEBSOCKET_ENDPOINT:
       Fn::Join:
         - ""
@@ -43,6 +37,7 @@ provider:
         - dynamodb:DeleteItem
         - dynamodb:BatchGetItem
         - dynamodb:UpdateItem
+        - dynamodb:Scan
 
       Resource:
         - { "Fn::GetAtt": ["RoomTable", "Arn"] }
@@ -61,7 +56,6 @@ provider:
                 ":${self:custom.broadcastTopic}",
               ],
             ]
-
     - Effect: "Allow"
       Action:
         - "states:StartExecution"
@@ -72,11 +66,12 @@ provider:
 plugins:
   - serverless-webpack
   - serverless-step-functions
+  - serverless-domain-manager
 
 custom:
   hostedZoneId: ${env:HOSTED_ZONE_ID}
   siteName: ${env:API_DOMAIN}
-  httpOrigin: "*" # https://${env:SITE_DOMAIN}
+  httpOrigin: ${env:HTTP_ORIGIN}
   acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
   roomTableName: ${self:service}-RoomTable-${self:provider.stage}
   broadcastTopic: "${self:service}-broadcast-${self:provider.stage}"
@@ -92,6 +87,11 @@ custom:
   webpack:
     webpackConfig: "./webpack.config.js"
     includeModules: true
+  customDomain:
+    domainName: ${self:custom.siteName}
+    basePath: ""
+    stage: ${self:provider.stage}
+    createRoute53Record: true
 
 functions:
   getToken:
@@ -99,39 +99,59 @@ functions:
     events:
       - http:
           path: getToken
-          origin: ${self:custom.httpOrigin}
           method: GET
-          cors: true
-
+          cors:
+            origin: ${self:custom.httpOrigin}
+            allowHeaders: "*"
+            allowCredentials: true
   getRoom:
     handler: src/lambdas/getRoom.handler
     events:
       - http:
           path: getRoom
-          origin: ${self:custom.httpOrigin}
           authorizer:
             name: authorize
             resultTtlInSeconds: 0
           method: POST
-          cors: true
+          cors:
+            origin: ${self:custom.httpOrigin}
+            allowHeaders: "*"
+            allowCredentials: true
+
+  listRooms:
+    handler: src/lambdas/listRooms.handler
+    events:
+      - http:
+          path: listRooms
+          authorizer:
+            name: authorize
+            resultTtlInSeconds: 0
+          method: GET
+          cors:
+            origin: ${self:custom.httpOrigin}
+            allowHeaders: "*"
+            allowCredentials: true
 
   createRoom:
     handler: src/lambdas/createRoom.handler
     events:
       - http:
           path: createRoom
-          origin: ${self:custom.httpOrigin}
           authorizer:
             name: authorize
             resultTtlInSeconds: 0
           method: POST
-          cors: true
+          cors:
+            origin: ${self:custom.httpOrigin}
+            allowHeaders: "*"
+            allowCredentials: true
 
   authorize:
     handler: src/lambdas/authorize.handler
 
   socketConnection:
     handler: src/lambdas/socketConnection.handler
+
     events:
       - websocket:
           route: $connect
@@ -278,6 +298,7 @@ resources:
         ResponseParameters:
           gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.httpOrigin}'"
           gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Credentials: "'true'"
         ResponseType: DEFAULT_4XX
         RestApiId:
           Ref: "ApiGatewayRestApi"
@@ -317,11 +338,9 @@ resources:
     RoomQuestionTimeout:
       Value:
         Ref: RoomQuestionTimeout
-
     RoomAnswerWait:
       Value:
         Ref: RoomAnswerWait
-
-package:
-  individually: true
-  excludeDevDependencies: true
+# package:
+#   individually: true
+#   excludeDevDependencies: true

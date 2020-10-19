@@ -3,8 +3,9 @@ import { ValidationError } from '@wlq/wlq-model/src/validation'
 import { APIGatewayProxyResult } from 'aws-lambda'
 
 export const COMMON_HEADERS = {
-  'Access-Control-Allow-Origin': process.env.ALLOW_ORIGIN!,
-  'Access-Control-Allow-Credentials': true,
+  'Access-Control-Allow-Origin': process.env.HTTP_ORIGIN!,
+  'Access-Control-Allow-Headers': '*',
+  'Access-Control-Allow-Credentials': 'true',
 }
 
 const formatBody = (data: { [key: string]: any }) =>
@@ -33,11 +34,11 @@ const restRespond: RestRespondFunction<APIGatewayProxyResult> = async responseGe
         body: formatBody({ error: e.message, field: e.field }),
       }
     }
-    return {
-      statusCode: 500,
-      headers: COMMON_HEADERS,
-      body: formatBody({ error: 'Internal server error' }),
-    }
+  }
+  return {
+    statusCode: 500,
+    headers: COMMON_HEADERS,
+    body: formatBody({ error: 'Internal server error' }),
   }
 }
 export default restRespond

@@ -3399,6 +3399,21 @@ aws-sdk@^2.224.1, aws-sdk@^2.763.0:
     uuid "3.3.2"
     xml2js "0.4.19"
 
+aws-sdk@^2.756.0:
+  version "2.771.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.771.0.tgz#ff4beb0a04d6ab1ae962c85dfb42e3e9bfe2b93b"
+  integrity sha512-fqNGusCwkdemx3yFqvQbU1+xq/PB2wGq7EQIrrTZx/zxfXUp+7+PnrHzXtViCRghN0tylLghBfWYD4VcVcqi7g==
+  dependencies:
+    buffer "4.9.2"
+    events "1.1.1"
+    ieee754 "1.1.13"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
+
 aws-sdk@^2.765.0:
   version "2.765.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.765.0.tgz#34e71dc7336b4593d2f521cdcbbf7542a0d1f8cb"
@@ -10879,6 +10894,14 @@ serverless-cloudfront-invalidate@^1.5.0:
     chalk "^2.3.1"
     proxy-agent "^3.0.3"
     randomstring "^1.1.5"
+
+serverless-domain-manager@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/serverless-domain-manager/-/serverless-domain-manager-5.0.0.tgz#6120580006d1cb33f615f6fbb83affbf075c9782"
+  integrity sha512-bE+mFd0sXp455LZQ46F1HyQvaFmndISt/fBfxcHZR+ZSt0m28ryGl5satGFesY37EMd7oLNap0AcumQzldp53Q==
+  dependencies:
+    aws-sdk "^2.756.0"
+    chalk "^4.1.0"
 
 serverless-plugin-scripts@^1.0.2:
   version "1.0.2"

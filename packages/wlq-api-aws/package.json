@@ -8,10 +8,14 @@
   "scripts": {
     "verify": "dotenv serverless webpack",
     "test": "yarn jest",
-    "test:watch": "yarn jest --watch-all"
+    "test:watch": "yarn jest --watch-all",
+    "deploy": "dotenv -e .env.development.local serverless deploy -- --verbose --force",
+    "deploy:production": "dotenv -e .env.production.local serverless deploy -- --verbose",
+    "invoke": "dotenv -e .env.development.local serverless invoke -- -f getToken"
   },
   "dependencies": {
-    "aws-sdk": "^2.765.0"
+    "aws-sdk": "^2.765.0",
+    "serverless-domain-manager": "^5.0.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.63",
