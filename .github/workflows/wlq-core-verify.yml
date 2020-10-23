@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: Verify (eslint & tsc)
+    name: Verify and test with coverage report
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -35,7 +35,7 @@ jobs:
         run: yarn workspace @wlq/wlq-core verify
 
       - name: Test
-        run: yarn workspace @wlq/wlq-core test
+        run: yarn workspace @wlq/wlq-core test:coverage
 
       - uses: codecov/codecov-action@v1
         with:
