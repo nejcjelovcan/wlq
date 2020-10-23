@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - packages/wlq-core/*
+      - .github/workflows/*
 
 jobs:
   build:
