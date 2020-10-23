@@ -8,7 +8,7 @@ on:
 
 jobs:
   verify_and_test:
-    name: Verify and test with coverage report
+    name: Lint, compile and test with coverage report
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

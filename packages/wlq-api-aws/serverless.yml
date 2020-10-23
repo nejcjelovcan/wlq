@@ -1,0 +1,126 @@
+service: wlq-api-aws
+
+frameworkVersion: "2"
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-central-1
+  stage: ${opt:stage, 'dev'}
+  apiGateway:
+    minimumCompressionSize: 1024
+
+  websocketApiName: websocket-chat-${self:provider.stage}
+  websocketApiRouteSelectionExpression: $request.body.action
+
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+    ROOM_TABLE_NAME: ${self:custom.roomTableName}
+    HTTP_ORIGIN: ${self:custom.httpOrigin}
+    API_OCT_SECRET_KEY: ${env:API_OCT_SECRET_KEY}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:DeleteItem
+        - dynamodb:BatchGetItem
+        - dynamodb:UpdateItem
+        - dynamodb:Scan
+
+      Resource:
+        - { "Fn::GetAtt": ["RoomTable", "Arn"] }
+        - Fn::Join: ["/", [{ "Fn::GetAtt": ["RoomTable", "Arn"] }, "index/*"]]
+
+plugins:
+  - serverless-webpack
+  - serverless-step-functions
+  - serverless-domain-manager
+
+custom:
+  hostedZoneId: ${env:HOSTED_ZONE_ID}
+  siteName: ${env:API_DOMAIN}
+  httpOrigin: ${env:HTTP_ORIGIN}
+  acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
+  roomTableName: ${self:service}-RoomTable-${self:provider.stage}
+  webpack:
+    webpackConfig: "./webpack.config.js"
+    includeModules: true
+  customDomain:
+    domainName: ${self:custom.siteName}
+    basePath: ""
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+
+functions:
+  getToken:
+    handler: src/lambdas/token/getToken.rest.lambda.handler
+    events:
+      - http:
+          path: getToken
+          method: GET
+          cors:
+            origin: ${self:custom.httpOrigin}
+            allowCredentials: true
+
+  createRoom:
+    handler: src/lambdas/room/createRoom.rest.lambda.handler
+    events:
+      - http:
+          path: createRoom
+          authorizer:
+            name: authorize
+            resultTtlInSeconds: 0
+          method: POST
+          cors:
+            origin: ${self:custom.httpOrigin}
+            allowCredentials: true
+
+  authorize:
+    handler: src/lambdas/authorize.lambda.handler
+
+resources:
+  Resources:
+    GatewayResponseDefault4XX:
+      Type: "AWS::ApiGateway::GatewayResponse"
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.httpOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Credentials: "'true'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: "ApiGatewayRestApi"
+
+    RoomTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.roomTableName}
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: InverseIndex
+            KeySchema:
+              - AttributeName: SK
+                KeyType: HASH
+              - AttributeName: PK
+                KeyType: RANGE
+            Projection:
+              # TODO we could probably do with KEYS_ONLY
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1

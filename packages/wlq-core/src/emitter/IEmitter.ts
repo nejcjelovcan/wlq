@@ -29,9 +29,9 @@ export default interface IEmitter {
    * Note: Do some sanity checks when implementing this
    * (should be called only once, only for rest apis, etc...)
    */
-  restResponse: <P extends IWlqRawPayload>(
-    response: IRestResponse<P>
-  ) => Promise<void>;
+  restResponse: <P extends IWlqRawPayload>(response: IRestResponse<P>) => void;
+
+  response: IRestResponse | undefined;
 
   /**
    * Publish emitter

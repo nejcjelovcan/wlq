@@ -15,18 +15,18 @@ const ParticipantPrivateProps = {
   uid: t.string
 };
 
-export const ParticipantKeyType = t.type(ParticipantKeyProps);
-export type ParticipantKey = t.TypeOf<typeof ParticipantKeyType>;
+export const ParticipantKeyCodec = t.type(ParticipantKeyProps);
+export type ParticipantKey = t.TypeOf<typeof ParticipantKeyCodec>;
 
-export const ParticipantType = t.type({
+export const ParticipantCodec = t.type({
   ...ParticipantKeyProps,
   ...ParticipantProps,
   ...ParticipantPrivateProps
 });
-export type Participant = t.TypeOf<typeof ParticipantType>;
+export type Participant = t.TypeOf<typeof ParticipantCodec>;
 
-export const ParticipantPublicType = t.type({
+export const ParticipantPublicCodec = t.type({
   ...ParticipantKeyProps,
   ...ParticipantProps
 });
-export type ParticipantPublic = t.TypeOf<typeof ParticipantPublicType>;
+export type ParticipantPublic = t.TypeOf<typeof ParticipantPublicCodec>;

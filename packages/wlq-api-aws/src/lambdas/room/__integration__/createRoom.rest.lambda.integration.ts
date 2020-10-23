@@ -1,0 +1,1 @@
+describe("createRoom.rest.lambda", () => {});

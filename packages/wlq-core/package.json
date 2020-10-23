@@ -1,7 +1,7 @@
 {
   "name": "@wlq/wlq-core",
   "version": "1.0.0",
-  "main": "index.js",
+  "module": "lib/",
   "license": "MIT",
   "scripts": {
     "lint": "eslint src --ext ts,tsx",

@@ -1,18 +1,16 @@
-import { JWK, JWT } from "jose";
+import { JWT } from "jose";
 import { nanoid } from "nanoid";
 import IEmitter from "../../emitter/IEmitter";
+import getKey from "./getKey";
+import { TokenPayload } from "./TokenPayload";
 
-let _key: JWK.Key;
-const getKey = () => {
-  if (!_key) _key = JWK.asKey(process.env.API_OCT_SECRET_KEY!);
-  return _key;
-};
-
+// eslint-disable-next-line require-await
 export default async function getToken(
   emitter: Pick<IEmitter, "restResponse">
 ) {
-  await emitter.restResponse({
+  const payload: TokenPayload = { sub: nanoid() };
+  emitter.restResponse({
     statusCode: 200,
-    payload: { token: JWT.sign({ sub: nanoid() }, getKey()) }
+    payload: { token: JWT.sign(payload, getKey()) }
   });
 }
