@@ -7,7 +7,7 @@ on:
       - .github/workflows/*
 
 jobs:
-  build:
+  verify_and_test:
     name: Verify and test with coverage report
     runs-on: ubuntu-latest
     steps:
