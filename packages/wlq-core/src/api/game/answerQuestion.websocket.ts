@@ -1,5 +1,5 @@
 import * as t from "io-ts";
-import { resolveEither } from "../../helpers";
+import { resolveCodecEither } from "../../helpers";
 import { getQuestionTokenIfEverybodyAnswered } from "../../model/room/Room";
 import IWlqContext from "../IWlqContext";
 import { IWlqRawWebsocketEvent } from "../IWlqRawEvent";
@@ -14,7 +14,7 @@ export default async function answerQuestion(
     // validate incoming event
     const {
       payload: { answer }
-    } = resolveEither(AnswerQuestionEventCodec.decode(event.payload));
+    } = resolveCodecEither(AnswerQuestionEventCodec.decode(event.payload));
 
     // get participant & room
     const [participant, room] = await context.store.getParticipantAndRoom(

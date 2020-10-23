@@ -88,6 +88,7 @@ export default interface IStore {
   }) => Promise<Room>;
 }
 
+export class StoreError extends Error {}
 export class NotFoundStoreError extends Error {}
 export class ExistsStoreError extends Error {}
 export class StateStoreError extends Error {}

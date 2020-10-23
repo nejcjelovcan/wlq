@@ -5,9 +5,9 @@ export interface IWebsocketMessage<P extends IWlqRawPayload = IWlqRawPayload> {
   payload: P;
 }
 
-export interface IRestResponse {
+export interface IRestResponse<P extends IWlqRawPayload = IWlqRawPayload> {
   statusCode: number;
-  payload: IWlqRawPayload;
+  payload: P;
 }
 
 export default interface IEmitter {
@@ -29,7 +29,9 @@ export default interface IEmitter {
    * Note: Do some sanity checks when implementing this
    * (should be called only once, only for rest apis, etc...)
    */
-  restResponse: (response: IRestResponse) => Promise<void>;
+  restResponse: <P extends IWlqRawPayload>(
+    response: IRestResponse<P>
+  ) => Promise<void>;
 
   /**
    * Publish emitter

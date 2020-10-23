@@ -11,7 +11,7 @@ const getKey = () => {
 export default async function getToken(
   emitter: Pick<IEmitter, "restResponse">
 ) {
-  emitter.restResponse({
+  await emitter.restResponse({
     statusCode: 200,
     payload: { token: JWT.sign({ sub: nanoid() }, getKey()) }
   });

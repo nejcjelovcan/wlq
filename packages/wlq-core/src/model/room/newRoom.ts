@@ -2,12 +2,8 @@ import * as t from "io-ts";
 import { Room } from "./Room";
 import { nanoid } from "nanoid";
 
-const NewRoomProps = {
-  listed: t.boolean
-};
-
-export const NewRoomType = t.type(NewRoomProps);
-export type NewRoom = t.TypeOf<typeof NewRoomType>;
+export const NewRoomCodec = t.type({ listed: t.boolean });
+export type NewRoom = t.TypeOf<typeof NewRoomCodec>;
 
 export default function newRoom(newRoom: NewRoom): Room {
   return {
