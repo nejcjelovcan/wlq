@@ -1,0 +1,27 @@
+{
+  "name": "@wlq/wlq-core",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint src --ext ts,tsx",
+    "lint:fix": "yarn lint --fix",
+    "verify:lint": "yarn lint --max-warnings=0",
+    "verify:tsc": "tsc --noEmit",
+    "verify": "yarn verify:lint && yarn verify:tsc",
+    "test": "jest",
+    "test:coverage": "yarn jest --coverage",
+    "test:watch": "yarn jest --watch-all",
+    "build:esm": "tsc",
+    "build:cjs": "tsc -p tsconfig.cjs.json"
+  },
+  "dependencies": {
+    "fp-ts": "^2.8.4",
+    "io-ts": "^2.2.11"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.15",
+    "jest": "^26.6.1",
+    "ts-jest": "^26.4.1"
+  }
+}

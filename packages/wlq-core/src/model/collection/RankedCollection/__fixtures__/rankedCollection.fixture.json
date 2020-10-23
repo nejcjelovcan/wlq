@@ -1,0 +1,1778 @@
+{
+  "type": "RankedCollection",
+  "sourceUrl": "/wiki/List_of_countries_and_dependencies_by_area",
+  "items": [
+    {
+      "type": "RankedCollectionItem",
+      "name": "Russia",
+      "sets": [
+        "Asia",
+        "Europe"
+      ],
+      "rank": 1,
+      "quantity": "17,098,246"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Canada",
+      "sets": [
+        "North America"
+      ],
+      "rank": 2,
+      "quantity": "9,984,670"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "China",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 3,
+      "quantity": "9,596,961"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "United States",
+      "sets": [
+        "North America"
+      ],
+      "rank": 4,
+      "quantity": "9,525,067"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Brazil",
+      "sets": [
+        "South America"
+      ],
+      "rank": 5,
+      "quantity": "8,515,767"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Australia",
+      "sets": [
+        "Oceania"
+      ],
+      "rank": 6,
+      "quantity": "7,692,024"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "India",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 7,
+      "quantity": "3,287,263"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Argentina",
+      "sets": [
+        "South America"
+      ],
+      "rank": 8,
+      "quantity": "2,780,400"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Kazakhstan",
+      "sets": [
+        "Asia",
+        "Europe"
+      ],
+      "rank": 9,
+      "quantity": "2,724,900"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Algeria",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 10,
+      "quantity": "2,381,741"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Democratic Republic of the Congo",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 11,
+      "quantity": "2,344,858"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Saudi Arabia",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 12,
+      "quantity": "2,149,690"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Mexico",
+      "sets": [
+        "North America"
+      ],
+      "rank": 13,
+      "quantity": "1,964,375"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Indonesia",
+      "sets": [
+        "Asia",
+        "Oceania"
+      ],
+      "rank": 14,
+      "quantity": "1,910,931"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Sudan",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 15,
+      "quantity": "1,861,484"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Libya",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 16,
+      "quantity": "1,759,540"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Iran",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 17,
+      "quantity": "1,648,195"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Mongolia",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 18,
+      "quantity": "1,564,110"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Peru",
+      "sets": [
+        "South America"
+      ],
+      "rank": 19,
+      "quantity": "1,285,216"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Chad",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 20,
+      "quantity": "1,284,000"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Niger",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 21,
+      "quantity": "1,267,000"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Angola",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 22,
+      "quantity": "1,246,700"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Mali",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 23,
+      "quantity": "1,240,192"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "South Africa",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 24,
+      "quantity": "1,221,037"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Colombia",
+      "sets": [
+        "South America"
+      ],
+      "rank": 25,
+      "quantity": "1,141,748"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Ethiopia",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 26,
+      "quantity": "1,104,300"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Bolivia",
+      "sets": [
+        "South America"
+      ],
+      "rank": 27,
+      "quantity": "1,098,581"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Mauritania",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 28,
+      "quantity": "1,030,700"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Egypt",
+      "sets": [
+        "Africa",
+        "Asia"
+      ],
+      "rank": 29,
+      "quantity": "1,002,450"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Tanzania",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 30,
+      "quantity": "945,087"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Nigeria",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 31,
+      "quantity": "923,768"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Venezuela",
+      "sets": [
+        "South America"
+      ],
+      "rank": 32,
+      "quantity": "916,445"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Pakistan",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 33,
+      "quantity": "907,843"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Namibia",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 34,
+      "quantity": "825,615"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Mozambique",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 35,
+      "quantity": "801,590"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Turkey",
+      "sets": [
+        "Asia",
+        "Europe"
+      ],
+      "rank": 36,
+      "quantity": "783,562"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Chile",
+      "sets": [
+        "South America"
+      ],
+      "rank": 37,
+      "quantity": "756,102"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Zambia",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 38,
+      "quantity": "752,612"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Myanmar",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 39,
+      "quantity": "676,578"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Afghanistan",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 40,
+      "quantity": "652,864"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "South Sudan",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 41,
+      "quantity": "644,329"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "France",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 42,
+      "quantity": "640,679"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Somalia",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 43,
+      "quantity": "637,657"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Central African Republic",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 44,
+      "quantity": "622,984"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Ukraine",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 45,
+      "quantity": "603,500"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Madagascar",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 46,
+      "quantity": "587,041"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Botswana",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 47,
+      "quantity": "581,730"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Kenya",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 48,
+      "quantity": "580,367"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Yemen",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 49,
+      "quantity": "527,968"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Thailand",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 50,
+      "quantity": "513,120"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Spain",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 51,
+      "quantity": "505,992"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Turkmenistan",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 52,
+      "quantity": "488,100"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Cameroon",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 53,
+      "quantity": "475,442"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Papua New Guinea",
+      "sets": [
+        "Oceania"
+      ],
+      "rank": 54,
+      "quantity": "462,840"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Sweden",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 55,
+      "quantity": "450,295"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Uzbekistan",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 56,
+      "quantity": "447,400"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Morocco",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 57,
+      "quantity": "446,550"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Iraq",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 58,
+      "quantity": "438,317"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Paraguay",
+      "sets": [
+        "South America"
+      ],
+      "rank": 59,
+      "quantity": "406,752"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Zimbabwe",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 60,
+      "quantity": "390,757"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Norway",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 61,
+      "quantity": "385,207"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Japan",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 62,
+      "quantity": "377,975"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Germany",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 63,
+      "quantity": "357,114"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Republic of the Congo",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 64,
+      "quantity": "342,000"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Finland",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 65,
+      "quantity": "338,424"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Vietnam",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 66,
+      "quantity": "331,212"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Malaysia",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 67,
+      "quantity": "330,803"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Ivory Coast",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 68,
+      "quantity": "322,463"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Poland",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 69,
+      "quantity": "312,696"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Oman",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 70,
+      "quantity": "309,500"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Italy",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 71,
+      "quantity": "301,339"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Philippines",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 72,
+      "quantity": "300,000"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Ecuador",
+      "sets": [
+        "South America"
+      ],
+      "rank": 73,
+      "quantity": "276,841"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Burkina Faso",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 74,
+      "quantity": "274,222"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "New Zealand",
+      "sets": [
+        "Oceania"
+      ],
+      "rank": 75,
+      "quantity": "270,467"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Gabon",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 76,
+      "quantity": "267,668"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Guinea",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 77,
+      "quantity": "245,857"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "United Kingdom",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 78,
+      "quantity": "242,495"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Uganda",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 79,
+      "quantity": "241,550"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Ghana",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 80,
+      "quantity": "238,533"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Romania",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 81,
+      "quantity": "238,397"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Laos",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 82,
+      "quantity": "236,800"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Guyana",
+      "sets": [
+        "South America"
+      ],
+      "rank": 83,
+      "quantity": "214,969"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Belarus",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 84,
+      "quantity": "207,600"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Kyrgyzstan",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 85,
+      "quantity": "199,951"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Senegal",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 86,
+      "quantity": "196,722"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Syria",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 87,
+      "quantity": "185,180"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Cambodia",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 88,
+      "quantity": "181,035"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Uruguay",
+      "sets": [
+        "South America"
+      ],
+      "rank": 89,
+      "quantity": "176,215"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Suriname",
+      "sets": [
+        "South America"
+      ],
+      "rank": 90,
+      "quantity": "163,820"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Tunisia",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 91,
+      "quantity": "163,610"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Bangladesh",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 92,
+      "quantity": "147,570"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Nepal",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 93,
+      "quantity": "147,181"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Tajikistan",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 94,
+      "quantity": "143,100"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Greece",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 95,
+      "quantity": "131,957"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Nicaragua",
+      "sets": [
+        "North America"
+      ],
+      "rank": 96,
+      "quantity": "130,373"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "North Korea",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 97,
+      "quantity": "120,540"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Malawi",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 98,
+      "quantity": "118,484"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Eritrea",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 99,
+      "quantity": "117,600"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Benin",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 100,
+      "quantity": "114,763"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Honduras",
+      "sets": [
+        "North America"
+      ],
+      "rank": 101,
+      "quantity": "112,492"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Liberia",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 102,
+      "quantity": "111,369"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Bulgaria",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 103,
+      "quantity": "111,002"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Cuba",
+      "sets": [
+        "North America"
+      ],
+      "rank": 104,
+      "quantity": "109,884"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Guatemala",
+      "sets": [
+        "North America"
+      ],
+      "rank": 105,
+      "quantity": "108,889"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Iceland",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 106,
+      "quantity": "103,000"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "South Korea",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 107,
+      "quantity": "100,210"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Hungary",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 108,
+      "quantity": "93,028"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Portugal",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 109,
+      "quantity": "92,090"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Jordan",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 110,
+      "quantity": "89,342"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Serbia",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 111,
+      "quantity": "88,361"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Azerbaijan",
+      "sets": [
+        "Asia",
+        "Europe"
+      ],
+      "rank": 112,
+      "quantity": "86,600"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Austria",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 113,
+      "quantity": "83,871"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "United Arab Emirates",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 114,
+      "quantity": "83,600"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Czech Republic",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 115,
+      "quantity": "78,865"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Panama",
+      "sets": [
+        "North America",
+        "South America"
+      ],
+      "rank": 116,
+      "quantity": "75,417"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Sierra Leone",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 117,
+      "quantity": "71,740"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Ireland",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 118,
+      "quantity": "70,273"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Georgia",
+      "sets": [
+        "Asia",
+        "Europe"
+      ],
+      "rank": 119,
+      "quantity": "69,700"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Sri Lanka",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 120,
+      "quantity": "65,610"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Lithuania",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 121,
+      "quantity": "65,300"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Latvia",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 122,
+      "quantity": "64,559"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Togo",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 123,
+      "quantity": "56,785"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Croatia",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 124,
+      "quantity": "56,594"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Bosnia and Herzegovina",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 125,
+      "quantity": "51,209"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Costa Rica",
+      "sets": [
+        "North America"
+      ],
+      "rank": 126,
+      "quantity": "51,100"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Slovakia",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 127,
+      "quantity": "49,037"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Dominican Republic",
+      "sets": [
+        "North America"
+      ],
+      "rank": 128,
+      "quantity": "48,671"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Estonia",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 129,
+      "quantity": "45,227"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Denmark",
+      "sets": [
+        "Europe",
+        "North America"
+      ],
+      "rank": 130,
+      "quantity": "43,094"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Netherlands",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 131,
+      "quantity": "41,850"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Switzerland",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 132,
+      "quantity": "41,284"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Bhutan",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 133,
+      "quantity": "38,394"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Guinea-Bissau",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 134,
+      "quantity": "36,125"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Moldova",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 135,
+      "quantity": "33,846"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Belgium",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 136,
+      "quantity": "30,528"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Lesotho",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 137,
+      "quantity": "30,355"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Armenia",
+      "sets": [
+        "Asia",
+        "Europe"
+      ],
+      "rank": 138,
+      "quantity": "29,743"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Solomon Islands",
+      "sets": [
+        "Oceania"
+      ],
+      "rank": 139,
+      "quantity": "28,896"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Albania",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 140,
+      "quantity": "28,748"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Equatorial Guinea",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 141,
+      "quantity": "28,051"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Burundi",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 142,
+      "quantity": "27,834"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Haiti",
+      "sets": [
+        "North America"
+      ],
+      "rank": 143,
+      "quantity": "27,750"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Rwanda",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 144,
+      "quantity": "26,338"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "North Macedonia",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 145,
+      "quantity": "25,713"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Djibouti",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 146,
+      "quantity": "23,200"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Belize",
+      "sets": [
+        "North America"
+      ],
+      "rank": 147,
+      "quantity": "22,966"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "El Salvador",
+      "sets": [
+        "North America"
+      ],
+      "rank": 148,
+      "quantity": "21,041"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Israel",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 149,
+      "quantity": "20,770"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Slovenia",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 150,
+      "quantity": "20,273"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Fiji",
+      "sets": [
+        "Oceania"
+      ],
+      "rank": 151,
+      "quantity": "18,272"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Kuwait",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 152,
+      "quantity": "17,818"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Eswatini",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 153,
+      "quantity": "17,364"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Timor-Leste",
+      "sets": [
+        "Asia",
+        "Oceania"
+      ],
+      "rank": 154,
+      "quantity": "14,919"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "The Bahamas",
+      "sets": [
+        "North America"
+      ],
+      "rank": 155,
+      "quantity": "13,943"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Montenegro",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 156,
+      "quantity": "13,812"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Vanuatu",
+      "sets": [
+        "Oceania"
+      ],
+      "rank": 157,
+      "quantity": "12,189"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Qatar",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 158,
+      "quantity": "11,586"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "The Gambia",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 159,
+      "quantity": "11,295"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Jamaica",
+      "sets": [
+        "North America"
+      ],
+      "rank": 160,
+      "quantity": "10,991"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Lebanon",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 161,
+      "quantity": "10,452"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Cyprus",
+      "sets": [
+        "Asia",
+        "Europe"
+      ],
+      "rank": 162,
+      "quantity": "9,251"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Brunei",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 163,
+      "quantity": "5,765"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Trinidad and Tobago",
+      "sets": [
+        "North America",
+        "South America"
+      ],
+      "rank": 164,
+      "quantity": "5,130"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Cape Verde",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 165,
+      "quantity": "4,033"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Samoa",
+      "sets": [
+        "Oceania"
+      ],
+      "rank": 166,
+      "quantity": "2,842"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Luxembourg",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 167,
+      "quantity": "2,586"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Mauritius",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 168,
+      "quantity": "2,040"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Comoros",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 169,
+      "quantity": "1,862"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "São Tomé and Príncipe",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 170,
+      "quantity": "964"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Kiribati",
+      "sets": [
+        "Oceania"
+      ],
+      "rank": 171,
+      "quantity": "811"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Bahrain",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 172,
+      "quantity": "778"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Dominica",
+      "sets": [
+        "North America"
+      ],
+      "rank": 173,
+      "quantity": "751"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Tonga",
+      "sets": [
+        "Oceania"
+      ],
+      "rank": 174,
+      "quantity": "747"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Singapore",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 175,
+      "quantity": "726"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Federated States of Micronesia",
+      "sets": [
+        "Oceania"
+      ],
+      "rank": 176,
+      "quantity": "702"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Saint Lucia",
+      "sets": [
+        "North America"
+      ],
+      "rank": 177,
+      "quantity": "616"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Andorra",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 178,
+      "quantity": "468"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Palau",
+      "sets": [
+        "Oceania"
+      ],
+      "rank": 179,
+      "quantity": "459"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Seychelles",
+      "sets": [
+        "Africa"
+      ],
+      "rank": 180,
+      "quantity": "452"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Antigua and Barbuda",
+      "sets": [
+        "North America"
+      ],
+      "rank": 181,
+      "quantity": "442"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Barbados",
+      "sets": [
+        "North America"
+      ],
+      "rank": 182,
+      "quantity": "430"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Saint Vincent and the Grenadines",
+      "sets": [
+        "North America"
+      ],
+      "rank": 183,
+      "quantity": "389"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Grenada",
+      "sets": [
+        "North America"
+      ],
+      "rank": 184,
+      "quantity": "344"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Malta",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 185,
+      "quantity": "316"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Maldives",
+      "sets": [
+        "Asia"
+      ],
+      "rank": 186,
+      "quantity": "300"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Saint Kitts and Nevis",
+      "sets": [
+        "North America"
+      ],
+      "rank": 187,
+      "quantity": "261"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Marshall Islands",
+      "sets": [
+        "Oceania"
+      ],
+      "rank": 188,
+      "quantity": "181"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Liechtenstein",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 189,
+      "quantity": "160"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "San Marino",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 190,
+      "quantity": "61"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Tuvalu",
+      "sets": [
+        "Oceania"
+      ],
+      "rank": 191,
+      "quantity": "26"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Nauru",
+      "sets": [
+        "Oceania"
+      ],
+      "rank": 192,
+      "quantity": "21"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Monaco",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 193,
+      "quantity": "2.02"
+    },
+    {
+      "type": "RankedCollectionItem",
+      "name": "Vatican City",
+      "sets": [
+        "Europe"
+      ],
+      "rank": 194,
+      "quantity": "0.49"
+    }
+  ],
+  "name": "Countries by area",
+  "category": "Geography",
+  "difficulty": "Easy",
+  "questions": [
+    {
+      "type": "RankedMost",
+      "questionTextTemplate": "Which of these countries is the largest?"
+    },
+    {
+      "type": "RankedList",
+      "questionTextTemplate": "Which of these countries is the smallest?"
+    }
+  ]
+}
