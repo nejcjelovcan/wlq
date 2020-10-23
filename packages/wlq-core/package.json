@@ -13,11 +13,15 @@
     "test:coverage": "yarn jest --coverage",
     "test:watch": "yarn jest --watch-all",
     "build:esm": "tsc",
-    "build:cjs": "tsc -p tsconfig.cjs.json"
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:watch": "tsc -w",
+    "build": "yarn build:esm"
   },
   "dependencies": {
     "fp-ts": "^2.8.4",
-    "io-ts": "^2.2.11"
+    "io-ts": "^2.2.11",
+    "jose": "^2.0.2",
+    "nanoid": "^3.1.15"
   },
   "devDependencies": {
     "@types/jest": "^26.0.15",
