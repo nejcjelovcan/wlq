@@ -4,10 +4,11 @@
     "packages/*"
   ],
   "scripts": {
-    "lint": "eslint packages --ext ts,tsx",
-    "lint:fix": "yarn lint --fix",
-    "verify": "yarn workspace @wlq/wlq-model test && yarn workspace @wlq/wlq-api test && yarn workspace @wlq/wlq-api-aws verify && yarn workspace @wlq/wlq-app verify",
-    "test": "yarn workspace @wlq/wlq-model test && yarn workspace @wlq/wlq-api test",
+    
+    "verify": "yarn workspace @wlq/wlq-core verify",
+    "test": "yarn workspace @wlq/wlq-core test",
+    "test:coverage": "yarn workspace @wlq/wlq-core test:coverage",
+
     "prebuild": "rm -rf ./packages/*/lib",
     "build": "yarn build:cjs && yarn build:esm",
     "build:cjs": "yarn module:cjs && tsc --build tsconfig.project.json",

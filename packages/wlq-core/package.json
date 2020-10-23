@@ -15,7 +15,7 @@
     "build:esm": "tsc",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:watch": "tsc -w",
-    "build": "yarn build:esm"
+    "build": "rm -rf lib/ && yarn build:esm"
   },
   "dependencies": {
     "fp-ts": "^2.8.4",

@@ -1,11 +1,13 @@
-import IWlqRawEvent, { IWlqRawPayload } from "../api/IWlqRawEvent";
+import { IWlqRawPayload } from "../api/IWlqRawEvent";
 
-export interface IWebsocketMessage extends IWlqRawEvent {
+export interface IWebsocketMessage<P extends IWlqRawPayload = IWlqRawPayload> {
   action: string;
+  payload: P;
 }
 
-export interface IRestResponse extends IWlqRawEvent {
+export interface IRestResponse {
   statusCode: number;
+  payload: IWlqRawPayload;
 }
 
 export default interface IEmitter {
@@ -14,9 +16,9 @@ export default interface IEmitter {
    *
    * Sends message to specified connectionId
    */
-  websocket: (
+  websocket: <M extends IWebsocketMessage>(
     connectionId: string,
-    message: IWebsocketMessage
+    message: M
   ) => Promise<void>;
 
   /**
@@ -34,9 +36,8 @@ export default interface IEmitter {
    *
    * Publishes to notification channel
    */
-  publish: (
-    subject: string,
-    message: IWlqRawPayload,
+  publish: <M extends IWebsocketMessage>(
+    message: M,
     attributes: { [key: string]: string }
   ) => Promise<void>;
 
