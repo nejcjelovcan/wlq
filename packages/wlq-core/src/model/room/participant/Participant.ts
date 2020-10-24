@@ -1,5 +1,5 @@
 import * as t from "io-ts";
-import { UserDetailsType } from "./UserDetails";
+import { UserDetailsCodec } from "./UserDetails";
 
 const ParticipantKeyProps = {
   connectionId: t.string
@@ -9,7 +9,7 @@ const ParticipantProps = {
   type: t.literal("Participant"),
   roomId: t.string,
   pid: t.string,
-  details: UserDetailsType
+  details: UserDetailsCodec
 };
 const ParticipantPrivateProps = {
   uid: t.string

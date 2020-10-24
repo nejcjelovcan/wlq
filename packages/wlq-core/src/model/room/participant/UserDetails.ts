@@ -37,11 +37,11 @@ export const USER_DETAILS_COLORS = [
   "cyan"
 ] as const;
 
-export const UserDetailsType = t.type({
+export const UserDetailsCodec = t.type({
   type: t.literal("UserDetails"),
   alias: t.string,
   color: stringOneOf(USER_DETAILS_COLORS, "UserDetailsColor"),
   emoji: stringOneOf(USER_DETAILS_EMOJIS, "UserDetailsEmoji")
 });
 
-export type UserDetails = t.TypeOf<typeof UserDetailsType>;
+export type UserDetails = t.TypeOf<typeof UserDetailsCodec>;
