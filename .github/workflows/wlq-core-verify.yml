@@ -32,8 +32,11 @@ jobs:
         if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install
 
-      - name: Verify
-        run: yarn workspace @wlq/wlq-core verify
+      - name: Lint
+        run: yarn workspace @wlq/wlq-core verify:lint
+
+      - name: Typescript check
+        run: yarn workspace @wlq/wlq-core verify:tsc
 
       - name: Test
         run: yarn workspace @wlq/wlq-core test:coverage

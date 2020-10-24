@@ -1,6 +1,6 @@
 import { newMemoryStore } from "../../model/MemoryStore";
+import newRoom from "../../model/room/newRoom";
 import getRoom from "./getRoom.rest";
-import newRoom from "@wlq/wlq-core/lib/model/room/newRoom";
 
 describe("createRoom.rest", () => {
   it("responds with statusCode=400 if no roomId provided", async () => {
