@@ -3,6 +3,11 @@
   "include": ["./src/**/*.ts", "./src/**/*.tsx", "./src/**/*.json"],
   "exclude": ["./src/**/*.test.ts", "./src/**/__fixtures__"],
   "compilerOptions": {
-    "outDir": "lib"
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "module": "commonjs",
+    "outDir": "lib",
+    "skipLibCheck": false
   }
 }
