@@ -12,7 +12,7 @@ export interface IWlqRawWebsocketEvent extends IWlqRawEvent {
 
 export interface IWebsocketMessage<P extends IWlqRawPayload = IWlqRawPayload> {
   action: string;
-  payload: P;
+  data: P;
 }
 
 export interface IRestResponse<P extends IWlqRawPayload = IWlqRawPayload> {

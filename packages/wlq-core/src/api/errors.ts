@@ -37,3 +37,9 @@ export function getErrorStatusCode(error: Error): number {
 
 export const ErrorResponseCodec = t.type({ error: t.string });
 export type ErrorResponse = t.TypeOf<typeof ErrorResponseCodec>;
+
+export const ErrorMessageCodec = t.type({
+  action: t.literal("error"),
+  data: t.type({ error: t.string })
+});
+export type ErrorMessage = t.TypeOf<typeof ErrorMessageCodec>;

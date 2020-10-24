@@ -11,8 +11,8 @@
     "verify:tsc": "tsc --noEmit",
     "verify": "yarn verify:lint && yarn verify:tsc",
     "test": "dotenv -e .env.test jest",
-    "test:coverage": "dotenv -e .env.test yarn jest -- --coverage",
-    "test:watch": "dotenv -e .env.test yarn jest -- --watch-all",
+    "test:coverage": "dotenv -e .env.test yarn jest -- --coverage --silent",
+    "test:watch": "dotenv -e .env.test yarn jest -- --watch-all --silent",
     "build:tsc": "tsc",
     "build:watch": "tsc -w",
     "build": "rm -rf lib/ && yarn build:tsc"

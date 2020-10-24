@@ -1,4 +1,6 @@
 export {
+  ErrorMessage,
+  ErrorMessageCodec,
   ErrorResponse,
   getErrorMessage,
   getErrorStatusCode

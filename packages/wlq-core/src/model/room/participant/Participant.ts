@@ -1,4 +1,5 @@
 import * as t from "io-ts";
+import { nanoid } from "nanoid";
 import { UserDetailsCodec } from "./UserDetails";
 
 const ParticipantKeyProps = {
@@ -26,7 +27,24 @@ export const ParticipantCodec = t.type({
 export type Participant = t.TypeOf<typeof ParticipantCodec>;
 
 export const ParticipantPublicCodec = t.type({
-  ...ParticipantKeyProps,
   ...ParticipantProps
 });
 export type ParticipantPublic = t.TypeOf<typeof ParticipantPublicCodec>;
+
+export function newParticipant(
+  participant: Pick<Participant, "uid" | "roomId" | "details" | "connectionId">
+): Participant {
+  return {
+    ...participant,
+    type: "Participant",
+    pid: nanoid()
+  };
+}
+
+export function getParticipantPublic({
+  uid,
+  connectionId,
+  ...restPublic
+}: Participant): ParticipantPublic {
+  return restPublic;
+}

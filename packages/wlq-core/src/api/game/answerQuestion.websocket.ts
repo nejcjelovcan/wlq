@@ -12,12 +12,12 @@ export default async function answerQuestion(
   store: Pick<IStore, "getParticipantAndRoom" | "addAnswer">,
   emitter: Pick<IEmitter, "websocket" | "publish" | "stateMachineTaskSuccess">
 ) {
-  let participantKey = event;
+  const participantKey = event;
 
   try {
     // validate incoming event
     const {
-      payload: { answer }
+      data: { answer }
     } = resolveCodecEither(AnswerQuestionEventCodec.decode(event.payload));
 
     // get participant & room
@@ -54,7 +54,7 @@ export default async function answerQuestion(
     await emitter.publish<UserAnsweredMessage>(
       {
         action: "userAnswered",
-        payload: { pid: participant.pid }
+        data: { pid: participant.pid }
       },
       { roomId: participant.roomId }
     );
@@ -64,14 +64,14 @@ export default async function answerQuestion(
 
     await emitter.websocket(participantKey.connectionId, {
       action: "error",
-      payload: { error: "Error answering question" }
+      data: { error: "Error answering question" }
     });
   }
 }
 
 export const AnswerQuestionEventCodec = t.type({
   action: t.literal("answerQuestion"),
-  payload: t.type({
+  data: t.type({
     answer: t.string
   })
 });
@@ -79,7 +79,7 @@ export type AnswerQuestionEvent = t.TypeOf<typeof AnswerQuestionEventCodec>;
 
 export const UserAnsweredMessageCodec = t.type({
   action: t.literal("userAnswered"),
-  payload: t.type({
+  data: t.type({
     pid: t.string
   })
 });
