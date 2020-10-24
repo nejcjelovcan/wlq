@@ -1,4 +1,4 @@
-import verifyToken from "@wlq/wlq-core/lib/cjs/api/token/verifyToken";
+import { verifyToken } from "@wlq/wlq-core/lib/model/token";
 import {
   APIGatewayAuthorizerHandler,
   APIGatewayAuthorizerResult

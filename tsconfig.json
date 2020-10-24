@@ -5,10 +5,10 @@
     "sourceMap": true,
 
     "jsx": "react",
-    "target": "es2018",
-    "module": "esnext",
+    "target": "es2016",
+    "module": "commonjs",
     "moduleResolution": "node",
-    "lib": ["es2019"],
+    "lib": ["esnext"],
 
     "strict": true,
     "noImplicitAny": true,

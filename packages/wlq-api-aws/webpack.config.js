@@ -1,18 +1,18 @@
 const path = require("path");
+// const nodeExternals = require("webpack-node-externals");
 const slsw = require("serverless-webpack");
-const nodeExternals = require("webpack-node-externals");
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+
+const isLocal = slsw.lib.webpack.isLocal;
 
 module.exports = {
-  context: __dirname,
-  mode: slsw.lib.webpack.isLocal ? "development" : "production",
+  mode: isLocal ? "development" : "production",
   entry: slsw.lib.entries,
-  devtool: slsw.lib.webpack.isLocal
-    ? "cheap-module-eval-source-map"
-    : "source-map",
+  // externals: [nodeExternals(), { "aws-sdk": "commonjs aws-sdk" }],
+  // externals: ["aws-sdk"],
+  devtool: "source-map",
   resolve: {
-    extensions: [".mjs", ".json", ".ts", ".js"],
-    symlinks: false,
-    cacheWithContext: false
+    extensions: [".js", ".jsx", ".json", ".ts", ".tsx"]
   },
   output: {
     libraryTarget: "commonjs",
@@ -20,16 +20,14 @@ module.exports = {
     filename: "[name].js"
   },
   target: "node",
-  externals: [nodeExternals()],
   module: {
     rules: [
-      // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
       {
         test: /\.(tsx?)$/,
         loader: "ts-loader",
         exclude: [
           [
-            path.resolve(__dirname, "node_modules"),
+            // path.resolve(__dirname, "node_modules"),
             path.resolve(__dirname, ".serverless"),
             path.resolve(__dirname, ".webpack")
           ]
@@ -41,5 +39,6 @@ module.exports = {
       }
     ]
   },
-  plugins: []
+  plugins: [new ForkTsCheckerWebpackPlugin()],
+  optimization: { minimize: false }
 };

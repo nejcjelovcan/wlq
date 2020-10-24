@@ -1,12 +1,16 @@
 import * as t from "io-ts";
-import { resolveCodecEither } from "../../helpers";
+import {
+  IEmitter,
+  IStore,
+  IWlqRawWebsocketEvent,
+  resolveCodecEither
+} from "../..";
 import { getQuestionTokenIfEverybodyAnswered } from "../../model/room/Room";
-import IWlqContext from "../IWlqContext";
-import { IWlqRawWebsocketEvent } from "../IWlqRawEvent";
 
 export default async function answerQuestion(
   event: IWlqRawWebsocketEvent,
-  context: IWlqContext
+  store: Pick<IStore, "getParticipantAndRoom" | "addAnswer">,
+  emitter: Pick<IEmitter, "websocket" | "publish" | "stateMachineTaskSuccess">
 ) {
   let participantKey = event;
 
@@ -17,7 +21,7 @@ export default async function answerQuestion(
     } = resolveCodecEither(AnswerQuestionEventCodec.decode(event.payload));
 
     // get participant & room
-    const [participant, room] = await context.store.getParticipantAndRoom(
+    const [participant, room] = await store.getParticipantAndRoom(
       participantKey
     );
 
@@ -34,7 +38,7 @@ export default async function answerQuestion(
     if (alreadyAnswered) throw new Error("Already answered");
 
     // add answer
-    const roomUpdated = await context.store.addAnswer({
+    const roomUpdated = await store.addAnswer({
       ...participant,
       answer
     });
@@ -42,12 +46,12 @@ export default async function answerQuestion(
     // call task success if everybody answered
     const token = await getQuestionTokenIfEverybodyAnswered(roomUpdated);
     if (token) {
-      await context.emitter.stateMachineTaskSuccess(token, {});
+      await emitter.stateMachineTaskSuccess(token, {});
     }
 
     // notify others
 
-    await context.emitter.publish<UserAnsweredMessage>(
+    await emitter.publish<UserAnsweredMessage>(
       {
         action: "userAnswered",
         payload: { pid: participant.pid }
@@ -58,7 +62,7 @@ export default async function answerQuestion(
     console.error("Error in answerQuestion");
     console.log(e);
 
-    await context.emitter.websocket(participantKey.connectionId, {
+    await emitter.websocket(participantKey.connectionId, {
       action: "error",
       payload: { error: "Error answering question" }
     });

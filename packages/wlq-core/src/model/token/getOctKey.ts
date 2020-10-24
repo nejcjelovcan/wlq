@@ -1,5 +1,5 @@
 import { JWK } from "jose";
 
-export default function getKey() {
+export default function getOctKey() {
   return JWK.asKey(process.env.API_OCT_SECRET_KEY!);
 }

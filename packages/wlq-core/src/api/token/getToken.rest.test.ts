@@ -1,8 +1,6 @@
 import getToken from "./getToken.rest";
 
 describe("getToken.rest", () => {
-  process.env.API_OCT_SECRET_KEY = "test";
-
   it("calls restResponse exactly once with a new token", () => {
     const emitter = {
       restResponse: jest.fn()

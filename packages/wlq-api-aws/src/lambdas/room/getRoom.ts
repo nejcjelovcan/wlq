@@ -1,20 +1,20 @@
-import createRoom from "@wlq/wlq-core/lib/cjs/api/room/createRoom.rest";
+import getRoom from "@wlq/wlq-core/lib/api/room/getRoom.rest";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import DynamoDB from "aws-sdk/clients/dynamodb";
-import { getEventFromAws } from "../../tools/event.helpers";
-import { newRoomStore } from "../../tools/room.store";
 import {
+  getEventFromAws,
   newResponseEmitter,
+  newRoomStore,
   responseEmitterToAwsResult
-} from "../../tools/response.emitter";
+} from "../../tools";
 
 const DB = new DynamoDB.DocumentClient();
 
-export default async function handler(
+export async function handler(
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> {
   const emitter = newResponseEmitter();
   const store = newRoomStore(DB);
-  await createRoom(getEventFromAws(event), store, emitter);
+  await getRoom(getEventFromAws(event), store, emitter);
   return responseEmitterToAwsResult(emitter);
 }

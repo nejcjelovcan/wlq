@@ -1,5 +1,5 @@
 import * as t from "io-ts";
-import stringOneOf from "../../helpers/stringOneOf";
+import { stringOneOf } from "../../../helpers";
 
 export const USER_DETAILS_EMOJIS = [
   "🐵",

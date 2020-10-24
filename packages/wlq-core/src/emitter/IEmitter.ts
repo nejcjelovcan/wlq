@@ -1,14 +1,8 @@
-import { IWlqRawPayload } from "../api/IWlqRawEvent";
-
-export interface IWebsocketMessage<P extends IWlqRawPayload = IWlqRawPayload> {
-  action: string;
-  payload: P;
-}
-
-export interface IRestResponse<P extends IWlqRawPayload = IWlqRawPayload> {
-  statusCode: number;
-  payload: P;
-}
+import {
+  IRestResponse,
+  IWebsocketMessage,
+  IWlqRawPayload
+} from "../api/interfaces";
 
 export default interface IEmitter {
   /**

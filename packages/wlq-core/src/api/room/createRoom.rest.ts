@@ -1,15 +1,14 @@
 import * as t from "io-ts";
-import IEmitter from "../../emitter/IEmitter";
-import resolveCodecEither from "../../helpers/resolveCodecEither";
-
-import IStore from "../../model/IStore";
-import newRoom, { NewRoomCodec } from "../../model/room/newRoom";
 import {
   ErrorResponse,
   getErrorMessage,
-  getErrorMessageStatusCode
-} from "../error.helpers";
-import IWlqRawEvent from "../IWlqRawEvent";
+  getErrorStatusCode,
+  IEmitter,
+  IStore,
+  IWlqRawEvent,
+  resolveCodecEither
+} from "../..";
+import newRoom, { NewRoomCodec } from "../../model/room/newRoom";
 import { GetRoomResponse } from "./getRoom.rest";
 
 export default async function createRoom(
@@ -18,19 +17,19 @@ export default async function createRoom(
   emitter: Pick<IEmitter, "restResponse">
 ) {
   try {
-    const request = resolveCodecEither(
+    const payload = resolveCodecEither(
       CreateRoomRequestCodec.decode(event.payload)
     );
-    let room = newRoom(request);
+    let room = newRoom(payload);
     room = await store.addRoom(room);
 
-    await emitter.restResponse<GetRoomResponse>({
+    emitter.restResponse<GetRoomResponse>({
       statusCode: 200,
       payload: { room }
     });
   } catch (e) {
-    await emitter.restResponse<ErrorResponse>({
-      statusCode: getErrorMessageStatusCode(e),
+    emitter.restResponse<ErrorResponse>({
+      statusCode: getErrorStatusCode(e),
       payload: { error: getErrorMessage(e) }
     });
   }

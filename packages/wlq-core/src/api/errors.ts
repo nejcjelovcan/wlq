@@ -1,5 +1,5 @@
 import * as t from "io-ts";
-import { ValidationError } from "../helpers/resolveCodecEither";
+import { ValidationError } from "./resolveCodecEither";
 import {
   ExistsStoreError,
   NotFoundStoreError,
@@ -14,10 +14,12 @@ export function getErrorMessage(error: Error): string {
   if (error instanceof ValidationError) {
     return error.message;
   }
+  // console.error(error.message);
+  // console.log(error);
   return "Internal error";
 }
 
-export function getErrorMessageStatusCode(error: Error): number {
+export function getErrorStatusCode(error: Error): number {
   if (error instanceof NotFoundStoreError) {
     return 404;
   }

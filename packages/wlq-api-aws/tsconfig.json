@@ -3,6 +3,6 @@
   "include": ["./src/**/*", "./src/**/*.json"],
   "compilerOptions": {
     "lib": ["DOM", "ESNext"],
-    "rootDir": "./src"
+    "baseUrl": "./src"
   }
 }
