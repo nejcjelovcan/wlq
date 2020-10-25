@@ -1,76 +1,52 @@
-// import { GetTokenResponseData } from '@wlq/wlq-api/src/user'
-// import {
-//   sample,
-//   UserDetails,
-//   USER_DETAILS_COLORS,
-//   USER_DETAILS_EMOJIS,
-//   validateUserDetails,
-// } from '@wlq/wlq-model/src'
-import { Action } from "overmind";
+import { resolveCodecEither } from "@wlq/wlq-core";
+import { UserDetails, UserDetailsCodec } from "@wlq/wlq-core/lib/model";
+import { Action, debounce, mutate, pipe } from "overmind";
 
-// export const getToken: AsyncAction = async ({
-//   state: { user },
-//   effects: { api, localStorage },
-// }) => {
-//   if (!user.getTokenRequest.loading) {
-//     user.getTokenRequest = { loading: true }
+export const setUserDetails: Action<Partial<UserDetails>, boolean> = (
+  { state: { user }, effects: { localStorage } },
+  userDetails
+) => {
+  const partialState = user.transition("Partial");
+  if (partialState) {
+    partialState.details = userDetails;
+  }
 
-//     try {
-//       const data = await api.apiGet<GetTokenResponseData>('getToken')
-//       user.token = data.token
-//       localStorage.setItem('token', user.token)
-//     } catch (e) {
-//       user.getTokenRequest.error = e.message
-//     } finally {
-//       user.getTokenRequest.loading = false
-//     }
-//   }
-// }
+  let validDetails: UserDetails | undefined = undefined;
+  try {
+    validDetails = resolveCodecEither(UserDetailsCodec.decode(userDetails));
+  } catch (e) {}
+  if (validDetails) {
+    const validState = user.transition("Valid");
+    if (validState) {
+      validState.details = validDetails;
+      localStorage.setItem("userDetails", JSON.stringify(validDetails));
+      return true;
+    }
+  }
 
-// export const clearUserData: Action = ({ state, effects: { localStorage } }) => {
-//   state.user = { getTokenRequest: {} }
-//   localStorage.clear()
-// }
+  return false;
+};
 
-// export const setUserDetails: Action<Partial<UserDetails>> = (
-//   { state: { user }, effects: { localStorage } },
-//   userDetails,
-// ) => {
-//   user.details = userDetails
-//   try {
-//     user.details = validateUserDetails(userDetails)
-//     user.detailsValid = true
-//   } catch (e) {
-//     user.detailsValid = false
-//   }
-
-//   if (user.detailsValid) {
-//     localStorage.setItemJson('userDetails', user.details)
-//   }
-// }
-
-// export const getUserDetails: Action<void, Partial<UserDetails> | undefined> = ({
-//   state: { user },
-//   effects: { localStorage },
-// }) => {
-//   if (user.detailsChecked) return user.details
-
-//   const userDetails = localStorage.getItemJson('userDetails')
-//   if (userDetails) {
-//     user.details = userDetails
-//   } else {
-//     user.details = {
-//       color: user.details?.color ?? sample(USER_DETAILS_COLORS),
-//       emoji: user.details?.emoji ?? sample(USER_DETAILS_EMOJIS),
-//     }
-//   }
-//   try {
-//     validateUserDetails(userDetails)
-//     user.detailsValid = true
-//   } catch (e) {
-//     user.detailsValid = false
-//   }
-//   user.detailsChecked = true
-//   return user.details
-// }
-export const test: Action = () => {};
+export const throttledSetAlias: Action<string> = pipe(
+  debounce(200),
+  mutate(
+    (
+      {
+        state: { user },
+        actions: {
+          user: { setUserDetails }
+        }
+      },
+      alias
+    ) => {
+      const partialOrValidState =
+        user.state === "Init" ? user.transition("Partial") : user;
+      if (partialOrValidState) {
+        setUserDetails({
+          ...partialOrValidState.details,
+          alias: alias ? alias : undefined
+        });
+      }
+    }
+  )
+);

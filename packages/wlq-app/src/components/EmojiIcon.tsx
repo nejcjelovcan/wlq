@@ -4,7 +4,7 @@ import React from "react";
 
 export type EmojiIconProps = {
   emoji: string;
-  light: boolean;
+  light?: boolean;
   variant: string;
   fontSize?: string;
   size?: string;
@@ -12,7 +12,6 @@ export type EmojiIconProps = {
 
 const EmojiIcon = ({
   emoji,
-  light,
   variant,
   fontSize = "35xl",
   size = "13",
@@ -20,9 +19,8 @@ const EmojiIcon = ({
 }: EmojiIconProps) => {
   const theme = useTheme();
 
-  const textColor = light
-    ? getColor(theme, "gray.800")
-    : getColor(theme, "gray.100");
+  const textColor = getColor(theme, "gray.800");
+  const textColorHover = getColor(theme, "gray.800");
 
   return (
     <Flex
@@ -39,7 +37,7 @@ const EmojiIcon = ({
         verticalAlign="middle"
         lineHeight={size}
         textAlign="center"
-        _hover={{ textShadow: `0 0 1px ${textColor}` }}
+        _hover={{ textShadow: `0 0 1px ${textColorHover}` }}
       >
         {emoji}
       </Box>

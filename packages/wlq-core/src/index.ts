@@ -24,3 +24,4 @@ export {
   StateStoreError,
   StoreError
 } from "./model/IStore";
+export { default as sample } from "./helpers/sample";

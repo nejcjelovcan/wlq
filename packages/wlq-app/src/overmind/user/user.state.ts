@@ -11,7 +11,7 @@ export type UserState =
 export const state = statemachine<UserState>(
   {
     Init: ["Partial"],
-    Partial: ["Valid"],
+    Partial: ["Valid", "Partial"],
     Valid: ["Partial"]
   },
   {

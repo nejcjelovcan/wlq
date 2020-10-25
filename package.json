@@ -4,8 +4,7 @@
     "packages/*"
   ],
   "scripts": {
-    
-    "verify": "yarn workspace @wlq/wlq-core verify",
+    "verify": "yarn workspace @wlq/wlq-core verify && yarn workspace @wlq/wlq-app verify",
     "test": "yarn workspace @wlq/wlq-core test",
     "test:coverage": "yarn workspace @wlq/wlq-core test:coverage",
 

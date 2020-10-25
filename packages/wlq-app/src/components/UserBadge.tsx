@@ -41,7 +41,6 @@ const UserBadge = ({
     >
       <EmojiIcon
         emoji={userDetails?.emoji ?? "🧑🏾"}
-        light={true}
         variant="vibrant"
         zIndex="3"
       />
