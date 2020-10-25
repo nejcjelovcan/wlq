@@ -5,10 +5,12 @@ on:
     paths:
       - packages/wlq-core/*
       - .github/workflows/*
+      - .eslintrc.json
+      - tsconfig.json
 
 jobs:
   verify_and_test:
-    name: Lint, compile and test with coverage report
+    name: Lint, compile, test & coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
