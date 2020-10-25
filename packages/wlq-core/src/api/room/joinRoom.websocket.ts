@@ -54,13 +54,10 @@ export default async function joinRoom(
     });
 
     // send participantJoined to other users
-    await emitter.publish<ParticipantJoinedMessage>(
-      {
-        action: "participantJoined",
-        data: { participant: getParticipantPublic(participant) }
-      },
-      { roomId }
-    );
+    await emitter.publish<ParticipantJoinedMessage>({
+      action: "participantJoined",
+      data: { participant: getParticipantPublic(participant) }
+    });
   } catch (e) {
     console.error("Error in joinRoom");
     console.log(e);

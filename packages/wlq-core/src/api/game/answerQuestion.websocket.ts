@@ -51,13 +51,10 @@ export default async function answerQuestion(
 
     // notify others
 
-    await emitter.publish<UserAnsweredMessage>(
-      {
-        action: "userAnswered",
-        data: { pid: participant.pid }
-      },
-      { roomId: participant.roomId }
-    );
+    await emitter.publish<UserAnsweredMessage>({
+      action: "userAnswered",
+      data: { pid: participant.pid }
+    });
   } catch (e) {
     console.error("Error in answerQuestion");
     console.log(e);

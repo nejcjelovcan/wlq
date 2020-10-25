@@ -1,8 +1,13 @@
-export { getEventFromAws } from "./event.helpers";
+export { getEventFromAws, getWebsocketEventFromAws } from "./event.helpers";
+export { newPublishEmitter } from "./publish.emitter";
 export {
+  AwsErrorResult,
+  AwsOkResult,
+  COMMON_HEADERS,
   newResponseEmitter,
+  ResponseEmitter,
   responseEmitterToAwsResult,
-  responseToAwsResult,
-  ResponseEmitter
+  responseToAwsResult
 } from "./response.emitter";
 export { newRoomStore } from "./room.store";
+export { newWebsocketEmitter } from "./websocket.emitter";

@@ -18,6 +18,15 @@ provider:
     ROOM_TABLE_NAME: ${self:custom.roomTableName}
     HTTP_ORIGIN: ${self:custom.httpOrigin}
     API_OCT_SECRET_KEY: ${env:API_OCT_SECRET_KEY}
+    BROADCAST_TOPIC: ${self:custom.broadcastTopic}
+    WEBSOCKET_ENDPOINT:
+      Fn::Join:
+        - ""
+        - - Ref: WebsocketsApi
+          - .execute-api.
+          - Ref: AWS::Region
+          - .amazonaws.com/
+          - ${self:provider.stage}
 
   iamRoleStatements:
     - Effect: Allow
@@ -33,6 +42,19 @@ provider:
       Resource:
         - { "Fn::GetAtt": ["RoomTable", "Arn"] }
         - Fn::Join: ["/", [{ "Fn::GetAtt": ["RoomTable", "Arn"] }, "index/*"]]
+    - Effect: Allow
+      Action:
+        - SNS:Publish
+      Resource:
+        - Fn::Join:
+            [
+              "",
+              [
+                "arn:aws:sns:${self:provider.region}:",
+                { "Ref": "AWS::AccountId" },
+                ":${self:custom.broadcastTopic}",
+              ],
+            ]
 
 plugins:
   - serverless-plugin-typescript
@@ -52,9 +74,7 @@ custom:
   httpOrigin: ${env:HTTP_ORIGIN}
   acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
   roomTableName: ${self:service}-RoomTable-${self:provider.stage}
-  webpack:
-    webpackConfig: "./webpack.config.js"
-    includeModules: false
+  broadcastTopic: "${self:service}-broadcast-${self:provider.stage}"
   customDomain:
     domainName: ${self:custom.siteName}
     basePath: ""
@@ -64,6 +84,8 @@ custom:
     file: ./src/__integration__/serverless-output.json
 
 functions:
+  # REST Lambdas
+
   getToken:
     handler: src/lambdas/token/getToken.handler
     events:
@@ -100,6 +122,40 @@ functions:
             origin: ${self:custom.httpOrigin}
             allowCredentials: true
 
+  # SOCKET Lambdas
+  socketConnection:
+    handler: src/lambdas/socketConnection.handler
+
+    events:
+      - websocket:
+          route: $connect
+      - websocket:
+          route: $disconnect
+      - websocket:
+          route: $default
+
+  joinRoom:
+    handler: src/lambdas/room/joinRoom.handler
+    events:
+      - websocket:
+          route: joinRoom
+
+  # SNS Lambdas
+  # broadcastTopic:
+  #   maximumRetryAttempts: 0
+  #   handler: src/lambdas/sns/broadcastTopic.handler
+  #   events:
+  #     - sns:
+  #         arn:
+  #           Ref: BroadcastTopic
+  #         topicName: ${self:custom.broadcastTopic}
+  #         filterPolicy:
+  #           action:
+  #             - setParticipants
+  #             - participantJoined
+  #             - error
+
+  # AUTHORIZE
   authorize:
     handler: src/lambdas/authorize.handler
 
@@ -115,6 +171,18 @@ resources:
         ResponseType: DEFAULT_4XX
         RestApiId:
           Ref: "ApiGatewayRestApi"
+
+    BroadcastTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:custom.broadcastTopic}
+
+    WebsocketsApi:
+      Type: AWS::ApiGatewayV2::Api
+      Properties:
+        Name: ${self:provider.stage}-wlq-api-aws-websocket
+        ProtocolType: WEBSOCKET
+        RouteSelectionExpression: "$request.body.action"
 
     RoomTable:
       Type: AWS::DynamoDB::Table

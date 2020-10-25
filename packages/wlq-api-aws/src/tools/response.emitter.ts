@@ -1,4 +1,4 @@
-import { IEmitter, IRestResponse } from "@wlq/wlq-core/lib";
+import { IEmitter, IRestResponse } from "@wlq/wlq-core";
 import { APIGatewayProxyResult } from "aws-lambda";
 
 export type ResponseEmitter = Pick<IEmitter, "restResponse" | "response">;
@@ -45,6 +45,13 @@ export const AwsErrorResult: APIGatewayProxyResult = {
   statusCode: 500,
   headers: COMMON_HEADERS,
   body: formatBody({ error: "Internal server error" })
+};
+
+// used for e.g. websocket apis that don't have an actual response
+export const AwsOkResult: APIGatewayProxyResult = {
+  statusCode: 200,
+  headers: COMMON_HEADERS,
+  body: "{}"
 };
 
 export function responseEmitterToAwsResult(responseEmitter: ResponseEmitter) {

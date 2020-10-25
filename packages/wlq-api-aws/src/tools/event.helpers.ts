@@ -1,4 +1,4 @@
-import { IWlqRawEvent } from "@wlq/wlq-core/lib";
+import { IWlqRawEvent, IWlqRawWebsocketEvent } from "@wlq/wlq-core/lib";
 import { APIGatewayProxyEvent } from "aws-lambda";
 
 export function getEventFromAws({ body }: APIGatewayProxyEvent): IWlqRawEvent {
@@ -10,6 +10,20 @@ export function getEventFromAws({ body }: APIGatewayProxyEvent): IWlqRawEvent {
     console.log(e);
   }
   return {
+    payload
+  };
+}
+
+export function getWebsocketEventFromAws(
+  event: APIGatewayProxyEvent
+): IWlqRawWebsocketEvent {
+  let { payload } = getEventFromAws(event);
+  const {
+    requestContext: { connectionId }
+  } = event;
+
+  return {
+    connectionId: connectionId!,
     payload
   };
 }
