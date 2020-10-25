@@ -8,7 +8,11 @@ import {
   IWlqRawEvent,
   resolveCodecEither
 } from "../..";
-import { RoomCodec, RoomKeyCodec } from "../../model/room/Room";
+import {
+  getRoomPublic,
+  RoomKeyCodec,
+  RoomPublicCodec
+} from "../../model/room/Room";
 
 export default async function getRoom(
   event: IWlqRawEvent,
@@ -21,7 +25,7 @@ export default async function getRoom(
 
     emitter.restResponse<GetRoomResponse>({
       statusCode: 200,
-      payload: { room }
+      payload: { room: getRoomPublic(room) }
     });
   } catch (e) {
     emitter.restResponse<ErrorResponse>({
@@ -32,6 +36,6 @@ export default async function getRoom(
 }
 
 export const GetRoomResponseCodec = t.type({
-  room: RoomCodec
+  room: RoomPublicCodec
 });
 export type GetRoomResponse = t.TypeOf<typeof GetRoomResponseCodec>;

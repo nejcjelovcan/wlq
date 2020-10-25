@@ -1,4 +1,4 @@
-export { default as newRoom } from "./room/newRoom";
+export { default as newRoom, NewRoomCodec, NewRoom } from "./room/newRoom";
 export {
   getParticipantPublic,
   newParticipant,
@@ -14,4 +14,12 @@ export {
   USER_DETAILS_COLORS,
   USER_DETAILS_EMOJIS
 } from "./room/participant/UserDetails";
-export { Room, RoomCodec, RoomKey, RoomKeyCodec } from "./room/Room";
+export {
+  Room,
+  RoomCodec,
+  RoomKey,
+  RoomKeyCodec,
+  RoomPublic,
+  RoomPublicCodec,
+  getRoomPublic
+} from "./room/Room";

@@ -1,5 +1,5 @@
 import * as t from "io-ts";
-import { GameCodec } from "../game/Game";
+import { GameCodec, GamePublicCodec, getGamePublic } from "../game/Game";
 
 const RoomKeyProps = {
   roomId: t.string
@@ -11,25 +11,36 @@ const RoomProps = {
   participantCount: t.number
 };
 
-const RoomIdleProps = {
-  state: t.literal("Idle")
-};
-
-const RoomGameProps = {
-  state: t.literal("Game"),
-  game: GameCodec
-};
-
 export const RoomKeyCodec = t.type(RoomKeyProps);
 export type RoomKey = t.TypeOf<typeof RoomKeyCodec>;
 
 export const RoomCodec = t.intersection([
   RoomKeyCodec,
   t.type(RoomProps),
-  t.union([t.type(RoomIdleProps), t.type(RoomGameProps)])
+  t.union([
+    t.type({ state: t.literal("Idle") }),
+    t.type({
+      state: t.literal("Game"),
+      game: GameCodec
+    })
+  ])
 ]);
 
 export type Room = t.TypeOf<typeof RoomCodec>;
+
+export const RoomPublicCodec = t.intersection([
+  RoomKeyCodec,
+  t.type(RoomProps),
+  t.union([
+    t.type({ state: t.literal("Idle") }),
+    t.type({
+      state: t.literal("Game"),
+      game: GamePublicCodec
+    })
+  ])
+]);
+
+export type RoomPublic = t.TypeOf<typeof RoomPublicCodec>;
 
 export function getQuestionTokenIfEverybodyAnswered(
   room: Room
@@ -38,4 +49,12 @@ export function getQuestionTokenIfEverybodyAnswered(
     return room.game.questionToken;
   }
   return undefined;
+}
+
+export function getRoomPublic(room: Room): RoomPublic {
+  if (room.state === "Game") {
+    return { ...room, game: getGamePublic(room.game) };
+  } else {
+    return room;
+  }
 }

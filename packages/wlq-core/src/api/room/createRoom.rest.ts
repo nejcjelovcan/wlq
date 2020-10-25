@@ -8,7 +8,7 @@ import {
   IWlqRawEvent,
   resolveCodecEither
 } from "../..";
-import newRoom, { NewRoomCodec } from "../../model/room/newRoom";
+import { getRoomPublic, newRoom, NewRoomCodec } from "../../model";
 import { GetRoomResponse } from "./getRoom.rest";
 
 export default async function createRoom(
@@ -25,7 +25,7 @@ export default async function createRoom(
 
     emitter.restResponse<GetRoomResponse>({
       statusCode: 200,
-      payload: { room }
+      payload: { room: getRoomPublic(room) }
     });
   } catch (e) {
     emitter.restResponse<ErrorResponse>({

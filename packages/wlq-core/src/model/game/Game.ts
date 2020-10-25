@@ -39,3 +39,58 @@ export const GameCodec = t.intersection([
   ])
 ]);
 export type Game = t.TypeOf<typeof GameCodec>;
+
+export const GamePublicCodec = t.intersection([
+  t.type({
+    type: t.literal("Game"),
+    questionCount: t.number,
+    roomId: t.string
+  }),
+  t.union([
+    t.type({ state: t.literal("Idle") }),
+    t.intersection([
+      t.type({ state: t.literal("Question") }),
+      GamePublicQuestionCodec
+    ]),
+    t.intersection([
+      t.type({ state: t.literal("Answer") }),
+      GamePublicQuestionCodec,
+      GamePublicAnswerCodec
+    ]),
+    t.type({ state: t.literal("Finished") })
+  ])
+]);
+export type GamePublic = t.TypeOf<typeof GamePublicCodec>;
+
+export function getGamePublic(game: Game): GamePublic {
+  if (game.state === "Question" || game.state === "Answer") {
+    const {
+      question: { options, questionText },
+      questionToken,
+      answers,
+      ...gamePublic
+    } = game;
+
+    const questionProps = {
+      questionOptions: options,
+      questionText,
+      answeredParticipants: answers.map(a => a.pid)
+    };
+
+    if (game.state === "Question")
+      return {
+        ...gamePublic,
+        ...questionProps,
+        state: "Question"
+      };
+
+    if (game.state === "Answer")
+      return {
+        ...gamePublic,
+        ...questionProps,
+        state: "Answer",
+        answers
+      };
+  }
+  return game;
+}

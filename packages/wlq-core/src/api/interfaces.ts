@@ -10,9 +10,9 @@ export interface IWlqRawWebsocketEvent extends IWlqRawEvent {
   connectionId: string;
 }
 
-export interface IWebsocketMessage<P extends IWlqRawPayload = IWlqRawPayload> {
+export interface IWebsocketMessage<D extends IWlqRawPayload = IWlqRawPayload> {
   action: string;
-  data: P;
+  data: D;
 }
 
 export interface IRestResponse<P extends IWlqRawPayload = IWlqRawPayload> {
