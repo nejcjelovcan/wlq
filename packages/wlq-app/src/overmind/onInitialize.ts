@@ -12,10 +12,12 @@ export const onInitialize: OnInitialize = ({
   },
   effects: { localStorage }
 }) => {
+  // load/request token
   const token = localStorage.getItem("token");
   if (token) setToken(token);
   else requestToken();
 
+  // load details
   let detailsValid = false;
   const userDetails = localStorage.getItem("userDetails");
   if (userDetails) {

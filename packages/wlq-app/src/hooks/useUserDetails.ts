@@ -1,29 +1,25 @@
+import { useRouter } from "next/dist/client/router";
+import { useEffect } from "react";
+import { useOvermind } from "../overmind";
+
 export default function useUserDetails() {
-  // export default function useUserDetails(redirect = false) {
-  // const {
-  //   state: { user },
-  //   actions: {
-  //     user: { getUserDetails }
-  //   }
-  // } = useOvermind();
+  const {
+    state: { user }
+  } = useOvermind();
 
-  // const router = useRouter();
+  const router = useRouter();
+  useEffect(() => {
+    if (!user.matches("Valid")) {
+      router.replace(
+        `/settings/?next=${encodeURIComponent(
+          document.location.pathname + document.location.search
+        )}`
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // useEffect(() => {
-  //   if (!detailsChecked) getUserDetails();
-  // }, [detailsChecked, getUserDetails]);
-
-  // useEffect(() => {
-  //   if (detailsChecked && !detailsValid && redirect) {
-  //     router.replace(
-  //       `/settings/?next=${encodeURIComponent(
-  //         document.location.pathname + document.location.search
-  //       )}`
-  //     );
-  //   }
-  // }, [detailsValid, detailsChecked, router, redirect]);
-
-  // return detailsValid ? details : undefined;
+  if (user.matches("Valid")) return user.details;
 
   return undefined;
 }
