@@ -1,45 +1,20 @@
-import {
-  CollectionItem,
-  PosedQuestionPublic,
-} from '@wlq/wlq-model/src/collection'
-import {
-  Room,
-  RoomCreation,
-  RoomParticipantPublic,
-} from '@wlq/wlq-model/src/room'
-import { ValidationFieldErrorData } from '@wlq/wlq-model/src/validation'
-import { RequestState } from '../../utils/api'
+import { statemachine } from "overmind";
+import { RoomPublic } from "@wlq/wlq-core/lib/model";
 
-export type RoomState = {
-  currentRoom?: Room
-  getRoomRequest: RequestState
-  listRoomsRequest: RequestState
-  rooms: Room[]
-  roomCreation: Partial<RoomCreation>
-  roomCreationValid?: boolean
-  roomCreationError?: ValidationFieldErrorData
-  roomCreationRequest: RequestState
-  socket: {
-    loading?: boolean
-    connected?: boolean
-    error?: string
-  }
-  roomSession: {
-    pid?: string
-    participants: RoomParticipantPublic[]
-    currentQuestion?: PosedQuestionPublic
-    currentAnswer?: CollectionItem
-    participantAnswer?: string
-    usersAnswered: string[]
-  }
-}
+export type RoomState =
+  | { state: "Init" }
+  | { state: "Requested"; roomId: string }
+  | { state: "Room"; room: RoomPublic }
+  | { state: "Joined"; room: RoomPublic };
 
-export const state: RoomState = {
-  getRoomRequest: {},
-  listRoomsRequest: {},
-  roomCreationRequest: {},
-  roomCreation: { listed: true },
-  socket: {},
-  roomSession: { participants: [], usersAnswered: [] },
-  rooms: [],
-}
+export const state = statemachine<RoomState>(
+  {
+    Init: ["Requested"],
+    Requested: ["Room"],
+    Room: ["Joined", "Init", "Requested"],
+    Joined: ["Init", "Room", "Requested"]
+  },
+  {
+    state: "Init"
+  }
+);

@@ -1,21 +1,20 @@
-import React from 'react'
-import Link from 'next/link'
-import { Skeleton, Stack, Button } from '@chakra-ui/core'
-import PageHead from '../components/PageHead'
-import { useOvermind } from '../overmind'
-import useToken from '../hooks/useToken'
-import useUserDetails from '../hooks/useUserDetails'
+import { Button, Skeleton, Stack } from "@chakra-ui/core";
+import Link from "next/link";
+import React from "react";
+import PageHead from "../components/PageHead";
+// import useToken from "../hooks/useToken";
+import useUserDetails from "../hooks/useUserDetails";
 
-const FauxRoom = () => <Skeleton height="2rem" />
+const FauxRoom = () => <Skeleton height="2rem" />;
 
 const IndexPage = () => {
-  useToken()
-  useUserDetails()
-  const {
-    actions: {
-      user: { clearUserData },
-    },
-  } = useOvermind()
+  // useToken();
+  useUserDetails();
+  // const {
+  //   actions: {
+  //     user: { clearUserData }
+  //   }
+  // } = useOvermind();
   return (
     <>
       <Stack spacing={4}>
@@ -37,11 +36,11 @@ const IndexPage = () => {
             Settings
           </Button>
         </Link>
-        <Button size="lg" onClick={() => clearUserData()}>
+        {/* <Button size="lg" onClick={() => clearUserData()}>
           Clear data
-        </Button>
+        </Button> */}
       </Stack>
     </>
-  )
-}
-export default IndexPage
+  );
+};
+export default IndexPage;

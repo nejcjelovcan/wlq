@@ -1,0 +1,43 @@
+name: Verify wlq-core package
+
+on:
+  push:
+    paths:
+      - packages/wlq-core/*
+      - .github/workflows/*
+      - .eslintrc.json
+      - tsconfig.json
+
+jobs:
+  verify_and_test:
+    name: Lint, compile, test & coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+
+      - uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Yarn install
+        run: yarn install
+
+      - name: Lint
+        run: yarn workspace @wlq/wlq-core verify:lint
+
+      - name: Typescript check
+        run: yarn workspace @wlq/wlq-core verify:tsc
+
+      - name: Test
+        run: yarn workspace @wlq/wlq-core test:coverage
+
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./packages/wlq-core/coverage/lcov.info
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)

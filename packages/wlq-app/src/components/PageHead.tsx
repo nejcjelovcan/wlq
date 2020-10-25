@@ -1,19 +1,19 @@
-import { Box, Flex, Heading, Skeleton } from '@chakra-ui/core'
-import React from 'react'
-import { useOvermindState } from '../overmind'
-import UserBadge from './UserBadge'
+import { Box, Flex, Heading, Skeleton } from "@chakra-ui/core";
+import React from "react";
+// import { useOvermindState } from "../overmind";
+// import UserBadge from "./UserBadge";
 
 export type PageHeadProps = {
-  loading?: boolean
-  title: string
-  subtitle?: string
-  showAlias?: boolean
-}
+  loading?: boolean;
+  title: string;
+  subtitle?: string;
+  showAlias?: boolean;
+};
 
-const PageHead = ({ loading, title, subtitle, showAlias }: PageHeadProps) => {
-  const {
-    user: { details, detailsValid },
-  } = useOvermindState()
+const PageHead = ({ loading, title, subtitle }: PageHeadProps) => {
+  // const {
+  //   user: { details, detailsValid }
+  // } = useOvermindState();
 
   return (
     <Flex direction="row" justifyContent="space-between" alignItems="center">
@@ -30,10 +30,10 @@ const PageHead = ({ loading, title, subtitle, showAlias }: PageHeadProps) => {
           </Heading>
         </Skeleton>
       </Flex>
-      {detailsValid && details && (
+      {/* {detailsValid && details && (
         <UserBadge userDetails={details} showAlias={showAlias} />
-      )}
+      )} */}
     </Flex>
-  )
-}
-export default PageHead
+  );
+};
+export default PageHead;

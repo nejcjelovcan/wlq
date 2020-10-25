@@ -1,16 +1,13 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["./src/**/*", "./src/**/*.json"],
-  "exclude": ["node_modules"],
   "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "rootDir": "src",
+    "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": false,
     "noEmit": true,
     "isolatedModules": true,
     "jsx": "preserve"
   },
-  "references": [{ "path": "../wlq-model" }]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

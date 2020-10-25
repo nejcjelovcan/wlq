@@ -1,14 +1,20 @@
-import { UserDetails } from '@wlq/wlq-model/src/user'
-import { RequestState } from '../../utils/api'
+import { UserDetails } from "@wlq/wlq-core/lib/model";
+import { statemachine } from "overmind";
 
-export type UserState = {
-  token?: string
-  getTokenRequest: RequestState
-  details?: Partial<UserDetails>
-  detailsValid?: boolean
-  detailsChecked?: boolean
-}
+export type UserState =
+  | {
+      state: "Init";
+    }
+  | { state: "Partial"; details: Partial<UserDetails> }
+  | { state: "Valid"; details: UserDetails };
 
-export const state: UserState = {
-  getTokenRequest: {},
-}
+export const state = statemachine<UserState>(
+  {
+    Init: ["Partial"],
+    Partial: ["Valid"],
+    Valid: ["Partial"]
+  },
+  {
+    state: "Init"
+  }
+);

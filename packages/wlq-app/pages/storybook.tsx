@@ -1,9 +1,15 @@
-import { Button, HStack, Input, Stack } from '@chakra-ui/core'
-import React, { useState } from 'react'
-import UserBadge from '../src/components/UserBadge'
-import PageHead from '../src/components/PageHead'
+import { Button, HStack, Input, Stack } from "@chakra-ui/core";
+import React, { useState } from "react";
+import UserBadge from "../src/components/UserBadge";
+import PageHead from "../src/components/PageHead";
+import { UserDetails } from "@wlq/wlq-core/lib/model";
 
-const UserDetailFixture = { emoji: '🐱', alias: 'Alias', color: 'blue' }
+const UserDetailFixture: UserDetails = {
+  type: "UserDetails",
+  emoji: "🐱",
+  alias: "Alias",
+  color: "blue"
+};
 
 /**
  * This is just a page to preview different widgets
@@ -12,8 +18,8 @@ const UserDetailFixture = { emoji: '🐱', alias: 'Alias', color: 'blue' }
  * TODO: redirect to 404 in production
  */
 export default function Storybook() {
-  const [showAlias, setShowAlias] = useState(true)
-  const toggleAlias = () => setShowAlias(show => !show)
+  const [showAlias, setShowAlias] = useState(true);
+  const toggleAlias = () => setShowAlias(show => !show);
 
   return (
     <>
@@ -34,7 +40,7 @@ export default function Storybook() {
           <UserBadge
             userDetails={{
               ...UserDetailFixture,
-              alias: 'averylongaliastotestwrapping',
+              alias: "averylongaliastotestwrapping"
             }}
             showAlias={showAlias}
             onClick={toggleAlias}
@@ -44,5 +50,5 @@ export default function Storybook() {
         <Input placeholder="Input field" />
       </Stack>
     </>
-  )
+  );
 }

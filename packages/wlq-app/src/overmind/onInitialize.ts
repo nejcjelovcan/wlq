@@ -1,9 +1,12 @@
-import { OnInitialize } from 'overmind'
+import { OnInitialize } from "overmind";
 
-export const onInitialize: OnInitialize = async ({
-  state: { user },
-  effects: { localStorage },
+export const onInitialize: OnInitialize = ({
+  actions: {
+    token: { setToken, requestToken }
+  },
+  effects: { localStorage }
 }) => {
-  const token = localStorage.getItem('token')
-  if (token) user.token = token
-}
+  const token = localStorage.getItem("token");
+  if (token) setToken(token);
+  else requestToken();
+};

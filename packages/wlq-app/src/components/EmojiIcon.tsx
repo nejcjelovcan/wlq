@@ -1,41 +1,28 @@
-import {
-  Box,
-  BoxProps,
-  Flex,
-  SystemStyleObject,
-  useStyleConfig,
-  useTheme,
-} from '@chakra-ui/core'
-import { getColor } from '@chakra-ui/theme-tools'
-import React from 'react'
+import { Box, BoxProps, Flex, useTheme } from "@chakra-ui/core";
+import { getColor } from "@chakra-ui/theme-tools";
+import React from "react";
 
 export type EmojiIconProps = {
-  emoji: string
-  colorScheme: string
-  variant: string
-  fontSize?: string
-  size?: string
-} & BoxProps
+  emoji: string;
+  light: boolean;
+  variant: string;
+  fontSize?: string;
+  size?: string;
+} & BoxProps;
 
 const EmojiIcon = ({
   emoji,
-  colorScheme,
+  light,
   variant,
-  fontSize = '35xl',
-  size = '13',
+  fontSize = "35xl",
+  size = "13",
   ...props
 }: EmojiIconProps) => {
-  const buttonStyle = useStyleConfig('Button', {
-    colorScheme,
-    variant,
-  }) as SystemStyleObject
-  const theme = useTheme()
-  const textColor = getColor(theme, buttonStyle['color'] || 'gray.800')
-  // TODO this only works for icon hover, not parent button
-  const textHoverColor = getColor(
-    theme,
-    buttonStyle['_hover']['color'] || 'gray.800',
-  )
+  const theme = useTheme();
+
+  const textColor = light
+    ? getColor(theme, "gray.800")
+    : getColor(theme, "gray.100");
 
   return (
     <Flex
@@ -52,11 +39,11 @@ const EmojiIcon = ({
         verticalAlign="middle"
         lineHeight={size}
         textAlign="center"
-        _hover={{ textShadow: `0 0 1px ${textHoverColor}` }}
+        _hover={{ textShadow: `0 0 1px ${textColor}` }}
       >
         {emoji}
       </Box>
     </Flex>
-  )
-}
-export default EmojiIcon
+  );
+};
+export default EmojiIcon;

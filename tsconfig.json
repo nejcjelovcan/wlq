@@ -1,18 +1,11 @@
 {
   "compilerOptions": {
-    "composite": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-
-    "jsx": "react",
-    "target": "es2018",
+    "target": "es2019",
     "module": "esnext",
     "moduleResolution": "node",
-    "lib": ["es2019"],
-
+    "lib": ["esnext"],
     "strict": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,

@@ -1,36 +1,24 @@
-import leaveRoom from '@wlq/wlq-api/src/room/leaveRoom'
-import { APIGatewayProxyHandler } from 'aws-lambda'
-import deleteParticipantCallback from '../callbacks/deleteParticipantCallback'
-import getParticipantCallback from '../callbacks/getParticipantCallback'
-import extractFromWebsocketEvent from '../extractFromWebsocketEvent'
-import getDatabaseProps from '../getDatabaseProps'
-import { COMMON_HEADERS } from '../wrappers/awsRestRespond'
-import awsWebsocketWrapper from '../wrappers/awsWebsocketWrapper'
+// import leaveRoom from "@wlq/wlq-api/src/room/leaveRoom";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import { AwsOkResult } from "../tools";
 
-const DbProps = getDatabaseProps()
-
-export const handler: APIGatewayProxyHandler = async (event, context) => {
-  const websocketEventData = extractFromWebsocketEvent(event, context)
-  const { connectionId, routeKey } = websocketEventData
+export function handler(event: APIGatewayProxyEvent): APIGatewayProxyResult {
+  const { connectionId, routeKey } = event.requestContext;
 
   switch (routeKey) {
-    case '$connect':
-      console.log('CONNECT')
-      break
-    case '$disconnect':
-      console.log('DISCONNECT')
+    case "$connect":
+      console.log("CONNECT");
+      break;
+    case "$disconnect":
+      console.log("DISCONNECT");
 
+      // TODO removeParticipant
       if (connectionId) {
-        return awsWebsocketWrapper(
-          { connectionId, action: 'leaveRoom', data: {} },
-          websocketEventData,
-          leaveRoom(
-            getParticipantCallback(DbProps),
-            deleteParticipantCallback(DbProps),
-          ),
-        )
       }
+      break;
+    case "$default":
+    // TODO call emitter.websocket with error (unrecognized action)
   }
 
-  return { statusCode: 200, headers: COMMON_HEADERS, body: '{}' }
+  return AwsOkResult;
 }
