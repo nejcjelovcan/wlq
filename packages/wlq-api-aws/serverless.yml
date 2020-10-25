@@ -39,6 +39,8 @@ plugins:
   - serverless-plugin-optimize
   - serverless-step-functions
   - serverless-domain-manager
+  - serverless-dotenv-plugin
+  - serverless-stack-output
 
 package:
   individually: true
@@ -58,6 +60,8 @@ custom:
     basePath: ""
     stage: ${self:provider.stage}
     createRoute53Record: true
+  output:
+    file: ./src/__integration__/serverless-output.json
 
 functions:
   getToken:

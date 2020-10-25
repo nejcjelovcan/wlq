@@ -3,7 +3,7 @@ import { newMemoryStore } from "../../model/MemoryStore";
 import createRoom from "./createRoom.rest";
 
 describe("createRoom.rest", () => {
-  it("responds with statusCode=400 if no listed parameter provided", async () => {
+  it("responds 400 if no listed parameter provided", async () => {
     const emitter = {
       restResponse: jest.fn()
     };
@@ -21,7 +21,7 @@ describe("createRoom.rest", () => {
     expect(payload.error).toMatch("listed");
   });
 
-  it("responds statusCode=200 and room data if listed parameter was provided", async () => {
+  it("responds 200 with room data if listed parameter was provided", async () => {
     const emitter = {
       restResponse: jest.fn()
     };
@@ -40,7 +40,7 @@ describe("createRoom.rest", () => {
     });
   });
 
-  it("responds with error response if store fails", async () => {
+  it("responds 500 if store fails", async () => {
     const emitter = {
       restResponse: jest.fn()
     };

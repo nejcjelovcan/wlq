@@ -1,15 +1,16 @@
-import { JWT } from "jose";
-import { nanoid } from "nanoid";
+import * as t from "io-ts";
 import { IEmitter } from "../../";
-import { getOctKey, TokenPayload } from "../../model/token";
+import { newToken } from "../../model/token";
 
 // eslint-disable-next-line require-await
 export default async function getToken(
   emitter: Pick<IEmitter, "restResponse">
 ) {
-  const payload: TokenPayload = { sub: nanoid() };
   emitter.restResponse({
     statusCode: 200,
-    payload: { token: JWT.sign(payload, getOctKey()) }
+    payload: { token: newToken() }
   });
 }
+
+export const GetTokenResponseCodec = t.type({ token: t.string });
+export type GetTokenResponse = t.TypeOf<typeof GetTokenResponseCodec>;

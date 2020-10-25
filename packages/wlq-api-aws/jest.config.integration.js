@@ -8,5 +8,6 @@ module.exports = {
   testMatch: ["**/?(*.)+(integration).+(ts|tsx|js)"],
   coveragePathIgnorePatterns: ["__fixtures__", "index.ts"],
   coverageDirectory: "./coverage/",
-  collectCoverageFrom: ["src/**/*.{ts,tsx}"]
+  collectCoverageFrom: ["src/**/*.{ts,tsx}"],
+  testTimeout: 10000
 };

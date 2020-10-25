@@ -4,12 +4,11 @@
   "license": "MIT",
   "scripts": {
     "build": "dotenv serverless webpack",
-    "test": "yarn jest",
-    "test:watch": "yarn jest --watch-all",
-    "test:integration": "yarn jest --config=jest.config.integration.js",
-    "deploy": "dotenv -e .env.local serverless deploy -- --verbose --force",
-    "deploy:production": "dotenv -e .env.production.local serverless deploy -- --verbose",
-    "invoke": "dotenv -e .env.local serverless invoke local -- -f getRoom"
+    "test": "jest",
+    "test:watch": "yarn test --watch-all",
+    "test:integration": "yarn test --config=jest.config.integration.js",
+    "deploy": "serverless deploy --verbose",
+    "deploy:production": "serverless deploy --stage production --verbose"
   },
   "dependencies": {
     "aws-sdk": "^2.765.0"
@@ -18,14 +17,18 @@
     "@types/aws-lambda": "^8.10.64",
     "@types/jest": "^26.0.14",
     "@types/node-fetch": "^2.5.7",
+    "axios": "^0.21.0",
+    "axios-logger": "^2.4.0",
     "dotenv-cli": "^4.0.0",
     "jest": "^26.4.2",
     "node-fetch": "^2.6.1",
     "serverless": "^2.4.0",
-    "serverless-step-functions": "^2.26.0",
     "serverless-domain-manager": "^5.0.0",
+    "serverless-dotenv-plugin": "^3.1.0",
     "serverless-plugin-optimize": "^4.1.4-rc.1",
     "serverless-plugin-typescript": "^1.1.9",
+    "serverless-stack-output": "^0.2.3",
+    "serverless-step-functions": "^2.26.0",
     "ts-jest": "^26.4.1"
   }
 }
