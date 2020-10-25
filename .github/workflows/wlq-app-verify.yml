@@ -29,5 +29,8 @@ jobs:
       - name: Lint
         run: yarn workspace @wlq/wlq-app verify:lint
 
+      - name: Build core
+        run: yarn workspace @wlq/wlq-core build
+
       - name: Typescript check
         run: yarn workspace @wlq/wlq-app verify:tsc
