@@ -6,7 +6,7 @@ module.exports = {
     "^.+\\.(ts|tsx)$": "ts-jest"
   },
   testMatch: ["**/?(*.)+(integration).+(ts|tsx|js)"],
-  coveragePathIgnorePatterns: ["__fixtures__", "index.ts"],
+  coveragePathIgnorePatterns: ["__fixtures__", "__integration__", "index.ts"],
   coverageDirectory: "./coverage/",
   collectCoverageFrom: ["src/**/*.{ts,tsx}"],
   testTimeout: 10000
