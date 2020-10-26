@@ -10,7 +10,7 @@ import React from "react";
 import EmojiIcon from "./EmojiIcon";
 
 export type UserBadgeProps = {
-  userDetails: Partial<UserDetails>;
+  userDetails: UserDetails;
   showAlias?: boolean;
   grayscale?: boolean;
 } & BoxProps;
@@ -21,7 +21,7 @@ const UserBadge = ({
   grayscale = false,
   ...props
 }: UserBadgeProps) => {
-  const colorScheme = userDetails?.color ?? "gray";
+  const colorScheme = userDetails.color ?? "gray";
   const variant = "vibrant";
 
   const userBadgeStyle = useStyleConfig("UserBadge", {
@@ -40,14 +40,13 @@ const UserBadge = ({
       {...props}
     >
       <EmojiIcon
-        emoji={userDetails?.emoji ?? "🧑🏾"}
+        emoji={userDetails.emoji ?? "🧑🏾"}
         variant="vibrant"
         zIndex="3"
       />
 
       <Box
         zIndex="1"
-        // px="0.5rem"
         transition="all 0.3s ease"
         position="relative"
         opacity={showAlias ? "100" : "0"}
@@ -56,7 +55,7 @@ const UserBadge = ({
         whiteSpace="nowrap"
         overflow="hidden"
       >
-        {userDetails?.alias ?? "Alias"}
+        {userDetails.alias && showAlias ? userDetails.alias : ""}
       </Box>
     </Flex>
   );

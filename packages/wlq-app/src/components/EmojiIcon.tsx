@@ -4,7 +4,6 @@ import React from "react";
 
 export type EmojiIconProps = {
   emoji: string;
-  light?: boolean;
   variant: string;
   fontSize?: string;
   size?: string;

@@ -1,18 +1,21 @@
 import { Box, Flex, Heading, Skeleton } from "@chakra-ui/core";
 import React from "react";
-import { useOvermindState } from "../overmind";
 import UserBadge from "./UserBadge";
+import { UserDetails } from "@wlq/wlq-core/lib/model";
 
 export type PageHeadProps = {
   loading?: boolean;
   title: string;
-  subtitle?: string;
+  userDetails?: UserDetails;
   showAlias?: boolean;
 };
 
-const PageHead = ({ loading, title, subtitle, showAlias }: PageHeadProps) => {
-  const { user } = useOvermindState();
-
+const PageHead = ({
+  loading,
+  title,
+  showAlias = true,
+  userDetails
+}: PageHeadProps) => {
   return (
     <Flex direction="row" justifyContent="space-between" alignItems="center">
       <Flex direction="row" alignItems="flex-end" height="3.2rem">
@@ -21,15 +24,9 @@ const PageHead = ({ loading, title, subtitle, showAlias }: PageHeadProps) => {
             <Heading>{title}</Heading>
           </Skeleton>
         </Box>
-
-        <Skeleton isLoaded={!loading}>
-          <Heading as="h2" size="lg" pb="2px">
-            {subtitle}
-          </Heading>
-        </Skeleton>
       </Flex>
-      {user.state === "Valid" && (
-        <UserBadge userDetails={user.details} showAlias={showAlias} />
+      {userDetails && (
+        <UserBadge userDetails={userDetails} showAlias={showAlias} />
       )}
     </Flex>
   );
