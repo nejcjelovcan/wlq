@@ -6,7 +6,7 @@ import {
   IEmitter,
   IStore,
   IWlqRawEvent,
-  resolveCodecEither
+  decodeThrow
 } from "../..";
 import {
   getRoomPublic,
@@ -20,7 +20,7 @@ export default async function getRoom(
   emitter: Pick<IEmitter, "restResponse">
 ) {
   try {
-    const payload = resolveCodecEither(RoomKeyCodec.decode(event.payload));
+    const payload = decodeThrow(RoomKeyCodec, event.payload);
     const room = await store.getRoom(payload);
 
     emitter.restResponse<GetRoomResponse>({

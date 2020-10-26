@@ -1,7 +1,8 @@
 import { newRoom } from "../../model";
 import { newMemoryStore } from "../../model/MemoryStore";
 import { newToken } from "../../model/token";
-import joinRoom, { JoinRoomMessage } from "./joinRoom.websocket";
+import joinRoom from "./joinRoom.websocket";
+import { JoinRoomMessage } from "./JoinRoomMessages";
 
 const joinRoomEvent = (data: { [key: string]: unknown } = {}) => ({
   connectionId: "connectionId",

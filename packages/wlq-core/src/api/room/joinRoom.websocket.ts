@@ -3,7 +3,7 @@ import {
   IEmitter,
   IStore,
   IWlqRawWebsocketEvent,
-  resolveCodecEither
+  decodeThrow
 } from "../..";
 import { getParticipantPublic, newParticipant } from "../../model";
 import { verifyToken } from "../../model/token";
@@ -23,7 +23,7 @@ export default async function joinRoom(
     // validate message
     const {
       data: { token, roomId, details }
-    } = resolveCodecEither(JoinRoomMessageCodec.decode(event.payload));
+    } = decodeThrow(JoinRoomMessageCodec, event.payload);
 
     // verify token
     const uid = await verifyToken(token);

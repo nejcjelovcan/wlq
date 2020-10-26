@@ -1,5 +1,5 @@
 import * as t from "io-ts";
-import { ValidationError } from "./resolveCodecEither";
+import { ValidationError } from "../";
 import {
   ExistsStoreError,
   NotFoundStoreError,

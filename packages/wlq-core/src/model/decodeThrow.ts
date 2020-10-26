@@ -1,7 +1,6 @@
-import { Either, fold } from "fp-ts/lib/Either";
+import { fold, left } from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
-import { left } from "fp-ts/lib/Either";
-import { Errors } from "io-ts";
+import { Props, TypeC, TypeOf } from "io-ts";
 import { PathReporter } from "io-ts/PathReporter";
 
 export class ValidationError extends Error {
@@ -10,11 +9,12 @@ export class ValidationError extends Error {
   }
 }
 
-export default function resolveCodecEither<E extends Errors, A>(
-  either: Either<E, A>
-): A {
+export default function decodeThrow<P extends Props>(
+  codec: TypeC<P>,
+  i: unknown
+): { [K in keyof P]: TypeOf<P[K]> } {
   return pipe(
-    either,
+    codec.decode(i),
     fold(
       e => {
         throw new ValidationError(PathReporter.report(left(e)));

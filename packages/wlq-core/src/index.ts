@@ -12,10 +12,8 @@ export {
   IWlqRawPayload,
   IWlqRawWebsocketEvent
 } from "./api/interfaces";
-export {
-  default as resolveCodecEither,
-  ValidationError
-} from "./api/resolveCodecEither";
+export { default as decodeThrow, ValidationError } from "./model/decodeThrow";
+export { default as decodeOptional } from "./model/decodeOptional";
 export { default as IEmitter } from "./emitter/IEmitter";
 export {
   default as IStore,

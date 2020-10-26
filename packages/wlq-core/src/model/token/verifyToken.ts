@@ -1,5 +1,5 @@
 import { JWT } from "jose";
-import resolveCodecEither from "../../api/resolveCodecEither";
+import { decodeThrow } from "../../";
 import getOctKey from "./getOctKey";
 import { TokenPayloadCodec } from "./TokenPayload";
 
@@ -9,7 +9,7 @@ export default async function verifyToken(token: string): Promise<string> {
     try {
       console.log("verifying token", token);
       const rawPayload = JWT.verify(token, getOctKey());
-      const payload = resolveCodecEither(TokenPayloadCodec.decode(rawPayload));
+      const payload = decodeThrow(TokenPayloadCodec, rawPayload);
       console.log("token decoded", payload);
 
       return resolve(payload.sub);
