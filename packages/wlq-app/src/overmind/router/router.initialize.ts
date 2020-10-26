@@ -1,8 +1,14 @@
 import { OnInitialize } from "overmind";
 
-const onInitialize: OnInitialize = ({ actions, effects }) => {
+const onInitialize: OnInitialize = ({
+  actions: {
+    router: { goToIndex, goToSettings }
+  },
+  effects
+}) => {
   effects.router.initialize({
-    "/": actions.router.showIndexPage
+    "/": goToIndex,
+    "/settings": goToSettings
   });
 };
 

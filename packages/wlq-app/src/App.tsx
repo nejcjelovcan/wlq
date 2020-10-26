@@ -1,26 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { useOvermind } from "./overmind";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const {
+    state: {
+      router: { currentPage }
+    }
+  } = useOvermind();
+
+  if (currentPage.name === "Index") {
+    return (
+      <div>
+        Index <a href="/settings">Settings</a>
+      </div>
+    );
+  } else if (currentPage.name === "Settings") {
+    return <div>Settings</div>;
+  }
+  return <div className="App"></div>;
 }
 
 export default App;

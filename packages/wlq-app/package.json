@@ -2,7 +2,6 @@
   "name": "@wlq/wlq-app",
   "version": "0.1.0",
   "private": true,
-  
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -24,6 +23,9 @@
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
     "framer-motion": "2.x",
+    "overmind": "26.x",
+    "overmind-react": "^27.0.0",
+    "page": "^1.11.6",
     "react": "16.x",
     "react-dom": "16.x",
     "react-scripts": "4.0.0",
@@ -49,6 +51,7 @@
     ]
   },
   "devDependencies": {
+    "@types/page": "^1.8.0",
     "@types/react-test-renderer": "^16.9.3",
     "react-test-renderer": "16.x"
   }

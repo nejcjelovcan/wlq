@@ -1,13 +1,13 @@
 export type RouterPage =
   | {
-      name: "index";
+      name: "Index";
     }
-  | { name: "settings" }
-  | { name: "new" }
-  | { name: "room"; roomId: string };
+  | { name: "Settings" }
+  | { name: "New" }
+  | { name: "Room"; roomId: string };
 
 export type RouterState = { currentPage: RouterPage };
 
 export const state: RouterState = {
-  currentPage: { name: "index" }
+  currentPage: { name: "Index" }
 };
