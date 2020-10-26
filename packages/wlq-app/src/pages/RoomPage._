@@ -1,0 +1,70 @@
+import { Stack } from "@chakra-ui/core";
+import { useRouter } from "next/dist/client/router";
+import React, { useEffect } from "react";
+import Layout from "../components/Layout";
+import PageHead from "../components/PageHead";
+import useUserDetails from "../hooks/useUserDetails";
+import { useOvermind } from "../overmind";
+import RoomCreationForm from "./roomPage/RoomCreationForm";
+
+const RoomPage = () => {
+  const {
+    state: { newRoom, roomSession },
+    actions: {
+      // room: { requestRoom, startNewRoom, requestCreateRoom },
+      newRoom: { clearNewRoom, updateNewRoom, requestCreateRoom },
+      roomSession: { clearRoomSession, requestRoom, setRoom }
+    }
+  } = useOvermind();
+
+  // const newRoom = roomState.matches("New") || roomState.matches("Submitted");
+
+  const router = useRouter();
+  const routerRoomId =
+    typeof router.query.r === "string" ? router.query.r : undefined;
+
+  const isNewRoom = !routerRoomId;
+
+  useUserDetails();
+  const isLoading = isNewRoom ? false : roomSession.isLoading;
+
+  useEffect(() => {
+    if (routerRoomId) {
+      if (!roomSession.room || roomSession.room.roomId !== routerRoomId) {
+        requestRoom(routerRoomId);
+      }
+    } else {
+      if (newRoom.room) {
+        setRoom(newRoom.room);
+        router.replace(`/room/?r=${newRoom.room.roomId}`);
+      }
+    }
+    return () => {
+      clearNewRoom();
+      clearRoomSession();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routerRoomId, newRoom.room]);
+  const title = isNewRoom ? "New Game" : "Geography";
+
+  return (
+    <Layout>
+      <Stack spacing={4} flexGrow={1}>
+        <PageHead loading={isLoading} title={title} showAlias />
+        {isNewRoom && (
+          <RoomCreationForm
+            updateNewRoom={updateNewRoom}
+            requestCreateRoom={requestCreateRoom}
+            {...newRoom}
+          />
+        )}
+        {!isNewRoom && newRoom.room && <div>Room: {newRoom.room.roomId}</div>}
+        {/* {hasRoomId && !error && <RoomDetails />} */}
+        {/* {roomState.matches("Error") && (
+        <Alert status="error">{roomState.error}</Alert>
+      )} */}
+      </Stack>
+    </Layout>
+  );
+};
+export default RoomPage;

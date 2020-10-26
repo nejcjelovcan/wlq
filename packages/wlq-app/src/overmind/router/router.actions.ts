@@ -1,21 +1,19 @@
 import { Action, Operator } from "overmind";
 import * as o from "./router.operators";
+import { IParams } from "./router.effects";
 
-export const goToIndex: Operator = o.setPage({ name: "Index" });
-export const goToSettings: Operator = o.setPage({ name: "Settings" });
-export const goToNew: Operator = o.setPage({ name: "New" });
+export const goToIndex: Operator = o.setPage("Index");
+export const goToNew: Operator = o.setPage("New");
+export const goToRoom: Operator<IParams> = o.setPage("Room");
+export const goToSettings: Operator<IParams> = o.setPage("Settings");
 
-export const goToRoom: Action<{ roomId: string }> = (
-  { state: { router } },
-  { roomId }
+export const open: Action<string> = (
+  {
+    effects: {
+      router: { open }
+    }
+  },
+  path
 ) => {
-  router.currentPage = { name: "Room", roomId };
+  open(path);
 };
-
-// TODO not sure exactly how to define setPage operator so that I can inject
-// roomId
-// export const goToRoom: Operator<{ roomId: string }> = action(
-//   (context, { roomId }) => {
-//     o.setPage({ name: "Room", roomId })(context, null);
-//   }
-// );

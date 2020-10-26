@@ -2,7 +2,7 @@ export type RouterPage =
   | {
       name: "Index";
     }
-  | { name: "Settings" }
+  | { name: "Settings"; next: string | null }
   | { name: "New" }
   | { name: "Room"; roomId: string };
 

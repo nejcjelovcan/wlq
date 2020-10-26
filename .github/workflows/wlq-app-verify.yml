@@ -10,7 +10,7 @@ on:
 
 jobs:
   verify_and_test:
-    name: Lint and compile
+    name: Lint, compile, test & coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -34,3 +34,13 @@ jobs:
 
       - name: Typescript check
         run: yarn workspace @wlq/wlq-app verify:tsc
+
+      - name: Test
+        run: yarn workspace @wlq/wlq-app test:coverage
+
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./packages/wlq-app/coverage/lcov.info
+          fail_ci_if_error: true # optional (default = false)
+          verbose: true # optional (default = false)

@@ -1,18 +1,22 @@
+import { ChakraProvider } from "@chakra-ui/core";
+import { createOvermind } from "overmind";
+import { Provider } from "overmind-react";
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
 import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import { Provider } from "overmind-react";
-import { createOvermind } from "overmind";
+import "./index.css";
 import { config } from "./overmind";
+import reportWebVitals from "./reportWebVitals";
+import theme from "./theme";
 
 const overmind = createOvermind(config, { strict: true });
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider value={overmind}>
-      <App />
+      <ChakraProvider theme={theme}>
+        <App />
+      </ChakraProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")
