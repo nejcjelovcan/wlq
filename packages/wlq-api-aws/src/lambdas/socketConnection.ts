@@ -1,8 +1,16 @@
 // import leaveRoom from "@wlq/wlq-api/src/room/leaveRoom";
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import {
+  APIGatewayProxyCallback,
+  APIGatewayProxyEvent,
+  Context
+} from "aws-lambda";
 import { AwsOkResult } from "../tools";
 
-export function handler(event: APIGatewayProxyEvent): APIGatewayProxyResult {
+export function handler(
+  event: APIGatewayProxyEvent,
+  _: Context,
+  callback: APIGatewayProxyCallback
+) {
   const { connectionId, routeKey } = event.requestContext;
 
   switch (routeKey) {
@@ -20,5 +28,5 @@ export function handler(event: APIGatewayProxyEvent): APIGatewayProxyResult {
     // TODO call emitter.websocket with error (unrecognized action)
   }
 
-  return AwsOkResult;
+  callback(undefined, AwsOkResult);
 }

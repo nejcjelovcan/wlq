@@ -21,7 +21,6 @@
     "axios": "^0.21.0",
     "axios-logger": "^2.4.0",
     "dotenv-cli": "^4.0.0",
-    "jest": "^26.4.2",
     "node-fetch": "^2.6.1",
     "serverless": "^2.4.0",
     "serverless-domain-manager": "^5.0.0",
@@ -30,7 +29,6 @@
     "serverless-plugin-typescript": "^1.1.9",
     "serverless-stack-output": "^0.2.3",
     "serverless-step-functions": "^2.26.0",
-    "ts-jest": "^26.4.1",
     "ws": "^7.3.1"
   }
 }

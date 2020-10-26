@@ -4,7 +4,7 @@ import WebSocket from "ws";
 import output from "./serverless-output.json";
 
 import { resolveCodecEither } from "@wlq/wlq-core";
-import { GetTokenResponseCodec } from "@wlq/wlq-core/lib/api/token/getToken.rest";
+import { GetTokenResponseCodec } from "@wlq/wlq-core/lib/api/token/GetTokenResponse";
 
 export const axios = axiosLib.create({
   baseURL: output.ServiceEndpoint
@@ -33,9 +33,7 @@ export function newWebsocketClient(
   onOpen: () => void,
   onMessage: (e: any) => void
 ) {
-  const client = new WebSocket(output.ServiceEndpointWebsocket, {
-    protocol: "8"
-  });
+  const client = new WebSocket(output.ServiceEndpointWebsocket);
 
   client.onerror = function(e) {
     console.log("Connection Error", e);
