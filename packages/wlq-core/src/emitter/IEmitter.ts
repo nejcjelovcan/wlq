@@ -32,7 +32,10 @@ export default interface IEmitter {
    *
    * Publishes to notification channel
    */
-  publish: <M extends IWebsocketMessage>(message: M) => Promise<void>;
+  publishToRoom: <M extends IWebsocketMessage>(
+    roomId: string,
+    message: M
+  ) => Promise<void>;
 
   /**
    * State machine start emitter

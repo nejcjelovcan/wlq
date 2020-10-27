@@ -1,23 +1,40 @@
 import { Stack } from "@chakra-ui/core";
-import { useRouter } from "next/dist/client/router";
 import React from "react";
+import Layout from "../components/Layout";
 import PageHead from "../components/PageHead";
-// import useToken from "../hooks/useToken";
-import useUserDetails from "../hooks/useUserDetails";
+import { useOvermind } from "../overmind";
 import UserDetailsForm from "./settingsPage/UserDetailsForm";
 
 const SettingsPage = () => {
-  // useToken();
-  useUserDetails();
-  const router = useRouter();
+  const {
+    state: {
+      router: { currentPage },
+      user: { current, details }
+    },
+    actions: {
+      router: { open },
+      user: { updateDetails }
+    }
+  } = useOvermind();
 
-  // TODO security
-  const next = typeof router.query.next === "string" ? router.query.next : "/";
+  if (currentPage.name !== "Settings") return null;
+
   return (
-    <Stack spacing={4}>
-      <PageHead title="Settings" />
-      <UserDetailsForm onDone={() => router.replace(next)} />
-    </Stack>
+    <Layout>
+      <Stack spacing={4}>
+        <PageHead title="Settings" />
+        <UserDetailsForm
+          current={current}
+          details={details}
+          updateDetails={updateDetails}
+          onDone={
+            currentPage.next
+              ? () => open(`/room/${currentPage.next}`)
+              : () => open("/")
+          }
+        />
+      </Stack>
+    </Layout>
   );
 };
 export default SettingsPage;

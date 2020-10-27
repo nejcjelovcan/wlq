@@ -1,7 +1,8 @@
 import { newRoom } from "../../model";
 import { newMemoryStore } from "../../model/MemoryStore";
 import { newToken } from "../../model/token";
-import joinRoom, { JoinRoomMessage } from "./joinRoom.websocket";
+import joinRoom from "./joinRoom.websocket";
+import { JoinRoomMessage } from "./JoinRoomMessages";
 
 const joinRoomEvent = (data: { [key: string]: unknown } = {}) => ({
   connectionId: "connectionId",
@@ -25,7 +26,7 @@ const joinRoomData = (
 describe("joinRoom.websocket", () => {
   it("emits error message to websocket if payload is invalid", async () => {
     const emitter = {
-      publish: jest.fn(),
+      publishToRoom: jest.fn(),
       websocket: jest.fn()
     };
     const store = newMemoryStore();
@@ -44,7 +45,7 @@ describe("joinRoom.websocket", () => {
 
   it("emits error message to websocket if room does not exist", async () => {
     const emitter = {
-      publish: jest.fn(),
+      publishToRoom: jest.fn(),
       websocket: jest.fn()
     };
     const store = newMemoryStore();
@@ -67,7 +68,7 @@ describe("joinRoom.websocket", () => {
 
   it("emits setParticipants to websocket if all went well", async () => {
     const emitter = {
-      publish: jest.fn(),
+      publishToRoom: jest.fn(),
       websocket: jest.fn()
     };
     const store = newMemoryStore();
@@ -86,13 +87,12 @@ describe("joinRoom.websocket", () => {
     expect(calls[0][1]).toMatchObject({ action: "setParticipants" });
 
     const data = calls[0][1].data;
-    // empty since we filter out joining participant
-    expect(data).toEqual({ participants: [] });
+    expect(data).toMatchObject({ participants: [{ type: "Participant" }] });
   });
 
   it("publishes participantJoined if all went well", async () => {
     const emitter = {
-      publish: jest.fn(),
+      publishToRoom: jest.fn(),
       websocket: jest.fn()
     };
     const store = newMemoryStore();
@@ -105,9 +105,10 @@ describe("joinRoom.websocket", () => {
     );
 
     // participantJoined should be emit to publish
-    const publishCalls = emitter.publish.mock.calls;
+    const publishCalls = emitter.publishToRoom.mock.calls;
     expect(publishCalls.length).toBe(1);
-    expect(publishCalls[0][0]).toMatchObject({
+    expect(publishCalls[0][0]).toBe(room.roomId);
+    expect(publishCalls[0][1]).toMatchObject({
       action: "participantJoined",
       data: {
         participant: {

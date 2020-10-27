@@ -6,7 +6,7 @@ import {
   IEmitter,
   IStore,
   IWlqRawEvent,
-  resolveCodecEither
+  decodeThrow
 } from "../..";
 import { getRoomPublic, newRoom, NewRoomCodec } from "../../model";
 import { GetRoomResponse } from "./getRoom.rest";
@@ -17,9 +17,7 @@ export default async function createRoom(
   emitter: Pick<IEmitter, "restResponse">
 ) {
   try {
-    const payload = resolveCodecEither(
-      CreateRoomRequestCodec.decode(event.payload)
-    );
+    const payload = decodeThrow(CreateRoomRequestCodec, event.payload);
     let room = newRoom(payload);
     room = await store.addRoom(room);
 

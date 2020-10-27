@@ -15,6 +15,7 @@ export async function handler(
 ): Promise<APIGatewayProxyResult> {
   const emitter = newResponseEmitter();
   const store = newRoomStore(DB);
+
   await getRoom(getEventFromAws(event), store, emitter);
   return responseEmitterToAwsResult(emitter);
 }

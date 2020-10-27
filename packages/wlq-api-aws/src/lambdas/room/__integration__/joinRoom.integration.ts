@@ -1,46 +1,112 @@
-import { newWebsocketClient } from "../../../__integration__/utils";
+import {
+  createSession,
+  Session,
+  websocketClient
+} from "../../../__integration__/utils";
+import { UserDetails } from "@wlq/wlq-core/lib/model";
+
+const userDetails: UserDetails = {
+  type: "UserDetails",
+  alias: "Alias",
+  emoji: "🐦",
+  color: "blue"
+};
 
 describe("joinRoom", () => {
-  // let tokenConfig: AxiosRequestConfig;
-  // let tokenConfig2: AxiosRequestConfig;
-  // beforeAll(async done => {
-  //   tokenConfig = await getTokenConfig();
-  //   tokenConfig2 = await getTokenConfig();
-  //   done();
-  // });
-
-  it("emits error message on invalid payload", done => {
-    expect.assertions(1);
-    const client = newWebsocketClient(
-      () => {},
-      e => {
-        console.log("MESSAGE!", e);
-        client.close();
-        done();
-      }
-    );
+  let session: Session;
+  beforeAll(async () => {
+    session = await createSession();
   });
 
-  // it("POST responds 400 if no listed parameter provided", async () => {
-  //   await expect(
-  //     axios.post("createRoom", {}, tokenConfig)
-  //   ).rejects.toMatchObject({
-  //     response: {
-  //       data: { error: /Invalid value/ },
-  //       status: 400
-  //     }
-  //   });
-  // });
+  it("emits error message on invalid payload", async () => {
+    const client = await websocketClient();
+    const [message] = await client.send({ action: "joinRoom", data: {} });
+    client.close();
+    expect(message).toMatchObject({ action: "error" });
+    expect(message.data.error).toMatch("Could not join room: Invalid value");
+  });
 
-  // it("POST responds 200 with room data if parameters provided", async () => {
-  //   const response = await axios.post(
-  //     "createRoom",
-  //     { listed: false },
-  //     tokenConfig
-  //   );
-  //   expect(response.status).toBe(200);
-  //   expect(response.data).toMatchObject({
-  //     room: { type: "Room", listed: false, participantCount: 0, state: "Idle" }
-  //   });
-  // });
+  it("emits error message if room does not exist", async () => {
+    const client = await websocketClient();
+    const [message] = await client.send({
+      action: "joinRoom",
+      data: {
+        token: session.token,
+        details: userDetails,
+        roomId: "nonexistent"
+      }
+    });
+    client.close();
+    expect(message).toEqual({
+      action: "error",
+      data: { error: "Could not join room: Room not found" }
+    });
+  });
+
+  it("emits setParticipants when join succeeds", async () => {
+    const {
+      room: { roomId }
+    } = (await session.axios.post("createRoom", { listed: true })).data;
+
+    const client = await websocketClient();
+    const [message] = await client.send({
+      action: "joinRoom",
+      data: { token: session.token, details: userDetails, roomId }
+    });
+    client.close();
+    expect(message).toMatchObject({
+      action: "setParticipants",
+      data: { participants: [{ details: { alias: userDetails.alias } }] }
+    });
+  });
+
+  it("emits participantJoined to other clients when join succeeds", async () => {
+    const {
+      room: { roomId }
+    } = (await session.axios.post("createRoom", { listed: true })).data;
+
+    // TODO we could check in joinRoom core impl. so that the same
+    // user cannot connect twice
+
+    const session2 = await createSession();
+
+    const client1 = await websocketClient(3);
+    const client2 = await websocketClient(2);
+
+    const promise1 = client1.send({
+      action: "joinRoom",
+      data: {
+        token: session.token,
+        details: { ...userDetails, alias: "User1" },
+        roomId
+      }
+    });
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const promise2 = client2.send({
+      action: "joinRoom",
+      data: {
+        token: session2.token,
+        details: { ...userDetails, alias: "User2" },
+        roomId
+      }
+    });
+
+    const messages = await promise1;
+    await promise2;
+
+    expect(messages[0]).toMatchObject({
+      action: "setParticipants",
+      data: { participants: [{ details: { alias: "User1" } }] }
+    });
+    expect(messages[1]).toMatchObject({
+      action: "participantJoined",
+      data: { participant: { details: { alias: "User1" } } }
+    });
+    expect(messages[2]).toMatchObject({
+      action: "participantJoined",
+      data: { participant: { details: { alias: "User2" } } }
+    });
+  });
 });

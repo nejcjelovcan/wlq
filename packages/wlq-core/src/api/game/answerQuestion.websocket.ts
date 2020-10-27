@@ -1,16 +1,14 @@
 import * as t from "io-ts";
-import {
-  IEmitter,
-  IStore,
-  IWlqRawWebsocketEvent,
-  resolveCodecEither
-} from "../..";
+import { IEmitter, IStore, IWlqRawWebsocketEvent, decodeThrow } from "../..";
 import { getQuestionTokenIfEverybodyAnswered } from "../../model/room/Room";
 
 export default async function answerQuestion(
   event: IWlqRawWebsocketEvent,
   store: Pick<IStore, "getParticipantAndRoom" | "addAnswer">,
-  emitter: Pick<IEmitter, "websocket" | "publish" | "stateMachineTaskSuccess">
+  emitter: Pick<
+    IEmitter,
+    "websocket" | "publishToRoom" | "stateMachineTaskSuccess"
+  >
 ) {
   const participantKey = event;
 
@@ -18,7 +16,7 @@ export default async function answerQuestion(
     // validate incoming event
     const {
       data: { answer }
-    } = resolveCodecEither(AnswerQuestionEventCodec.decode(event.payload));
+    } = decodeThrow(AnswerQuestionEventCodec, event.payload);
 
     // get participant & room
     const [participant, room] = await store.getParticipantAndRoom(
@@ -51,7 +49,7 @@ export default async function answerQuestion(
 
     // notify others
 
-    await emitter.publish<UserAnsweredMessage>({
+    await emitter.publishToRoom<UserAnsweredMessage>(room.roomId, {
       action: "userAnswered",
       data: { pid: participant.pid }
     });

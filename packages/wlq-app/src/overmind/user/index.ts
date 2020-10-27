@@ -1,4 +1,4 @@
-import { state } from "./user.state";
 import * as actions from "./user.actions";
+import { onInitialize } from "./user.initialize";
 
-export { state, actions };
+export { actions, onInitialize };
