@@ -69,7 +69,13 @@ custom:
   acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
   roomTableName: ${self:service}-RoomTable-${self:provider.stage}
   broadcastTopic: "${self:service}-broadcast-${self:provider.stage}"
+  setupDomain:
+    dev: true
+    production: true
+    staging: true
+    test: false
   customDomain:
+    enabled: ${self:custom.setupDomain.${self:provider.stage}}
     domainName: ${self:custom.siteName}
     basePath: ""
     stage: ${self:provider.stage}
