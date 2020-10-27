@@ -28,7 +28,6 @@ export default async function joinRoom(
     // verify token
     const uid = await verifyToken(token);
 
-    console.log("GET ROOM", roomId);
     // get room to check if it exists
     await store.getRoom({ roomId });
 

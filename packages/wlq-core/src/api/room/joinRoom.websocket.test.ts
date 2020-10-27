@@ -87,8 +87,7 @@ describe("joinRoom.websocket", () => {
     expect(calls[0][1]).toMatchObject({ action: "setParticipants" });
 
     const data = calls[0][1].data;
-    // empty since we filter out joining participant
-    expect(data).toEqual({ participants: [] });
+    expect(data).toMatchObject({ participants: [{ type: "Participant" }] });
   });
 
   it("publishes participantJoined if all went well", async () => {
