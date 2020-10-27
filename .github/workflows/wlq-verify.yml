@@ -1,4 +1,4 @@
-name: Verify wlq-core package
+name: Verify
 
 on:
   push:
