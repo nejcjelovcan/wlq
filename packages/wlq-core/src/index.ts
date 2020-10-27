@@ -10,10 +10,12 @@ export {
   IWebsocketMessage,
   IWlqRawEvent,
   IWlqRawPayload,
-  IWlqRawWebsocketEvent
+  IWlqRawWebsocketEvent,
+  decodeWebsocketMessage
 } from "./api/interfaces";
 export { default as decodeThrow, ValidationError } from "./model/decodeThrow";
 export { default as decodeOptional } from "./model/decodeOptional";
+export { default as resolveEither } from "./model/resolveEither";
 export { default as IEmitter } from "./emitter/IEmitter";
 export {
   default as IStore,

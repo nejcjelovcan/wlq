@@ -28,6 +28,8 @@ export default async function getRoom(
       payload: { room: getRoomPublic(room) }
     });
   } catch (e) {
+    console.error("getRoom error");
+    console.log(e);
     emitter.restResponse<ErrorResponse>({
       statusCode: getErrorStatusCode(e),
       payload: { error: getErrorMessage(e) }

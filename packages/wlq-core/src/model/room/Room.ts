@@ -59,6 +59,10 @@ export function getRoomPublic(room: Room): RoomPublic {
       websocket: process.env.WEBSOCKET_ENDPOINT!
     };
   } else {
-    return { ...room, websocket: process.env.WEBSOCKET_ENDPOINT! };
+    return {
+      ...room,
+      websocket: `${process.env.WEBSOCKET_PROTOCOL}://${process.env
+        .WEBSOCKET_ENDPOINT!}`
+    };
   }
 }
