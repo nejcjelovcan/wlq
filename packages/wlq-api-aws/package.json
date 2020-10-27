@@ -4,6 +4,11 @@
   "license": "MIT",
   "scripts": {
     "build": "dotenv serverless webpack",
+    "lint": "eslint src --ext ts,tsx",
+    "lint:fix": "yarn lint --fix",
+    "verify:lint": "yarn lint --max-warnings=0",
+    "verify:tsc": "tsc --noEmit",
+    "verify": "yarn verify:lint && yarn verify:tsc",
     "test": "jest",
     "test:watch": "yarn test --watch-all",
     "test:integration": "yarn test --config=jest.config.integration.js",

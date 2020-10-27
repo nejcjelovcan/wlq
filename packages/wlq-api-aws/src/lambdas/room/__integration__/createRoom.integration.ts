@@ -1,11 +1,9 @@
-import { AxiosRequestConfig } from "axios";
-import { axios, getTokenConfig } from "../../../__integration__/utils";
+import { axios, createSession, Session } from "../../../__integration__/utils";
 
 describe("createRoom", () => {
-  let tokenConfig: AxiosRequestConfig;
-  beforeAll(async done => {
-    tokenConfig = await getTokenConfig();
-    done();
+  let session: Session;
+  beforeAll(async () => {
+    session = await createSession();
   });
 
   it("POST responds 401 if no authorization header provided", async () => {
@@ -18,9 +16,7 @@ describe("createRoom", () => {
   });
 
   it("POST responds 400 if no listed parameter provided", async () => {
-    await expect(
-      axios.post("createRoom", {}, tokenConfig)
-    ).rejects.toMatchObject({
+    await expect(session.axios.post("createRoom", {})).rejects.toMatchObject({
       response: {
         data: { error: /Invalid value/ },
         status: 400
@@ -29,11 +25,7 @@ describe("createRoom", () => {
   });
 
   it("POST responds 200 with room data if parameters provided", async () => {
-    const response = await axios.post(
-      "createRoom",
-      { listed: false },
-      tokenConfig
-    );
+    const response = await session.axios.post("createRoom", { listed: false });
     expect(response.status).toBe(200);
     expect(response.data).toMatchObject({
       room: { type: "Room", listed: false, participantCount: 0, state: "Idle" }

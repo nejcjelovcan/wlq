@@ -1,11 +1,9 @@
-import { AxiosRequestConfig } from "axios";
-import { axios, getTokenConfig } from "../../../__integration__/utils";
+import { axios, createSession, Session } from "../../../__integration__/utils";
 
 describe("getRoom", () => {
-  let tokenConfig: AxiosRequestConfig;
-  beforeAll(async done => {
-    tokenConfig = await getTokenConfig();
-    done();
+  let session: Session;
+  beforeAll(async () => {
+    session = await createSession();
   });
 
   it("POST responds 401 if no authorization header provided", async () => {
@@ -18,7 +16,7 @@ describe("getRoom", () => {
   });
 
   it("POST responds 400 if no roomId parameter provided", async () => {
-    await expect(axios.post("getRoom", {}, tokenConfig)).rejects.toMatchObject({
+    await expect(session.axios.post("getRoom", {})).rejects.toMatchObject({
       response: {
         data: {
           error:
@@ -31,7 +29,7 @@ describe("getRoom", () => {
 
   it("POST responds 404 if room does not exist", async () => {
     await expect(
-      axios.post("getRoom", { roomId: "nonexistent" }, tokenConfig)
+      session.axios.post("getRoom", { roomId: "nonexistent" })
     ).rejects.toMatchObject({
       response: {
         data: { error: "Room not found" },
@@ -43,9 +41,9 @@ describe("getRoom", () => {
   it("POST responds 200 with room data if room exists", async () => {
     const {
       room: { roomId }
-    } = (await axios.post("createRoom", { listed: true }, tokenConfig)).data;
+    } = (await session.axios.post("createRoom", { listed: true })).data;
 
-    const response = await axios.post("getRoom", { roomId }, tokenConfig);
+    const response = await session.axios.post("getRoom", { roomId });
     expect(response.status).toBe(200);
     expect(response.data).toMatchObject({
       room: {

@@ -19,14 +19,8 @@ provider:
     HTTP_ORIGIN: ${self:custom.httpOrigin}
     API_OCT_SECRET_KEY: ${env:API_OCT_SECRET_KEY}
     BROADCAST_TOPIC: ${self:custom.broadcastTopic}
-    WEBSOCKET_ENDPOINT:
-      Fn::Join:
-        - ""
-        - - Ref: WebsocketsApi
-          - .execute-api.
-          - Ref: AWS::Region
-          - .amazonaws.com/
-          - ${self:provider.stage}
+    WEBSOCKET_PROTOCOL: wss
+    WEBSOCKET_ENDPOINT: ${self:custom.websocketEndpoint}
 
   iamRoleStatements:
     - Effect: Allow
@@ -82,6 +76,14 @@ custom:
     createRoute53Record: true
   output:
     file: ./src/__integration__/serverless-output.json
+  websocketEndpoint:
+    Fn::Join:
+      - ""
+      - - Ref: WebsocketsApi
+        - .execute-api.
+        - Ref: AWS::Region
+        - .amazonaws.com/
+        - ${self:provider.stage}
 
 functions:
   # REST Lambdas
