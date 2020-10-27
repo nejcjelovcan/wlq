@@ -3,7 +3,7 @@ name: Verify wlq-core package
 on:
   push:
     paths:
-      - packages/wlq-core/*
+      - packages/*
       - .github/workflows/*
       - .eslintrc.json
       - tsconfig.json
@@ -26,18 +26,37 @@ jobs:
       - name: Yarn install
         run: yarn install
 
-      - name: Lint
+      - name: Lint wlq-core
         run: yarn workspace @wlq/wlq-core verify:lint
 
-      - name: Typescript check
-        run: yarn workspace @wlq/wlq-core verify:tsc
+      - name: Build wlq-core
+        run: yarn workspace @wlq/wlq-core build
 
-      - name: Test
+      - name: Test wlq-core
         run: yarn workspace @wlq/wlq-core test:coverage
+
+      - name: Lint wlq-app
+        run: yarn workspace @wlq/wlq-app verify:lint
+
+      - name: Typescript wlq-app
+        run: yarn workspace @wlq/wlq-app verify:tsc
+
+      - name: Test wlq-app
+        run: yarn workspace @wlq/wlq-app test:coverage
+
+      - name: Lint wlq-api-aws
+        run: yarn workspace @wlq/wlq-api-aws verify:lint
+
+      - name: Typescript wlq-api-aws
+        run: yarn workspace @wlq/wlq-api-aws verify:tsc
+
+      # - name: Test wlq-api-aws
+      #   run: yarn workspace @wlq/wlq-app test:coverage
 
       - uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./packages/wlq-core/coverage/lcov.info
+          files: ./packages/wlq-core/coverage/lcov.info,./packages/wlq-app/coverage/lcov.info
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
+
