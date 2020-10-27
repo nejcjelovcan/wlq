@@ -8,16 +8,18 @@ import { SetParticipantsMessage } from "@wlq/wlq-core/lib/api/room/JoinRoomMessa
 
 export type RoomSessionStates =
   | { current: "Init" }
-  | { current: "Requested"; roomId: string }
+  | { current: "Requesting"; roomId: string }
   | { current: "Loaded"; room: RoomPublic }
   | { current: "Joining"; room: RoomPublic }
-  | { current: "Joined"; room: RoomPublic; participants: ParticipantPublic[] };
+  | { current: "Joined"; room: RoomPublic; participants: ParticipantPublic[] }
+  | { current: "Error"; error: string };
 
 export type RoomSessionEvents =
   | { type: "RoomRequest"; data: RoomKey }
   | { type: "RoomReceive"; data: RoomPublic }
   | { type: "RoomJoin" }
-  | { type: "RoomJoined"; data: SetParticipantsMessage };
+  | { type: "RoomJoined"; data: SetParticipantsMessage }
+  | { type: "RoomError"; data: { error: string } };
 
 export type RoomSessionMachine = Statemachine<
   RoomSessionStates,
@@ -29,7 +31,7 @@ export const roomSessionMachine = statemachine<
 >({
   RoomRequest: (_, { roomId }) => {
     return {
-      current: "Requested",
+      current: "Requesting",
       roomId
     };
   },
@@ -57,5 +59,8 @@ export const roomSessionMachine = statemachine<
       };
     }
     return;
+  },
+  RoomError: (_, { error }) => {
+    return { current: "Error", error };
   }
 });

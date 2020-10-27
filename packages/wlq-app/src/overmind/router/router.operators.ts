@@ -1,11 +1,6 @@
-import { mutate, Operator } from "overmind";
+import { map, mutate, Operator } from "overmind";
 import { IParams } from "./router.effects";
 import { RouterPage } from "./router.state";
-
-// export const route
-export const test = () => {};
-
-// export const setPage = <T>(page: "Index"|"Settings"|"New") => Operator<T> = page => mutate({})
 
 export const setPage: (name: RouterPage["name"]) => Operator<IParams> = name =>
   mutate(function setPage({ state }, params) {
@@ -25,3 +20,17 @@ export const setPage: (name: RouterPage["name"]) => Operator<IParams> = name =>
       state.router.currentPage = { name };
     }
   });
+
+export const goToRoom: () => Operator = () =>
+  map(
+    ({
+      state: { roomSession },
+      effects: {
+        router: { open }
+      }
+    }) => {
+      if (roomSession.current === "Loaded") {
+        open(`/room/${roomSession.room.roomId}`);
+      }
+    }
+  );

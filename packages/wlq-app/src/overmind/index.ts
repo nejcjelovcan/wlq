@@ -9,6 +9,7 @@ import {
 import { merge, namespaced } from "overmind/config";
 import * as localStorage from "./effects/localStorage";
 import rest from "./effects/rest";
+import websocket from "./effects/websocket";
 import * as newRoom from "./newRoom";
 import { newRoomMachine } from "./newRoom/newRoom.statemachine";
 import * as roomSession from "./roomSession";
@@ -36,7 +37,7 @@ export const config = merge(
       ),
       roomSession: roomSessionMachine.create({ current: "Init" })
     },
-    effects: { rest, localStorage }
+    effects: { rest, localStorage, websocket }
   },
   namespaced({ router, token, user, newRoom, roomSession })
 );
