@@ -51,7 +51,7 @@ export function newRoomStore(
 
       if (Array.isArray(result.Items) && result.Items.length > 0) {
         return result.Items.filter(
-          item => item.type === "RoomParticipant"
+          item => item.type === "Participant"
         ).map(item => decodeThrow(ParticipantCodec, item));
       }
 
@@ -93,7 +93,8 @@ const updateRoomCount = async (
     UpdateExpression: "SET participantCount = participantCount + :inc",
     ExpressionAttributeValues: {
       ":inc": increase
-    }
+    },
+    ReturnValues: "ALL_NEW"
   }).promise();
   return resolveEither(RoomCodec.decode(result.Attributes));
 };

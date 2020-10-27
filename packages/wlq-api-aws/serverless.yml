@@ -143,19 +143,19 @@ functions:
           route: joinRoom
 
   # SNS Lambdas
-  # broadcastTopic:
-  #   maximumRetryAttempts: 0
-  #   handler: src/lambdas/sns/broadcastTopic.handler
-  #   events:
-  #     - sns:
-  #         arn:
-  #           Ref: BroadcastTopic
-  #         topicName: ${self:custom.broadcastTopic}
-  #         filterPolicy:
-  #           action:
-  #             - setParticipants
-  #             - participantJoined
-  #             - error
+  broadcastToRoom:
+    maximumRetryAttempts: 0
+    handler: src/lambdas/broadcastToRoom.handler
+    events:
+      - sns:
+          arn:
+            Ref: BroadcastTopic
+          topicName: ${self:custom.broadcastTopic}
+          filterPolicy:
+            action:
+              - setParticipants
+              - participantJoined
+              - error
 
   # AUTHORIZE
   authorize:

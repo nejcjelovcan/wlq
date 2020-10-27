@@ -13,7 +13,9 @@
     "test:watch": "yarn test --watch-all",
     "test:integration": "yarn test --config=jest.config.integration.js",
     "deploy": "serverless deploy --verbose",
-    "deploy:production": "serverless deploy --stage production --verbose"
+    "deploy:test": "serverless deploy --stage test --verbose",
+    "deploy:production": "serverless deploy --stage production --verbose",
+    "remove:test": "serverless remove --stage test --verbose"
   },
   "dependencies": {
     "aws-sdk": "^2.765.0"

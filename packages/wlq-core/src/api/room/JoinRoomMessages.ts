@@ -14,7 +14,8 @@ export type JoinRoomMessage = t.TypeOf<typeof JoinRoomMessageCodec>;
 export const SetParticipantsMessageCodec = t.type({
   action: t.literal("setParticipants"),
   data: t.type({
-    participants: t.array(ParticipantPublicCodec)
+    participants: t.array(ParticipantPublicCodec),
+    pid: t.string
   })
 });
 export type SetParticipantsMessage = t.TypeOf<

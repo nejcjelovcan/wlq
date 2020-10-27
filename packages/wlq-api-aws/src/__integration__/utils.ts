@@ -43,14 +43,16 @@ export async function createSession(): Promise<Session> {
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 export type WebsocketClient = {
-  send: (message: IWebsocketMessage) => Promise<IWebsocketMessage>;
+  send: (message: IWebsocketMessage) => Promise<IWebsocketMessage[]>;
   close: () => void;
 };
 
 // eslint-disable-next-line require-await
-export async function websocketClient(): Promise<WebsocketClient> {
+export async function websocketClient(count = 1): Promise<WebsocketClient> {
   return new Promise((resolve, reject) => {
     const client = new WebSocket(output.ServiceEndpointWebsocket);
+    let resolved = false;
+    let queue: IWebsocketMessage[] = [];
 
     client.onerror = reject;
 
@@ -59,14 +61,20 @@ export async function websocketClient(): Promise<WebsocketClient> {
         send: async (
           message: IWebsocketMessage
           // eslint-disable-next-line require-await
-        ): Promise<IWebsocketMessage> => {
+        ) => {
           return new Promise((resolve, reject) => {
             client.onmessage = message => {
               try {
                 const decoded = decodeWebsocketMessage(
                   JSON.parse(message.data.toString())
                 );
-                resolve(decoded);
+                queue.push(decoded);
+                // resolve when queue length reaches count
+                if (!resolved && queue.length >= count) {
+                  client.close();
+                  resolved = true;
+                  resolve(queue);
+                }
               } catch (e) {
                 reject(e);
               }

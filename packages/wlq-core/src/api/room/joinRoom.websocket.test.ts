@@ -26,7 +26,7 @@ const joinRoomData = (
 describe("joinRoom.websocket", () => {
   it("emits error message to websocket if payload is invalid", async () => {
     const emitter = {
-      publish: jest.fn(),
+      publishToRoom: jest.fn(),
       websocket: jest.fn()
     };
     const store = newMemoryStore();
@@ -45,7 +45,7 @@ describe("joinRoom.websocket", () => {
 
   it("emits error message to websocket if room does not exist", async () => {
     const emitter = {
-      publish: jest.fn(),
+      publishToRoom: jest.fn(),
       websocket: jest.fn()
     };
     const store = newMemoryStore();
@@ -68,7 +68,7 @@ describe("joinRoom.websocket", () => {
 
   it("emits setParticipants to websocket if all went well", async () => {
     const emitter = {
-      publish: jest.fn(),
+      publishToRoom: jest.fn(),
       websocket: jest.fn()
     };
     const store = newMemoryStore();
@@ -93,7 +93,7 @@ describe("joinRoom.websocket", () => {
 
   it("publishes participantJoined if all went well", async () => {
     const emitter = {
-      publish: jest.fn(),
+      publishToRoom: jest.fn(),
       websocket: jest.fn()
     };
     const store = newMemoryStore();
@@ -106,9 +106,10 @@ describe("joinRoom.websocket", () => {
     );
 
     // participantJoined should be emit to publish
-    const publishCalls = emitter.publish.mock.calls;
+    const publishCalls = emitter.publishToRoom.mock.calls;
     expect(publishCalls.length).toBe(1);
-    expect(publishCalls[0][0]).toMatchObject({
+    expect(publishCalls[0][0]).toBe(room.roomId);
+    expect(publishCalls[0][1]).toMatchObject({
       action: "participantJoined",
       data: {
         participant: {

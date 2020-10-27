@@ -1,0 +1,51 @@
+name: Deploy wlq-api-aws and run integration tests
+
+on:
+  pull_request:
+
+jobs:
+  deploy_and_test:
+    name: Deploy & test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+
+      - uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Yarn install
+        run: yarn install
+
+      - name: Build wlq-core
+        run: yarn workspace @wlq/wlq-core build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_SITE_DOMAIN: test.qweel.be
+          envkey_API_DOMAIN: api-test.qweel.be
+          envkey_HOSTED_ZONE_ID: ${{ secrets.HOSTED_ZONE_ID }}
+          envkey_ACM_CERTIFICATE_ARN: ${{ secrets.ACM_CERTIFICATE_ARN }}
+          envkey_API_OCT_SECRET_KEY: ${{secrets.API_OCT_SECRET_KEY}}
+          envkey_HTTP_ORIGIN: "*"
+          file_name: .env.test.local
+
+      - name: Deploy wlq-api-aws
+        run: yarn workspace @wlq/wlq-api-aws deploy:test
+
+      - name: Run integration tests
+        run: yarn workspace @wlq/wlq-api-aws test:integration
+      # - name: Remove wlq-api-aws
+      #   run: yarn workspace @wlq/wlq-api-aws remove:test

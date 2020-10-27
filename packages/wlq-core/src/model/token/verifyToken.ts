@@ -7,10 +7,8 @@ import { TokenPayloadCodec } from "./TokenPayload";
 export default async function verifyToken(token: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
     try {
-      console.log("verifying token", token);
       const rawPayload = JWT.verify(token, getOctKey());
       const payload = decodeThrow(TokenPayloadCodec, rawPayload);
-      console.log("token decoded", payload);
 
       return resolve(payload.sub);
     } catch (e) {

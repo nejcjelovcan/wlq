@@ -17,7 +17,7 @@ import {
 export default async function joinRoom(
   event: IWlqRawWebsocketEvent,
   store: Pick<IStore, "getRoom" | "addParticipant" | "getParticipants">,
-  emitter: Pick<IEmitter, "websocket" | "publish">
+  emitter: Pick<IEmitter, "websocket" | "publishToRoom">
 ) {
   try {
     // validate message
@@ -28,6 +28,7 @@ export default async function joinRoom(
     // verify token
     const uid = await verifyToken(token);
 
+    console.log("GET ROOM", roomId);
     // get room to check if it exists
     await store.getRoom({ roomId });
 
@@ -43,17 +44,17 @@ export default async function joinRoom(
 
     // send setParticipants event to joining user
     const participants = await store.getParticipants({ roomId });
+
     await emitter.websocket<SetParticipantsMessage>(event.connectionId, {
       action: "setParticipants",
       data: {
-        participants: participants
-          .filter(p => p.pid !== participant.pid)
-          .map(getParticipantPublic)
+        participants: participants.map(getParticipantPublic),
+        pid: participant.pid
       }
     });
 
     // send participantJoined to other users
-    await emitter.publish<ParticipantJoinedMessage>({
+    await emitter.publishToRoom<ParticipantJoinedMessage>(roomId, {
       action: "participantJoined",
       data: { participant: getParticipantPublic(participant) }
     });

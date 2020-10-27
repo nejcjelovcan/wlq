@@ -5,7 +5,10 @@ import { getQuestionTokenIfEverybodyAnswered } from "../../model/room/Room";
 export default async function answerQuestion(
   event: IWlqRawWebsocketEvent,
   store: Pick<IStore, "getParticipantAndRoom" | "addAnswer">,
-  emitter: Pick<IEmitter, "websocket" | "publish" | "stateMachineTaskSuccess">
+  emitter: Pick<
+    IEmitter,
+    "websocket" | "publishToRoom" | "stateMachineTaskSuccess"
+  >
 ) {
   const participantKey = event;
 
@@ -46,7 +49,7 @@ export default async function answerQuestion(
 
     // notify others
 
-    await emitter.publish<UserAnsweredMessage>({
+    await emitter.publishToRoom<UserAnsweredMessage>(room.roomId, {
       action: "userAnswered",
       data: { pid: participant.pid }
     });
