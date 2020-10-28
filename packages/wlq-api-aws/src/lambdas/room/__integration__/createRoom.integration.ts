@@ -28,7 +28,12 @@ describe("createRoom", () => {
     const response = await session.axios.post("createRoom", { listed: false });
     expect(response.status).toBe(200);
     expect(response.data).toMatchObject({
-      room: { type: "Room", listed: false, participantCount: 0, state: "Idle" }
+      room: {
+        type: "Room",
+        listed: false,
+        participantCount: 0,
+        current: "Idle"
+      }
     });
   });
 });
