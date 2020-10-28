@@ -1,6 +1,7 @@
 import {
   catchError,
   filter,
+  map,
   mutate,
   Operator,
   pipe,
@@ -26,3 +27,10 @@ export const requestToken: () => Operator = () =>
       state.token.request.send("Error", { error: error.message });
     })
   );
+
+// TODO errors
+export const extractToken: <T>() => Operator<T, string> = () =>
+  map(({ state: { token } }) => {
+    if (token.current === "Loaded") return token.token;
+    throw new Error("No token");
+  });

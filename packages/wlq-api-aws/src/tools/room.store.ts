@@ -1,9 +1,4 @@
-import {
-  decodeThrow,
-  IStore,
-  NotFoundStoreError,
-  resolveEither
-} from "@wlq/wlq-core/lib";
+import { decodeThrow, IStore, NotFoundStoreError } from "@wlq/wlq-core/lib";
 import {
   ParticipantCodec,
   ParticipantKey,
@@ -35,7 +30,7 @@ export function newRoomStore(
         Key: roomComposite(roomKey)
       }).promise();
       if (!result.Item) throw new NotFoundStoreError("Room not found");
-      return resolveEither(RoomCodec.decode(result.Item));
+      return decodeThrow(RoomCodec, result.Item);
     },
 
     async getParticipants(roomKey) {
@@ -96,5 +91,5 @@ const updateRoomCount = async (
     },
     ReturnValues: "ALL_NEW"
   }).promise();
-  return resolveEither(RoomCodec.decode(result.Attributes));
+  return decodeThrow(RoomCodec, result.Attributes);
 };

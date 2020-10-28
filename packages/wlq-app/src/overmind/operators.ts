@@ -1,6 +1,6 @@
 import { decodeThrow } from "@wlq/wlq-core";
 import * as t from "io-ts";
-import { catchError, map, Operator, pipe } from "overmind";
+import { catchError, map, Operator, pipe, run } from "overmind";
 import { LocalStorageError } from "./effects/localStorage";
 
 export const decode: <A, O, I>(
@@ -14,6 +14,11 @@ export const getFromLocalStorage: (
   key: string
 ) => Operator<void, string> = key =>
   map(({ effects: { localStorage } }) => localStorage.getItem(key));
+
+export const writeToLocalStorage: (key: string) => Operator<string> = key =>
+  run(({ effects: { localStorage } }, value) =>
+    localStorage.setItem(key, value)
+  );
 
 export const getJsonFromLocalStorage: <T extends {
   [key: string]: unknown;
@@ -34,6 +39,15 @@ export const getJsonFromLocalStorage: <T extends {
     })
   );
 
+export const writeJsonToLocalStorage: <T extends { [key: string]: unknown }>(
+  key: string
+) => Operator<T> = key =>
+  pipe(
+    map((_, value) => JSON.stringify(value)),
+    writeToLocalStorage(key)
+  );
+
+// TODO do start branching please
 export const suppressError: <E extends Error>(
   ErrorClass: new () => E
 ) => Operator = ErrorClass =>

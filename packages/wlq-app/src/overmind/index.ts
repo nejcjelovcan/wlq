@@ -37,7 +37,7 @@ export const config = merge(
     ),
     effects: { localStorage, rest }
   },
-  namespaced({ user, router, token })
+  namespaced({ router, token, user })
 );
 
 export const useOvermind = createHook<typeof config>();

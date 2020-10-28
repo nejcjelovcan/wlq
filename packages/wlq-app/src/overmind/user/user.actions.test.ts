@@ -31,14 +31,22 @@ describe("user.actions", () => {
       });
     });
 
-    it("sets state to valid if details is valid", async () => {
-      const overmind = createOvermindMock(config);
+    it("sets state to valid and writes to storage if details is valid", async () => {
+      const setItem = jest.fn();
+      const overmind = createOvermindMock(config, {
+        localStorage: { setItem }
+      });
       await overmind.actions.user.updateDetails(userDetails);
 
       if (overmind.state.user.current !== "Valid")
         throw new Error("Expected current=Valid");
 
       expect(overmind.state.user.validDetails).toStrictEqual(userDetails);
+      expect(setItem.mock.calls.length).toBe(1);
+      expect(setItem.mock.calls[0]).toEqual([
+        "userDetails",
+        JSON.stringify(userDetails)
+      ]);
     });
   });
 

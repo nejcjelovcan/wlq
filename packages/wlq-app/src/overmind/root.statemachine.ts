@@ -3,6 +3,12 @@ import { statemachine, Statemachine } from "overmind";
 import { UserMachine } from "./user/user.statemachine";
 import * as t from "io-ts";
 import { TokenMachine } from "./token/token.statemachine";
+import {
+  roomSessionMachine,
+  RoomSessionMachine
+} from "./roomSession/roomSession.statemachine";
+import { requestMachine } from "./request.statemachine";
+import { roomMachine } from "./roomSession/room.statemachine";
 
 export const SettingsParamsCodec = t.partial({ next: t.string });
 export type SettingsParams = t.TypeOf<typeof SettingsParamsCodec>;
@@ -12,7 +18,11 @@ export type RootStates =
       current: "Index";
     }
   | { current: "New" }
-  | { current: "Room"; params: RoomKey }
+  | {
+      current: "Room";
+      params: RoomKey;
+      roomSession: RoomSessionMachine;
+    }
   | { current: "Settings"; params: SettingsParams };
 
 export type RootBaseState = {
@@ -39,7 +49,18 @@ export const rootMachine = statemachine<RootStates, RootEvents, RootBaseState>({
     return { current: "New" };
   },
   SetRoom: (_, { params }) => {
-    return { current: "Room", params };
+    return {
+      current: "Room",
+      params,
+      roomSession: roomSessionMachine.create(
+        { current: "Init" },
+        {
+          participants: [],
+          request: requestMachine.create({ current: "Init" }),
+          room: roomMachine.create({ current: "Empty" })
+        }
+      )
+    };
   },
   SetSettings: (_, { params }) => {
     return { current: "Settings", params };

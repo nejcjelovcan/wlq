@@ -1,6 +1,10 @@
 import { mutate, Operator, pipe } from "overmind";
 import { LocalStorageError } from "../effects/localStorage";
-import { getFromLocalStorage, suppressError } from "../operators";
+import {
+  getFromLocalStorage,
+  writeToLocalStorage,
+  suppressError
+} from "../operators";
 import * as o from "./token.operators";
 
 export const assureToken: Operator = pipe(
@@ -10,5 +14,9 @@ export const assureToken: Operator = pipe(
   }),
   suppressError(LocalStorageError),
   o.ifTokenNotLoaded(),
-  o.requestToken()
+  o.requestToken(),
+  // TODO we should branch here, extractToken throwing is not a good idea
+  // (abusing LocalStorageError to control flow as well...)
+  o.extractToken(),
+  writeToLocalStorage("token")
 );

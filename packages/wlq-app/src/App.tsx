@@ -1,26 +1,22 @@
 import React from "react";
 import "./App.css";
-import { useOvermind } from "./overmind";
+import { useOvermindState } from "./overmind";
 import IndexPage from "./pages/IndexPage";
-import NewRoomPage from "./pages/NewRoomPage";
+// import NewRoomPage from "./pages/NewRoomPage._";
 import RoomPage from "./pages/RoomPage";
 import SettingsPage from "./pages/SettingsPage";
 
 function App() {
-  const {
-    state: {
-      router: { currentPage }
-    }
-  } = useOvermind();
+  const state = useOvermindState();
 
-  if (currentPage.name === "Index") {
+  if (state.current === "Index") {
     return <IndexPage />;
-  } else if (currentPage.name === "Settings") {
-    return <SettingsPage />;
-  } else if (currentPage.name === "New") {
-    return <NewRoomPage />;
-  } else if (currentPage.name === "Room") {
-    return <RoomPage />;
+  } else if (state.current === "Settings") {
+    return <SettingsPage user={state.user} params={state.params} />;
+    // } else if (state.current === "New") {
+    //   return <NewRoomPage />;
+  } else if (state.current === "Room") {
+    return <RoomPage roomSession={state.roomSession} />;
   }
   return <div className="App"></div>;
 }

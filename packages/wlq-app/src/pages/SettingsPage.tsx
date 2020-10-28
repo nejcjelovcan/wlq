@@ -2,35 +2,38 @@ import { Stack } from "@chakra-ui/core";
 import React from "react";
 import Layout from "../components/Layout";
 import PageHead from "../components/PageHead";
-import { useOvermind } from "../overmind";
+import { useActions } from "../overmind";
+import { SettingsParams } from "../overmind/root.statemachine";
+import {
+  getUserDetails,
+  UserMachine
+} from "../overmind/user/user.statemachine";
 import UserDetailsForm from "./settingsPage/UserDetailsForm";
 
-const SettingsPage = () => {
+const SettingsPage = ({
+  user,
+  params: { next }
+}: {
+  user: UserMachine;
+  params: SettingsParams;
+}) => {
   const {
-    state: {
-      router: { currentPage },
-      user: { current, details }
-    },
-    actions: {
-      router: { open },
-      user: { updateDetails }
-    }
-  } = useOvermind();
-
-  if (currentPage.name !== "Settings") return null;
+    router: { open },
+    user: { updateDetails }
+  } = useActions();
 
   return (
     <Layout>
       <Stack spacing={4}>
         <PageHead title="Settings" />
         <UserDetailsForm
-          current={current}
-          details={details}
+          current={user.current}
+          details={getUserDetails(user)}
           updateDetails={updateDetails}
           onDone={
-            currentPage.next
-              ? () => open(`/room/${currentPage.next}`)
-              : () => open("/")
+            next
+              ? () => open({ path: "/room/", params: { next } })
+              : () => open({ path: "/" })
           }
         />
       </Stack>
