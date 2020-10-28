@@ -2,15 +2,15 @@ import { OnInitialize } from "overmind";
 
 const onInitialize: OnInitialize = ({
   actions: {
-    router: { goToIndex, goToNew, goToRoom, goToSettings }
+    router: { setPageIndex, setPageNew, setPageRoom, setPageSettings }
   },
   effects
 }) => {
   effects.router.initialize({
-    "/": goToIndex,
-    "/room": goToNew,
-    "/room/:roomId": goToRoom,
-    "/settings": goToSettings
+    "/": setPageIndex,
+    "/room": setPageNew,
+    "/room/:roomId": setPageRoom,
+    "/settings": setPageSettings
   });
 };
 

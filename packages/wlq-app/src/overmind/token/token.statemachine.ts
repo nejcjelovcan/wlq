@@ -1,38 +1,26 @@
-import { statemachine, Statemachine } from "overmind";
+import { Statemachine, statemachine } from "overmind";
+import { RequestMachine } from "../request.statemachine";
 
 export type TokenStates =
   | { current: "Init" }
-  | { current: "Loaded"; token: string }
-  | { current: "Requesting" }
-  | { current: "Error"; error: string };
+  | { current: "Loaded"; token: string };
 
-export type TokenEvents =
-  | { type: "TokenLoad"; data: { token: string } }
-  | { type: "TokenRequest" }
-  | { type: "TokenReceive"; data: { token: string } }
-  | { type: "TokenError"; data: { error: string } };
+export type TokenEvents = { type: "LoadToken"; data: { token: string } };
 
-export type TokenMachine = Statemachine<TokenStates, TokenEvents>;
-export const tokenMachine = statemachine<TokenStates, TokenEvents>({
-  TokenLoad: (state, { token }) => {
-    if (state.current === "Init") {
-      return { current: "Loaded", token };
-    }
-    return;
-  },
-  TokenRequest: state => {
-    if (state.current === "Init") {
-      return { current: "Requesting" };
-    }
-    return;
-  },
-  TokenReceive: (state, { token }) => {
-    if (state.current === "Requesting") {
-      return { current: "Loaded", token };
-    }
-    return;
-  },
-  TokenError: (_, { error }) => {
-    return { current: "Error", error };
+export type TokenBaseState = { request: RequestMachine };
+
+export type TokenMachine = Statemachine<
+  TokenStates,
+  TokenEvents,
+  TokenBaseState
+>;
+
+export const tokenMachine = statemachine<
+  TokenStates,
+  TokenEvents,
+  TokenBaseState
+>({
+  LoadToken: (_, { token }) => {
+    return { current: "Loaded", token };
   }
 });

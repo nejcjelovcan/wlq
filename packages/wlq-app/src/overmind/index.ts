@@ -9,37 +9,35 @@ import {
 import { merge, namespaced } from "overmind/config";
 import * as localStorage from "./effects/localStorage";
 import rest from "./effects/rest";
-import websocket from "./effects/websocket";
-import * as newRoom from "./newRoom";
-import { newRoomMachine } from "./newRoom/newRoom.statemachine";
-import * as roomSession from "./roomSession";
-import { roomSessionMachine } from "./roomSession/roomSession.statemachine";
+import { requestMachine } from "./request.statemachine";
+import { rootMachine } from "./root.statemachine";
 import * as router from "./router";
-import * as token from "./token";
 import { tokenMachine } from "./token/token.statemachine";
 import * as user from "./user";
+import * as token from "./token";
 import { userMachine } from "./user/user.statemachine";
 
 export const config = merge(
   {
-    state: {
-      token: tokenMachine.create({ current: "Init" }),
-      user: userMachine.create({
-        current: "Partial",
-        details: { type: "UserDetails" }
-      }),
-      newRoom: newRoomMachine.create(
-        {
-          current: "Editing",
-          valid: true
-        },
-        { newRoomData: { listed: true } }
-      ),
-      roomSession: roomSessionMachine.create({ current: "Init" })
-    },
-    effects: { rest, localStorage, websocket }
+    state: rootMachine.create(
+      { current: "Index" },
+      {
+        user: userMachine.create({
+          current: "Partial",
+          partialDetails: { type: "UserDetails" },
+          errors: {}
+        }),
+        token: tokenMachine.create(
+          {
+            current: "Init"
+          },
+          { request: requestMachine.create({ current: "Init" }) }
+        )
+      }
+    ),
+    effects: { localStorage, rest }
   },
-  namespaced({ router, token, user, newRoom, roomSession })
+  namespaced({ user, router, token })
 );
 
 export const useOvermind = createHook<typeof config>();
