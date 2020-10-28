@@ -4,7 +4,7 @@ export {
   ErrorResponse,
   getErrorMessage,
   getErrorStatusCode
-} from "./api/errors";
+} from "./api/errors.api";
 export {
   IRestResponse,
   IWebsocketMessage,
@@ -13,9 +13,9 @@ export {
   IWlqRawWebsocketEvent,
   decodeWebsocketMessage
 } from "./api/interfaces";
-export { default as decodeThrow, ValidationError } from "./model/decodeThrow";
+export { default as decodeThrow } from "./model/decodeThrow";
 export { default as decodeOptional } from "./model/decodeOptional";
-export { default as resolveEither } from "./model/resolveEither";
+export { ValidationError, IoValidationError } from "./model/errors.model";
 export { default as IEmitter } from "./emitter/IEmitter";
 export {
   default as IStore,

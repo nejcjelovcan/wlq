@@ -18,7 +18,7 @@ describe("getErrorMessage", () => {
     );
   });
   it("returns error message of a ValidationError", () => {
-    expect(getErrorMessage(new ValidationError(["Validation error"]))).toBe(
+    expect(getErrorMessage(new ValidationError("Validation error"))).toBe(
       "Validation error"
     );
   });
@@ -38,10 +38,9 @@ describe("getErrorStatusCode", () => {
     expect(getErrorStatusCode(new StateStoreError("State error"))).toBe(412);
   });
   it("returns 400 for ValidationError", () => {
-    expect(getErrorStatusCode(new ValidationError(["Invalid parameter"]))).toBe(
+    expect(getErrorStatusCode(new ValidationError("Invalid parameter"))).toBe(
       400
     );
-    expect(getErrorStatusCode(new ValidationError([]))).toBe(400);
   });
   it("returns 500 for any other error", () => {
     expect(getErrorStatusCode(new Error("Error"))).toBe(500);
