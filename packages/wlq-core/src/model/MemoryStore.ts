@@ -73,7 +73,7 @@ export function newMemoryStore(): IStore {
 
     async addAnswer({ roomId, pid, answer }) {
       const room = _getRoom(roomId);
-      if (room.state === "Game" && room.game.state === "Question") {
+      if (room.current === "Game" && room.game.current === "Question") {
         room.game.answers.push({ pid, answer });
         return room;
       } else {

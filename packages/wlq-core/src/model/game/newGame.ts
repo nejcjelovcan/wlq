@@ -12,7 +12,7 @@ export default function newGame({ roomId }: NewGame): Game {
   return {
     type: "Game",
     roomId,
-    state: "Idle",
+    current: "Idle",
     questionCount: 10
   };
 }

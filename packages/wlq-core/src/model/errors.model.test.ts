@@ -1,15 +1,15 @@
 import { isLeft } from "fp-ts/lib/Either";
 import * as t from "io-ts";
-import { getIoErrorPairs } from "./errors.model";
+import { getIoErrors } from "./errors.model";
 
-describe("getIoErrorPairs", () => {
+describe("getIoErrors", () => {
   it("returns io error pairs for given t.Errors", () => {
     const Codec = t.type({ numberProp: t.number, stringProp: t.string });
 
     const either = Codec.decode({ numberProp: "string" });
     if (!isLeft(either)) throw new Error("Decoder should return left");
 
-    expect(getIoErrorPairs(either.left)).toStrictEqual({
+    expect(getIoErrors(either.left)).toStrictEqual({
       numberProp: ["Invalid value", "string"],
       stringProp: ["Invalid value", "undefined"]
     });
@@ -24,7 +24,7 @@ describe("getIoErrorPairs", () => {
     const either = Codec.decode({ numberProp: "string", object: {} });
     if (!isLeft(either)) throw new Error("Decoder should return left");
 
-    expect(getIoErrorPairs(either.left)).toStrictEqual({
+    expect(getIoErrors(either.left)).toStrictEqual({
       numberProp: ["Invalid value", "string"],
       "object.stringProp": ["Invalid value", "undefined"]
     });

@@ -5,7 +5,7 @@ import * as t from "io-ts";
 export default function decodeOptional<A, O = A, I = unknown>(
   codec: t.Type<A, O, I>,
   i: I
-): t.TypeOf<t.Type<A, O, I>> | undefined {
+): A | undefined {
   return pipe(
     codec.decode(i),
     fold(

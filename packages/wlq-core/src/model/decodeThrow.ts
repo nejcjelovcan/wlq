@@ -6,7 +6,7 @@ import { IoValidationError } from "./errors.model";
 export default function decodeThrow<A, O = A, I = unknown>(
   codec: t.Type<A, O, I>,
   i: I
-): t.TypeOf<t.Type<A, O, I>> {
+): A {
   return pipe(
     codec.decode(i),
     fold(

@@ -2,9 +2,9 @@ import * as t from "io-ts";
 
 export class ValidationError extends Error {}
 
-export type IoErrorPairs = { [key: string]: [string, string] };
+export type IoErrors = { [key: string]: [string, string] };
 
-export function getIoErrorPairs(errors: t.Errors): IoErrorPairs {
+export function getIoErrors(errors: t.Errors): IoErrors {
   return Object.fromEntries(
     errors.map(error => [
       error.context
@@ -16,17 +16,17 @@ export function getIoErrorPairs(errors: t.Errors): IoErrorPairs {
   );
 }
 
-export function errorPairsToString(pairs: IoErrorPairs): string {
+export function errorPairsToString(pairs: IoErrors): string {
   return Object.entries(pairs)
     .map(([key, [message, val]]) => `${message} for property '${key}': ${val}`)
     .join("\n");
 }
 
 export class IoValidationError extends ValidationError {
-  public errors: IoErrorPairs;
+  public errors: IoErrors;
 
   constructor(errors: t.Errors) {
-    const pairs = getIoErrorPairs(errors);
+    const pairs = getIoErrors(errors);
     super(errorPairsToString(pairs));
 
     this.errors = pairs;

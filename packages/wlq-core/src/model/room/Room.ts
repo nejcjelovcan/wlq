@@ -18,9 +18,9 @@ export const RoomCodec = t.intersection([
   RoomKeyCodec,
   t.type(RoomProps),
   t.union([
-    t.type({ state: t.literal("Idle") }),
+    t.type({ current: t.literal("Idle") }),
     t.type({
-      state: t.literal("Game"),
+      current: t.literal("Game"),
       game: GameCodec
     })
   ])
@@ -32,9 +32,9 @@ export const RoomPublicCodec = t.intersection([
   RoomKeyCodec,
   t.type({ ...RoomProps, websocket: t.string }),
   t.union([
-    t.type({ state: t.literal("Idle") }),
+    t.type({ current: t.literal("Idle") }),
     t.type({
-      state: t.literal("Game"),
+      current: t.literal("Game"),
       game: GamePublicCodec
     })
   ])
@@ -45,14 +45,14 @@ export type RoomPublic = t.TypeOf<typeof RoomPublicCodec>;
 export function getQuestionTokenIfEverybodyAnswered(
   room: Room
 ): string | undefined {
-  if (room.state === "Game" && room.game.state === "Question") {
+  if (room.current === "Game" && room.game.current === "Question") {
     return room.game.questionToken;
   }
   return undefined;
 }
 
 export function getRoomPublic(room: Room): RoomPublic {
-  if (room.state === "Game") {
+  if (room.current === "Game") {
     return {
       ...room,
       game: getGamePublic(room.game),

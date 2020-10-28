@@ -1,4 +1,4 @@
-import { ValidationError } from "../model/decodeThrow";
+import { ValidationError } from "../model/errors.model";
 
 export interface IWlqRawPayload {
   [key: string]: unknown;
@@ -32,7 +32,6 @@ export function decodeWebsocketMessage(message: any): IWebsocketMessage {
       ? message["data"]
       : undefined;
 
-  if (!action || !data)
-    throw new ValidationError(["Invalid IWebsocketMessage"]);
+  if (!action || !data) throw new ValidationError("Invalid IWebsocketMessage");
   return { action, data };
 }

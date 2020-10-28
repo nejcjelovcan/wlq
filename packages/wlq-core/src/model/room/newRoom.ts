@@ -10,7 +10,7 @@ export default function newRoom(newRoom: NewRoom): Room {
     type: "Room",
     roomId: nanoid(),
     listed: newRoom.listed,
-    state: "Idle",
+    current: "Idle",
     participantCount: 0
   };
 }
