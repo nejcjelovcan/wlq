@@ -2,11 +2,6 @@ name: Verify
 
 on:
   push:
-    paths:
-      - packages/*
-      - .github/workflows/*
-      - .eslintrc.json
-      - tsconfig.json
 
 jobs:
   verify_and_test:

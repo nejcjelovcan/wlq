@@ -1,4 +1,4 @@
-name: Deploy wlq-api-aws and run integration tests
+name: Integration
 
 on:
   pull_request:
