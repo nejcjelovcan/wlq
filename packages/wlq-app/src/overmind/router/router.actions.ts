@@ -1,38 +1,41 @@
 import { RoomKeyCodec } from "@wlq/wlq-core/lib/model";
 import { mutate, Operator, pipe, run } from "overmind";
 import queryString from "query-string";
-import { decode } from "../operators";
+import { decode, fold } from "../operators";
 import { SettingsParamsCodec } from "../root.statemachine";
 import { PageParams } from "./router.effects";
 import * as o from "./router.operators";
 
-export const setPageIndex: Operator = mutate(({ state }) => {
+export const setPageIndex: Operator = mutate(function setPageIndex({ state }) {
   state.send("SetIndex");
 });
 
-export const setPageNew: Operator = mutate(({ state }) => {
+export const setPageNew: Operator = mutate(function setPageNew({ state }) {
   state.send("SetNew");
 });
 
 export const setPageRoom: Operator<PageParams> = pipe(
   decode(RoomKeyCodec),
-  mutate(({ state }, params) => {
-    state.send("SetRoom", { params });
-  }),
-  o.redirectToIndexOnValidationError()
+  fold({
+    success: mutate(function setPageRoom({ state }, params) {
+      state.send("SetRoom", { params });
+    }),
+    error: o.redirectToIndex()
+  })
 );
 
 export const setPageSettings: Operator<PageParams> = pipe(
   decode(SettingsParamsCodec),
-  mutate(({ state }, params) => {
-    state.send("SetSettings", { params });
+  fold({
+    success: mutate(function setPageSettings({ state }, params) {
+      state.send("SetSettings", { params });
+    }),
+    error: o.redirectToIndex()
   })
-  // All page settings params are optional so no need for redirect
-  // o.redirectToIndexOnValidationError()
 );
 
 export const open: Operator<{ path: string; params?: PageParams }> = run(
-  ({ effects: { router } }, { path, params }) => {
+  function open({ effects: { router } }, { path, params }) {
     const url = params ? `${path}?${queryString.stringify(params)}` : path;
     router.open(url);
   }

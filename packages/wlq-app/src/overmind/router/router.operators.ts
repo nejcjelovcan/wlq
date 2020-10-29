@@ -1,20 +1,10 @@
-import { IoValidationError } from "@wlq/wlq-core";
-import { catchError, Operator } from "overmind";
+import { Operator, run } from "overmind";
 
-export const redirectToIndexOnValidationError: () => Operator = () =>
-  catchError(
-    (
-      {
-        actions: {
-          router: { open }
-        }
-      },
-      error
-    ) => {
-      if (error instanceof IoValidationError) {
-        open({ path: "/" });
-      } else {
-        throw error;
-      }
+export const redirectToIndex: <T>() => Operator<T> = () =>
+  run(function redirectToIndex({
+    actions: {
+      router: { open }
     }
-  );
+  }) {
+    open({ path: "/" });
+  });

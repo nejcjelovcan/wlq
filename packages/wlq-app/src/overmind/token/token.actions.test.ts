@@ -5,18 +5,23 @@ import { LocalStorageError } from "../effects/localStorage";
 describe("token.actions", () => {
   describe("assureToken", () => {
     it("loads token from localStorage", async () => {
+      const setAuthorization = jest.fn();
       const overmind = createOvermindMock(config, {
-        localStorage: { getItem: () => "token" }
+        localStorage: { getItem: () => "tokenValue" },
+        rest: { setAuthorization }
       });
 
       await overmind.actions.token.assureToken();
       if (overmind.state.token.current !== "Loaded")
         throw new Error("Expected current=Loaded");
 
-      expect(overmind.state.token.token).toBe("token");
+      expect(overmind.state.token.token).toBe("tokenValue");
+      expect(setAuthorization.mock.calls.length).toBe(1);
+      expect(setAuthorization.mock.calls[0]).toEqual(["tokenValue"]);
     });
     it("requests token via REST if not in local storage (and writes to storage)", async () => {
       const setItem = jest.fn();
+      const setAuthorization = jest.fn();
       const overmind = createOvermindMock(config, {
         localStorage: {
           getItem: () => {
@@ -26,7 +31,8 @@ describe("token.actions", () => {
         },
         rest: {
           getToken: () =>
-            new Promise(resolve => resolve({ token: "tokenValue" }))
+            new Promise(resolve => resolve({ token: "tokenValue" })),
+          setAuthorization
         }
       });
 
@@ -37,6 +43,8 @@ describe("token.actions", () => {
       expect(overmind.state.token.token).toBe("tokenValue");
       expect(setItem.mock.calls.length).toBe(1);
       expect(setItem.mock.calls[0]).toEqual(["token", "tokenValue"]);
+      expect(setAuthorization.mock.calls.length).toBe(1);
+      expect(setAuthorization.mock.calls[0]).toEqual(["tokenValue"]);
     });
   });
 });

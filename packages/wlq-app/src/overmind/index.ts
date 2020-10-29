@@ -15,6 +15,8 @@ import * as router from "./router";
 import { tokenMachine } from "./token/token.statemachine";
 import * as user from "./user";
 import * as token from "./token";
+import * as newRoom from "./newRoom";
+import * as roomSession from "./roomSession";
 import { userMachine } from "./user/user.statemachine";
 
 export const config = merge(
@@ -37,7 +39,7 @@ export const config = merge(
     ),
     effects: { localStorage, rest }
   },
-  namespaced({ router, token, user })
+  namespaced({ router, token, user, newRoom, roomSession })
 );
 
 export const useOvermind = createHook<typeof config>();

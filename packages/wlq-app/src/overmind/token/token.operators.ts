@@ -1,36 +1,31 @@
-import {
-  catchError,
-  filter,
-  map,
-  mutate,
-  Operator,
-  pipe,
-  waitUntil
-} from "overmind";
-
-export const ifTokenNotLoaded: () => Operator = () =>
-  filter(({ state: { token } }) => token.current !== "Loaded");
+import { mutate, Operator, pipe, run, waitUntil } from "overmind";
 
 export const waitUntilTokenLoaded: () => Operator = () =>
-  waitUntil(({ token }) => token.current === "Loaded");
+  waitUntil(function waitUntilTokenLoaded({ token }) {
+    return token.current === "Loaded";
+  });
 
-export const requestToken: () => Operator = () =>
+export const setToken: () => Operator<string> = () =>
   pipe(
-    mutate(async ({ state, effects: { rest } }) => {
-      state.token.request.send("Request", { params: {} });
-      const response = await rest.getToken();
-      state.token.request.send("Response", { response });
-      state.token.send("LoadToken", { token: response.token });
+    mutate(function sendLoadToken({ state }, token) {
+      state.token.send("LoadToken", { token });
     }),
-    // TODO only catch rest errors!
-    catchError(({ state }, error) => {
-      state.token.request.send("Error", { error: error.message });
+    run(function setRestAuthorization({ effects: { rest } }, token) {
+      rest.setAuthorization(token);
     })
   );
 
-// TODO errors
-export const extractToken: <T>() => Operator<T, string> = () =>
-  map(({ state: { token } }) => {
-    if (token.current === "Loaded") return token.token;
-    throw new Error("No token");
+export const sendRequest: <T>() => Operator<T> = () =>
+  mutate(function sendRequest({ state }) {
+    state.token.request.send("Request");
+  });
+
+export const sendReceive: <T>() => Operator<T> = () =>
+  mutate(function sendReceive({ state }) {
+    state.token.request.send("Response");
+  });
+
+export const sendError: () => Operator<Error> = () =>
+  mutate(function sendError({ state }, error) {
+    state.token.request.send("Error", { error: error.message });
   });

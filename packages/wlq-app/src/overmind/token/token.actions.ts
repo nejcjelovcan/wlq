@@ -1,22 +1,29 @@
-import { mutate, Operator, pipe } from "overmind";
-import { LocalStorageError } from "../effects/localStorage";
-import {
-  getFromLocalStorage,
-  writeToLocalStorage,
-  suppressError
-} from "../operators";
+import * as e from "fp-ts/Either";
+import { map, Operator, pipe } from "overmind";
+import { fold, getFromLocalStorage, writeToLocalStorage } from "../operators";
 import * as o from "./token.operators";
 
 export const assureToken: Operator = pipe(
   getFromLocalStorage("token"),
-  mutate(({ state }, token) => {
-    state.token.send("LoadToken", { token });
-  }),
-  suppressError(LocalStorageError),
-  o.ifTokenNotLoaded(),
-  o.requestToken(),
-  // TODO we should branch here, extractToken throwing is not a good idea
-  // (abusing LocalStorageError to control flow as well...)
-  o.extractToken(),
-  writeToLocalStorage("token")
+  fold({
+    success: o.setToken(),
+    error: pipe(
+      o.sendRequest(),
+      map(async ({ effects: { rest } }) => {
+        try {
+          return e.right((await rest.getToken()).token);
+        } catch (error) {
+          return e.left(error);
+        }
+      }),
+      fold({
+        success: pipe(
+          o.sendReceive(),
+          o.setToken(),
+          writeToLocalStorage("token")
+        ),
+        error: o.sendError()
+      })
+    )
+  })
 );

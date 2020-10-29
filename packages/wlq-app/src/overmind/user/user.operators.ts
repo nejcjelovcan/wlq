@@ -1,46 +1,38 @@
-import { IoValidationError, sample } from "@wlq/wlq-core";
+import { IoErrors, sample } from "@wlq/wlq-core";
 import {
   UserDetails,
   USER_DETAILS_COLORS,
   USER_DETAILS_EMOJIS
 } from "@wlq/wlq-core/lib/model";
-import { catchError, filter, map, mutate, Operator, pipe } from "overmind";
+import { map, mutate, Operator, pipe } from "overmind";
 import { getUserDetails } from "./user.statemachine";
 
 export const sendUserUpdate: () => Operator<Partial<UserDetails>> = () =>
   pipe(
-    mutate(({ state: { user } }, details) => {
+    mutate(function sendUserUpdate({ state: { user } }, details) {
       user.send("UserUpdate", { details });
     }),
-    map(({ state: { user } }) => {
+    // this is important! (otherwise we pass only update without previous values)
+    map(function passUserDetails({ state: { user } }) {
       return getUserDetails(user);
     })
   );
 
 export const sendUserValid: () => Operator<UserDetails> = () =>
-  mutate(({ state: { user } }, details) => {
+  mutate(function sendUserValid({ state: { user } }, details) {
     user.send("UserValidate", { details });
   });
 
-export const handleValidationError: () => Operator = () =>
-  catchError(({ state: { user } }, error) => {
-    if (error instanceof IoValidationError) {
-      user.send("UserErrors", { errors: error.errors });
-    } else {
-      throw error;
-    }
+export const sendUserErrors: () => Operator<IoErrors> = () =>
+  mutate(function sendUserErrors({ state: { user } }, errors) {
+    user.send("UserErrors", { errors });
   });
 
-export const ifUserDetailsInvalid: () => Operator = () =>
-  filter(({ state: { user } }) => {
-    return user.current !== "Valid";
-  });
-
-export const generateRandomUserDetails: () => Operator<
-  void,
+export const generateRandomUserDetails: <T>() => Operator<
+  T,
   Partial<UserDetails>
 > = () =>
-  map(() => {
+  map(function generateRandomUserDetails() {
     return {
       type: "UserDetails",
       color: sample(USER_DETAILS_COLORS),

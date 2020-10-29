@@ -2,29 +2,26 @@ import { Stack } from "@chakra-ui/core";
 import React from "react";
 import Layout from "../components/Layout";
 import PageHead from "../components/PageHead";
-import { useOvermind } from "../overmind";
+import { useActions } from "../overmind";
+import {
+  getNewRoom,
+  NewRoomMachine
+} from "../overmind/newRoom/newRoom.statemachine";
 import RoomCreationForm from "./roomPage/RoomCreationForm";
 
-const NewRoomPage = () => {
+const NewRoomPage = ({ newRoom }: { newRoom: NewRoomMachine }) => {
   const {
-    state: {
-      newRoom,
-      router: { currentPage }
-    },
-    actions: {
-      newRoom: { updateNewRoomData, submitNewRoom }
-    }
-  } = useOvermind();
-
-  if (currentPage.name !== "New") return null;
+    newRoom: { updateNewRoom, submitNewRoom }
+  } = useActions();
 
   return (
     <Layout>
       <Stack spacing={4}>
         <PageHead title="New Room" />
         <RoomCreationForm
-          {...newRoom}
-          updateNewRoomData={updateNewRoomData}
+          newRoom={getNewRoom(newRoom)}
+          request={newRoom.request}
+          updateNewRoom={updateNewRoom}
           submitNewRoom={submitNewRoom}
         />
       </Stack>
