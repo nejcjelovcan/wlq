@@ -148,6 +148,14 @@ functions:
       - websocket:
           route: joinRoom
 
+  startGame:
+    handler: src/lambdas/game/startGame.handler
+    environment:
+      GAME_QUESTION_TIMEOUT: ${self:resources.Outputs.GameQuestionTimeout.Value}
+    events:
+      - websocket:
+          route: startGame
+
   # SNS Lambdas
   broadcastToRoom:
     maximumRetryAttempts: 0
@@ -168,7 +176,57 @@ functions:
   authorize:
     handler: src/lambdas/authorize.handler
 
+  # STEP FUNCTIONS
+  setQuestionToken:
+    handler: src/lambdas/game/setQuestionToken.handler
+
+  revealAnswer:
+    handler: src/lambdas/game/revealAnswer.handler
+
+stepFunctions:
+  stateMachines:
+    GameQuestionTimeout:
+      name: GameQuestionTimeout
+      definition:
+        Comment: Issues a questionToken for a given room to be sent after all users answer, otherwise times out after certain time
+        StartAt: IssueQuestionToken
+        States:
+          IssueQuestionToken:
+            Type: Task
+            Resource: "arn:aws:states:::lambda:invoke.waitForTaskToken"
+            Parameters:
+              FunctionName:
+                Fn::GetAtt: [setQuestionToken, Arn]
+              Payload:
+                roomId.$: $.roomId
+                questionToken.$: $$.Task.Token
+            TimeoutSecondsPath: $.questionTime
+            Next: RevealAnswer
+            ResultPath: $.output
+            Catch:
+              - ErrorEquals:
+                  - States.ALL
+                Next: RevealAnswer
+                ResultPath: $.output
+          RevealAnswer:
+            Type: Task
+            Resource: "arn:aws:states:::lambda:invoke"
+            Parameters:
+              FunctionName:
+                Fn::GetAtt: [revealAnswer, Arn]
+              Payload:
+                roomId.$: $.roomId
+                output.$: $.output
+            Next: End
+          End:
+            Type: Succeed
+
 resources:
+  Outputs:
+    GameQuestionTimeout:
+      Value:
+        Ref: GameQuestionTimeout
+
   Resources:
     GatewayResponseDefault4XX:
       Type: "AWS::ApiGateway::GatewayResponse"

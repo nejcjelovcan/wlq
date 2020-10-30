@@ -1,4 +1,4 @@
-import { PosedQuestion } from ".";
+import { PosedQuestion } from "../../game/PosedQuestion";
 import {
   getIndefiniteArticle,
   sample,
@@ -26,9 +26,11 @@ const poseTaggedQuestion = ({
     ...sampleMany(isPositive ? itemsWithoutTag : itemsWithTag, 3)
   ]);
   return {
+    type: "PosedQuestion",
     questionText: renderTagQuestionTemplate(questionTextTemplate, targetTag),
-    options,
-    answer
+    options: options.map(option => option.name),
+    answer: answer.name,
+    time: 10
   };
 };
 export default poseTaggedQuestion;

@@ -20,6 +20,10 @@ export function newRoomStore(
   | "getParticipant"
   | "addParticipant"
   | "deleteParticipant"
+  | "setGameQuestion"
+  | "startGame"
+  | "setGameQuestionToken"
+  | "setGameToAnswerState"
 > {
   return {
     async addRoom(room) {
@@ -97,6 +101,93 @@ export function newRoomStore(
       }).promise();
 
       return await updateRoomCount(DB, key, -1);
+    },
+
+    async setGameQuestion(roomKey, question) {
+      const result = await DB.update({
+        TableName,
+        Key: roomComposite(roomKey),
+        UpdateExpression: `SET game.question = :question, game.answers = :answers,
+          game.current = :current, game.questionIndex = questionIndex + :inc,
+          game.questionToken = :questionToken`,
+        ConditionExpression:
+          "current = :expectedCurrent AND game.current IN (:expectedRoomCurrent1, :expectedRoomCurrent2)",
+        ExpressionAttributeValues: {
+          ":question": question,
+          ":answers": [],
+          ":current": "Question",
+          ":questionToken": "",
+          ":inc": 1,
+          ":expectedCurrent": "Game",
+          ":expectedRoomCurrent1": "Idle",
+          ":expectedRoomCurrent2": "Answer"
+        },
+        ReturnValues: "ALL_NEW"
+      }).promise();
+
+      // TODO throw State error if condition fails
+      return decodeThrow(RoomCodec, result.Attributes);
+    },
+
+    async setGameQuestionToken(roomKey, questionToken) {
+      const result = await DB.update({
+        TableName,
+        Key: roomComposite(roomKey),
+        UpdateExpression: "game.questionToken = :questionToken",
+        ConditionExpression:
+          "current = :expectedCurrent AND game.current == :expectedRoomCurrent",
+        ExpressionAttributeValues: {
+          ":questionToken": questionToken,
+          ":expectedCurrent": "Game",
+          ":expectedRoomCurrent": "Question"
+        },
+        ReturnValues: "ALL_NEW"
+      }).promise();
+
+      // TODO throw State error if condition fails
+      return decodeThrow(RoomCodec, result.Attributes);
+    },
+
+    async setGameToAnswerState(roomKey) {
+      const result = await DB.update({
+        TableName,
+        Key: roomComposite(roomKey),
+        UpdateExpression: "game.current = :roomCurrent",
+        ConditionExpression:
+          "current = :expectedCurrent AND game.current == :expectedRoomCurrent",
+        ExpressionAttributeValues: {
+          ":roomCurrent": "Answer",
+          ":expectedCurrent": "Game",
+          ":expectedRoomCurrent": "Question"
+        },
+        ReturnValues: "ALL_NEW"
+      }).promise();
+
+      // TODO throw State error if condition fails
+      return decodeThrow(RoomCodec, result.Attributes);
+    },
+
+    async startGame(roomKey, questionCount) {
+      const result = await DB.update({
+        TableName,
+        Key: roomComposite(roomKey),
+
+        UpdateExpression: `SET current = :current, game.current = :gameCurrent,
+          game.questionCount = :questionCount, game.questionIndex = :questionIndex`,
+        ExpressionAttributeNames: { "#state": "state" },
+        ConditionExpression: "current = :expectedCurrent",
+        ExpressionAttributeValues: {
+          ":current": "Game",
+          ":gameCurrent": "Idle",
+          ":questionCount": questionCount,
+          ":questionIndex": 0,
+          ":expectedCurrent": "Idle"
+        },
+        ReturnValues: "ALL_NEW"
+      }).promise();
+
+      // TODO throw State error if condition fails
+      return decodeThrow(RoomCodec, result.Attributes);
     }
   };
 }

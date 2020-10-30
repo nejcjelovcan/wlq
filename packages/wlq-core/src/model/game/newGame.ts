@@ -13,6 +13,7 @@ export default function newGame({ roomId }: NewGame): Game {
     type: "Game",
     roomId,
     current: "Idle",
-    questionCount: 10
+    questionCount: 10,
+    questionIndex: 0
   };
 }

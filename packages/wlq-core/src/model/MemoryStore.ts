@@ -81,6 +81,85 @@ export function newMemoryStore(): IStore {
           "Room must be in state='Game' and game in state='Answer'"
         );
       }
+    },
+
+    async startGame({ roomId }, questionCount) {
+      const room = _getRoom(roomId);
+      if (room.current !== "Idle")
+        throw new StateStoreError("Room should be in state=Idle");
+
+      rooms[roomId] = {
+        ...room,
+        current: "Game",
+        game: {
+          type: "Game",
+          roomId,
+          current: "Idle",
+          questionCount,
+          questionIndex: 0
+        }
+      };
+      return rooms[roomId];
+    },
+
+    async setGameQuestion({ roomId }, question) {
+      const room = _getRoom(roomId);
+
+      if (room.current !== "Game")
+        throw new StateStoreError("Room should be in state=Game");
+      if (room.game.current !== "Idle" && room.game.current !== "Answer")
+        throw new StateStoreError("Game should be in state=Idle|Answer");
+
+      rooms[roomId] = {
+        ...room,
+        game: {
+          type: "Game",
+          roomId,
+          current: "Question",
+          question,
+          questionCount: room.game.questionCount,
+          questionIndex: room.game.questionIndex + 1,
+          questionToken: "",
+          answers: []
+        }
+      };
+      return rooms[roomId];
+    },
+
+    async setGameQuestionToken({ roomId }, questionToken) {
+      const room = _getRoom(roomId);
+
+      if (room.current !== "Game")
+        throw new StateStoreError("Room should be in state=Game");
+      if (room.game.current !== "Question")
+        throw new StateStoreError("Game should be in state=Question");
+
+      rooms[roomId] = {
+        ...room,
+        game: {
+          ...room.game,
+          questionToken
+        }
+      };
+      return rooms[roomId];
+    },
+
+    async setGameToAnswerState({ roomId }) {
+      const room = _getRoom(roomId);
+
+      if (room.current !== "Game")
+        throw new StateStoreError("Room should be in state=Game");
+      if (room.game.current !== "Question")
+        throw new StateStoreError("Game should be in state=Question");
+
+      rooms[roomId] = {
+        ...room,
+        game: {
+          ...room.game,
+          current: "Answer"
+        }
+      };
+      return rooms[roomId];
     }
   };
 }

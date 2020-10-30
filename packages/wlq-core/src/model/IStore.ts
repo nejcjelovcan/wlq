@@ -1,4 +1,4 @@
-import { NewGame } from "./game/newGame";
+import { PosedQuestion } from "./game/PosedQuestion";
 import { Participant, ParticipantKey } from "./room/participant/Participant";
 import { Room, RoomKey } from "./room/Room";
 
@@ -69,8 +69,36 @@ export default interface IStore {
     participantKey: ParticipantKey
   ) => Promise<[Participant, Room]>;
 
-  startGame?: (roomKey: RoomKey, newGameParams: NewGame) => Promise<Room>;
-  finishGame?: (roomKey: RoomKey) => Promise<Room>;
+  /**
+   * Start game
+   *
+   * Should throw StoreStateError if room is not in state Idle
+   */
+  startGame: (roomKey: RoomKey, questionCount: number) => Promise<Room>;
+
+  /**
+   * Set game question
+   *
+   * Should throw StoreStateError if room is not in state Game
+   * or game is not in state Idle|Answer
+   */
+  setGameQuestion: (roomKey: RoomKey, question: PosedQuestion) => Promise<Room>;
+
+  /**
+   * Set game question
+   *
+   * Should throw StoreStateError if room is not in state Game
+   * or game is not in state Question
+   */
+  setGameQuestionToken: (
+    roomKey: RoomKey,
+    questionToken: string
+  ) => Promise<Room>;
+
+  /**
+   * Set game to answer state
+   */
+  setGameToAnswerState: (roomKey: RoomKey) => Promise<Room>;
 
   /**
    * Add answer

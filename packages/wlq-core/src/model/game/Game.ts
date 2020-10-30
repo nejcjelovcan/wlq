@@ -1,33 +1,40 @@
 import * as t from "io-ts";
-import { PosedQuestionType } from "./PosedQuestion";
-import { ParticipantAnswerType } from "../room/participant/ParticipantAnswer";
+import {
+  getPosedQuestionPublic,
+  PosedQuestionCodec,
+  PosedQuestionPublicCodec
+} from "./PosedQuestion";
+import { ParticipantAnswerCodec } from "../room/participant/ParticipantAnswer";
+
+export const GameBaseCodec = t.type({
+  type: t.literal("Game"),
+  questionCount: t.number,
+  questionIndex: t.number,
+  roomId: t.string
+});
 
 export const GameQuestionCodec = t.type({
-  question: PosedQuestionType,
+  question: PosedQuestionCodec,
   questionIndex: t.number,
   questionToken: t.string,
-  answers: t.array(ParticipantAnswerType)
+  answers: t.array(ParticipantAnswerCodec)
 });
 export type GameQuestion = t.TypeOf<typeof GameQuestionCodec>;
 
 export const GamePublicQuestionCodec = t.type({
-  questionText: t.string,
-  questionOptions: t.array(t.string),
+  question: PosedQuestionPublicCodec,
   answeredParticipants: t.array(t.string)
 });
 export type GamePublicQuestion = t.TypeOf<typeof GamePublicQuestionCodec>;
 
 export const GamePublicAnswerCodec = t.type({
-  answers: t.array(ParticipantAnswerType)
+  answer: t.string,
+  answers: t.array(ParticipantAnswerCodec)
 });
 export type GamePublicAnswer = t.TypeOf<typeof GamePublicAnswerCodec>;
 
 export const GameCodec = t.intersection([
-  t.type({
-    type: t.literal("Game"),
-    questionCount: t.number,
-    roomId: t.string
-  }),
+  GameBaseCodec,
   t.union([
     t.type({ current: t.literal("Idle") }),
     t.intersection([
@@ -44,11 +51,7 @@ export const GameCodec = t.intersection([
 export type Game = t.TypeOf<typeof GameCodec>;
 
 export const GamePublicCodec = t.intersection([
-  t.type({
-    type: t.literal("Game"),
-    questionCount: t.number,
-    roomId: t.string
-  }),
+  GameBaseCodec,
   t.union([
     t.type({ current: t.literal("Idle") }),
     t.intersection([
@@ -67,16 +70,10 @@ export type GamePublic = t.TypeOf<typeof GamePublicCodec>;
 
 export function getGamePublic(game: Game): GamePublic {
   if (game.current === "Question" || game.current === "Answer") {
-    const {
-      question: { options, questionText },
-      questionToken,
-      answers,
-      ...gamePublic
-    } = game;
+    const { question, questionToken, answers, ...gamePublic } = game;
 
     const questionProps = {
-      questionOptions: options,
-      questionText,
+      question: getPosedQuestionPublic(question),
       answeredParticipants: answers.map(a => a.pid)
     };
 
@@ -92,7 +89,8 @@ export function getGamePublic(game: Game): GamePublic {
         ...gamePublic,
         ...questionProps,
         current: "Answer",
-        answers
+        answers,
+        answer: game.question.answer
       };
   }
   return game;

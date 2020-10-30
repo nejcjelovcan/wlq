@@ -8,6 +8,8 @@ import {
   Participant,
   ParticipantPublic
 } from "../room/participant/Participant";
+import { Game } from "../game/Game";
+import newGame from "../game/newGame";
 
 export const userDetailsFixture = (
   override: Partial<UserDetails> = {}
@@ -24,6 +26,7 @@ export const userDetailsFixture = (
 
 // watch out though, Room has different states and this can return an invalid
 // Room with certain overrides
+// We should use something like Overmind's internal NestedPartial
 export const roomFixture = (override: Partial<Room> = {}): Room =>
   deepExtend(newRoom({ listed: true }), override);
 
@@ -44,3 +47,6 @@ export const participantFixture = (override: Partial<Participant> = {}) =>
 export const participantPublicFixture = (
   override: Partial<ParticipantPublic> = {}
 ) => deepExtend(getParticipantPublic(participantFixture()), override);
+
+export const gameFixture = (override: Partial<Game> = {}): Game =>
+  deepExtend(newGame({ roomId: "roomId" }), override);
