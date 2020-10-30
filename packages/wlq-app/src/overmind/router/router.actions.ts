@@ -2,6 +2,10 @@ import { RoomKeyCodec } from "@wlq/wlq-core/lib/model";
 import { mutate, Operator, pipe, run } from "overmind";
 import queryString from "query-string";
 import { decode, fold } from "../operators";
+import {
+  ifRoomNotLoaded,
+  requestRoom
+} from "../roomSession/roomSession.operators";
 import { SettingsParamsCodec } from "../root.statemachine";
 import { PageParams } from "./router.effects";
 import * as o from "./router.operators";
@@ -17,9 +21,13 @@ export const setPageNew: Operator = mutate(function setPageNew({ state }) {
 export const setPageRoom: Operator<PageParams> = pipe(
   decode(RoomKeyCodec),
   fold({
-    success: mutate(function setPageRoom({ state }, params) {
-      state.send("SetRoom", { params });
-    }),
+    success: pipe(
+      mutate(function setPageRoom({ state }, params) {
+        state.send("SetRoom", { params });
+      }),
+      ifRoomNotLoaded(),
+      requestRoom()
+    ),
     error: o.redirectToIndex()
   })
 );

@@ -1,5 +1,6 @@
 import { createOvermindMock } from "overmind";
 import { config } from "../";
+import { withEffectMocks } from "../../__test__/overmindMocks";
 
 describe("router.actions", () => {
   describe("setPageIndex", () => {
@@ -22,7 +23,10 @@ describe("router.actions", () => {
   });
   describe("setPageRoom", () => {
     it("updates current page to Room (with params)", async () => {
-      const overmind = createOvermindMock(config);
+      const overmind = createOvermindMock(config, withEffectMocks());
+
+      // setPageRoom uses waitUntilTokenLoaded
+      await overmind.actions.token.assureToken();
 
       await overmind.actions.router.setPageRoom({ roomId: "roomId" });
       if (overmind.state.current !== "Room")

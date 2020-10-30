@@ -1,15 +1,19 @@
 import { createOvermindMock } from "overmind";
 import { config } from "../";
 import { LocalStorageError } from "../effects/localStorage";
+import { withEffectMocks } from "../../__test__/overmindMocks";
 
 describe("token.actions", () => {
   describe("assureToken", () => {
     it("loads token from localStorage", async () => {
       const setAuthorization = jest.fn();
-      const overmind = createOvermindMock(config, {
-        localStorage: { getItem: () => "tokenValue" },
-        rest: { setAuthorization }
-      });
+
+      const overmind = createOvermindMock(
+        config,
+        withEffectMocks({
+          rest: { setAuthorization }
+        })
+      );
 
       await overmind.actions.token.assureToken();
       if (overmind.state.token.current !== "Loaded")

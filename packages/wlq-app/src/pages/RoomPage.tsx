@@ -5,7 +5,7 @@ import PageHead from "../components/PageHead";
 import { RoomSessionMachine } from "../overmind/roomSession/roomSession.statemachine";
 
 const RoomPage = ({
-  roomSession: { current, room }
+  roomSession: { room }
 }: {
   roomSession: RoomSessionMachine;
 }) => {
@@ -27,10 +27,7 @@ const RoomPage = ({
   return (
     <Layout>
       <Stack spacing={4}>
-        <PageHead
-          title="Geography"
-          loading={current === "Init" || room.current === "Empty"}
-        />
+        <PageHead title="Geography" loading={room.current === "Empty"} />
         <div>{room.current !== "Empty" && room.roomId}</div>
       </Stack>
     </Layout>

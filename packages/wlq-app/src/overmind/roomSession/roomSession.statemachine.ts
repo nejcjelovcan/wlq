@@ -3,16 +3,16 @@ import { SetParticipantsMessage } from "@wlq/wlq-core/lib/api/room/JoinRoomMessa
 import { ErrorMessage } from "@wlq/wlq-core";
 import { ParticipantPublic } from "@wlq/wlq-core/lib/model";
 import { RequestMachine } from "../request.statemachine";
-import { RoomMachine } from "./room.statemachine";
+import { RoomMachine } from "./room/room.statemachine";
 
 export type RoomSessionStates =
   | { current: "Init" }
-  | { current: "Loaded" }
   | { current: "Joining" }
-  | { current: "Joined" }
+  | { current: "Joined"; pid: string }
   | { current: "Error"; error: string };
 
 export type RoomSessionEvents =
+  // | { type: "Load" }
   | {
       type: "Join";
     }
@@ -36,10 +36,12 @@ export const roomSessionMachine = statemachine<
   RoomSessionEvents,
   RoomSessionBaseState
 >({
+  // Load: () => ({ current: "Loaded" }),
   Join: () => ({ current: "Joining" }),
-  Joined: (_, { data: { participants } }) => ({
+  Joined: (_, { data: { participants, pid } }) => ({
     current: "Joined",
-    participants
+    participants,
+    pid
   }),
   Error: (_, { data: { error } }) => ({ current: "Error", error })
 });

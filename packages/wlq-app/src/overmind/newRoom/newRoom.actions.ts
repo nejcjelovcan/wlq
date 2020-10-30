@@ -2,6 +2,7 @@ import { NewRoom, NewRoomCodec } from "@wlq/wlq-core/lib/model";
 import * as e from "fp-ts/Either";
 import { map, noop, Operator, pipe } from "overmind";
 import { decode, fold, waitUntilTokenLoaded } from "../operators";
+import { openRoomFromCreate } from "../roomSession/roomSession.operators";
 import * as o from "./newRoom.operators";
 
 export const updateNewRoom: Operator<Partial<NewRoom>> = pipe(
@@ -28,7 +29,7 @@ export const submitNewRoom: Operator = pipe(
     }
   }),
   fold({
-    success: pipe(o.sendReceive()), // TODO redirect to room
+    success: pipe(o.sendReceive(), openRoomFromCreate()),
     error: o.sendError()
   })
 );

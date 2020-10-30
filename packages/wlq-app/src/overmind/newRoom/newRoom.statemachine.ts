@@ -17,8 +17,8 @@ export type NewRoomEvents =
       type: "NewRoomUpdate";
       data: { newRoom: Partial<NewRoom> };
     }
-  | { type: "NewRoomValidate"; data: { newRoom: NewRoom } }
-  | { type: "NewRoomErrors"; data: { errors: IoErrors } };
+  | { type: "NewRoomValidate"; data: { newRoom: NewRoom } };
+// | { type: "NewRoomErrors"; data: { errors: IoErrors } };
 
 export type NewRoomBaseState = { request: RequestMachine };
 
@@ -49,10 +49,10 @@ export const newRoomMachine = statemachine<
   NewRoomValidate: (_, { newRoom }) => ({
     current: "Valid",
     validNewRoom: newRoom
-  }),
-  NewRoomErrors: (state, { errors }) => ({
-    current: "Partial",
-    partialNewRoom: getNewRoom(state),
-    errors
   })
+  // NewRoomErrors: (state, { errors }) => ({
+  //   current: "Partial",
+  //   partialNewRoom: getNewRoom(state),
+  //   errors
+  // })
 });

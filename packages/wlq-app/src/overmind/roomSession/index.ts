@@ -1,3 +1,3 @@
-import * as actions from "./room.actions";
+import * as actions from "./roomSession.actions";
 
 export { actions };

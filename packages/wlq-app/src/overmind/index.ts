@@ -8,6 +8,7 @@ import {
 } from "overmind-react";
 import { merge, namespaced } from "overmind/config";
 import * as localStorage from "./effects/localStorage";
+import websocket from "./effects/websocket";
 import rest from "./effects/rest";
 import { requestMachine } from "./request.statemachine";
 import { rootMachine } from "./root.statemachine";
@@ -37,7 +38,7 @@ export const config = merge(
         )
       }
     ),
-    effects: { localStorage, rest }
+    effects: { localStorage, rest, websocket }
   },
   namespaced({ router, token, user, newRoom, roomSession })
 );

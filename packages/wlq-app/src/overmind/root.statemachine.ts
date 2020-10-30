@@ -8,7 +8,7 @@ import {
   RoomSessionMachine
 } from "./roomSession/roomSession.statemachine";
 import { requestMachine } from "./request.statemachine";
-import { roomMachine } from "./roomSession/room.statemachine";
+import { roomMachine } from "./roomSession/room/room.statemachine";
 import { newRoomMachine, NewRoomMachine } from "./newRoom/newRoom.statemachine";
 
 export const SettingsParamsCodec = t.partial({ next: t.string });
@@ -59,7 +59,9 @@ export const rootMachine = statemachine<RootStates, RootEvents, RootBaseState>({
       )
     };
   },
-  SetRoom: (_, { params }) => {
+  SetRoom: (state, { params }) => {
+    if (state.current === "Room" && state.params.roomId === params.roomId)
+      return;
     return {
       current: "Room",
       params,
@@ -78,7 +80,7 @@ export const rootMachine = statemachine<RootStates, RootEvents, RootBaseState>({
       current: "Room",
       params: { roomId: room.roomId },
       roomSession: roomSessionMachine.create(
-        { current: "Loaded" },
+        { current: "Init" },
         {
           participants: [],
           request: requestMachine.create({ current: "Done" }),

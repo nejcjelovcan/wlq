@@ -15,6 +15,7 @@ export {
 } from "./api/interfaces";
 export { default as IEmitter } from "./emitter/IEmitter";
 export { default as sample } from "./helpers/sample";
+export { default as uniqueBy } from "./helpers/uniqueBy";
 export { default as decodeEither } from "./model/decodeEither";
 export { default as decodeOptional } from "./model/decodeOptional";
 export { default as decodeThrow } from "./model/decodeThrow";

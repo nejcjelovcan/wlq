@@ -1,14 +1,7 @@
-import { UserDetails } from "@wlq/wlq-core/lib/model";
 import { createOvermindMock } from "overmind";
 import { config } from "../";
+import { userDetails } from "../../__test__/fixtures";
 import { LocalStorageError } from "../effects/localStorage";
-
-const userDetails: UserDetails = {
-  type: "UserDetails",
-  color: "red",
-  emoji: "🐼",
-  alias: "Alias"
-};
 
 describe("user.actions", () => {
   describe("updateDetails", () => {
