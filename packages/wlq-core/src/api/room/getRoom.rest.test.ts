@@ -1,5 +1,5 @@
+import { roomFixture } from "../../model/fixtures";
 import { newMemoryStore } from "../../model/MemoryStore";
-import newRoom from "../../model/room/newRoom";
 import getRoom from "./getRoom.rest";
 
 describe("createRoom.rest", () => {
@@ -26,7 +26,7 @@ describe("createRoom.rest", () => {
       restResponse: jest.fn()
     };
     const store = newMemoryStore();
-    const room = newRoom({ listed: true });
+    const room = roomFixture();
     store.addRoom(room);
 
     await getRoom({ payload: { roomId: room.roomId } }, store, emitter);

@@ -61,7 +61,7 @@ export function newMemoryStore(): IStore {
 
     async deleteParticipant(participant) {
       _getParticipant(participant.connectionId);
-      const room = _getRoom(participant.connectionId);
+      const room = _getRoom(participant.roomId);
       room.participantCount -= 1;
       return room;
     },

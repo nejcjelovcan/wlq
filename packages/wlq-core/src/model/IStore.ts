@@ -58,7 +58,7 @@ export default interface IStore {
    * Should also update Room's participantCount
    * Should raise NotFoundStoreError if not found
    */
-  deleteParticipant: (participantKey: ParticipantKey) => Promise<Room>;
+  deleteParticipant: (key: ParticipantKey & RoomKey) => Promise<Room>;
 
   /**
    * Get participant and the room it belongs to

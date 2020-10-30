@@ -4,7 +4,7 @@ export {
   ErrorResponse,
   getErrorMessage,
   getErrorStatusCode
-} from "./api/errors.api";
+} from "./api/api.errors";
 export {
   decodeWebsocketMessage,
   IRestResponse,
@@ -23,7 +23,7 @@ export {
   IoErrors,
   IoValidationError,
   ValidationError
-} from "./model/errors.model";
+} from "./model/model.errors";
 export {
   default as IStore,
   ExistsStoreError,

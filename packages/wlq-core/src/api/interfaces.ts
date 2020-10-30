@@ -1,4 +1,4 @@
-import { ValidationError } from "../model/errors.model";
+import { ValidationError } from "../model/model.errors";
 
 export interface IWlqRawPayload {
   [key: string]: unknown;

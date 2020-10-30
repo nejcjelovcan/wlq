@@ -24,7 +24,9 @@
     "nanoid": "^3.1.15"
   },
   "devDependencies": {
+    "@types/deep-extend": "^0.4.31",
     "@types/jest": "^26.0.15",
+    "deep-extend": "^0.6.0",
     "dotenv-cli": "^4.0.0"
   }
 }

@@ -1,6 +1,6 @@
 import { isLeft } from "fp-ts/lib/Either";
 import * as t from "io-ts";
-import { getIoErrors } from "./errors.model";
+import { getIoErrors } from "./model.errors";
 
 describe("getIoErrors", () => {
   it("returns io error pairs for given t.Errors", () => {

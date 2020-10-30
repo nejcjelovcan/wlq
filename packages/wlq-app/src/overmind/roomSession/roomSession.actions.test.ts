@@ -1,7 +1,13 @@
+import {
+  participantFixture,
+  roomPublicFixture,
+  userDetailsFixture
+} from "@wlq/wlq-core/lib/model/fixtures";
 import { createOvermindMock } from "overmind";
 import { config } from "../";
-import { withEffectMocks, EffectMocks } from "../../__test__/overmindMocks";
-import { room, participant, userDetails } from "../../__test__/fixtures";
+import { EffectMocks, withEffectMocks } from "../../__test__/overmindMocks";
+
+const room = roomPublicFixture();
 
 const roomEffects: EffectMocks = {
   rest: {
@@ -17,7 +23,7 @@ describe("roomSession.actions", () => {
           config,
           withEffectMocks(roomEffects)
         );
-        const part = participant();
+        const participant = participantFixture();
 
         await overmind.actions.token.assureToken();
         await overmind.actions.router.setPageRoom({ roomId: room.roomId });
@@ -26,7 +32,7 @@ describe("roomSession.actions", () => {
             data: JSON.stringify({
               action: "setParticipants",
               data: {
-                participants: [part],
+                participants: [participant],
                 pid: "pid"
               }
             })
@@ -37,7 +43,7 @@ describe("roomSession.actions", () => {
         if (overmind.state.roomSession.current !== "Joined")
           throw new Error("Expected state.roomSession.current=Joined");
 
-        expect(overmind.state.roomSession.participants).toEqual([part]);
+        expect(overmind.state.roomSession.participants).toEqual([participant]);
         expect(overmind.state.roomSession.pid).toEqual("pid");
       });
     });
@@ -54,12 +60,12 @@ describe("roomSession.actions", () => {
         await overmind.actions.roomSession.setParticipants({
           action: "setParticipants",
           data: {
-            participants: [participant()],
+            participants: [participantFixture()],
             pid: "pid"
           }
         });
 
-        const participant2 = participant({ pid: "participant2Pid" });
+        const participant2 = participantFixture({ pid: "participant2Pid" });
         await overmind.actions.roomSession.roomOnMessage(
           new MessageEvent("", {
             data: JSON.stringify({
@@ -88,6 +94,7 @@ describe("roomSession.actions", () => {
         config,
         withEffectMocks(roomEffects, { websocket: { sendMessage } })
       );
+      const userDetails = userDetailsFixture();
 
       await overmind.actions.token.assureToken();
       await overmind.actions.user.updateDetails(userDetails);
