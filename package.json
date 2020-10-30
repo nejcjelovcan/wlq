@@ -5,7 +5,7 @@
   ],
   "scripts": {
     "verify": "yarn workspace @wlq/wlq-core verify:lint && yarn workspace @wlq/wlq-core build && yarn workspace @wlq/wlq-app verify && yarn workspace @wlq/wlq-api-aws verify",
-    "test": "yarn workspace @wlq/wlq-core test && yarn workspace @wlq/wlq-app test",
+    "test": "yarn workspace @wlq/wlq-core test && yarn workspace @wlq/wlq-app test:ci",
     "test:coverage": "yarn workspace @wlq/wlq-core test:coverage && yarn workspace @wlq/wlq-app test:coverage"
   },
   "dependencies": {

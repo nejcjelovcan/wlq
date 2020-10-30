@@ -1,57 +1,58 @@
-import { decodeOptional } from "@wlq/wlq-core";
-import { NewRoom, NewRoomCodec, RoomPublic } from "@wlq/wlq-core/lib/model";
+import { IoErrors } from "@wlq/wlq-core";
+import { NewRoom, RoomPublic } from "@wlq/wlq-core/lib/model";
 import { json, statemachine, Statemachine } from "overmind";
+import { RequestMachine } from "../request.statemachine";
 
 export type NewRoomStates =
-  | { current: "Editing"; valid: boolean }
-  | { current: "Submitting" }
-  | { current: "Created"; room: RoomPublic }
-  | { current: "Error"; error: string };
-
-export type NewRoomBaseState = { newRoomData: Partial<NewRoom> };
+  | {
+      current: "Partial";
+      partialNewRoom: Partial<NewRoom>;
+      errors: IoErrors;
+    }
+  | { current: "Valid"; validNewRoom: NewRoom }
+  | { current: "Created"; room: RoomPublic };
 
 export type NewRoomEvents =
-  | { type: "NewRoomUpdate"; data: { newRoomData: Partial<NewRoom> } }
-  | { type: "NewRoomSubmit" }
-  | { type: "NewRoomReceive"; data: { room: RoomPublic } }
-  | { type: "NewRoomError"; data: { error: string } };
+  | {
+      type: "NewRoomUpdate";
+      data: { newRoom: Partial<NewRoom> };
+    }
+  | { type: "NewRoomValidate"; data: { newRoom: NewRoom } };
+// | { type: "NewRoomErrors"; data: { errors: IoErrors } };
+
+export type NewRoomBaseState = { request: RequestMachine };
 
 export type NewRoomMachine = Statemachine<
   NewRoomStates,
   NewRoomEvents,
   NewRoomBaseState
 >;
+
+export function getNewRoom(
+  state: NewRoomStates | NewRoomMachine
+): Partial<NewRoom> {
+  if (state.current === "Partial") return json(state.partialNewRoom);
+  else if (state.current === "Valid") return json(state.validNewRoom);
+  return {};
+}
+
 export const newRoomMachine = statemachine<
   NewRoomStates,
   NewRoomEvents,
   NewRoomBaseState
 >({
-  NewRoomUpdate: (state, { newRoomData }) => {
-    const data = { ...state.newRoomData, ...newRoomData };
-    const validated = decodeOptional(NewRoomCodec, data);
-    return {
-      current: "Editing",
-      newRoomData: validated ?? data,
-      valid: Boolean(validated)
-    };
-  },
-  NewRoomSubmit: state => {
-    if (state.current !== "Submitting") {
-      return { current: "Submitting", newRoomData: json(state.newRoomData) };
-    }
-    return;
-  },
-  NewRoomReceive: (state, { room }) => {
-    if (state.current === "Submitting") {
-      return {
-        current: "Created",
-        newRoomData: json(state.newRoomData),
-        room
-      };
-    }
-    return;
-  },
-  NewRoomError: (state, { error }) => {
-    return { current: "Error", error, newRoomData: json(state.newRoomData) };
-  }
+  NewRoomUpdate: (_, { newRoom }) => ({
+    current: "Partial",
+    partialNewRoom: newRoom,
+    errors: {}
+  }),
+  NewRoomValidate: (_, { newRoom }) => ({
+    current: "Valid",
+    validNewRoom: newRoom
+  })
+  // NewRoomErrors: (state, { errors }) => ({
+  //   current: "Partial",
+  //   partialNewRoom: getNewRoom(state),
+  //   errors
+  // })
 });

@@ -1,4 +1,9 @@
+import { OnInitialize } from "overmind";
 import * as actions from "./token.actions";
-import { onInitialize } from "./token.initialize";
 
+const onInitialize: OnInitialize = ({
+  actions: {
+    token: { assureToken }
+  }
+}) => assureToken();
 export { actions, onInitialize };

@@ -1,19 +1,50 @@
-import { Action, Operator, pipe } from "overmind";
-import { IParams } from "./router.effects";
+import { RoomKeyCodec } from "@wlq/wlq-core/lib/model";
+import { mutate, Operator, pipe, run } from "overmind";
+import queryString from "query-string";
+import { decode, fold } from "../operators";
+import {
+  ifRoomNotLoaded,
+  requestRoom
+} from "../roomSession/roomSession.operators";
+import { SettingsParamsCodec } from "../root.statemachine";
+import { PageParams } from "./router.effects";
 import * as o from "./router.operators";
 
-export const goToIndex: Operator = o.setPage("Index");
-export const goToNew: Operator = o.setPage("New");
-export const goToRoom: Operator<IParams> = pipe(o.setPage("Room"));
-export const goToSettings: Operator<IParams> = o.setPage("Settings");
+export const setPageIndex: Operator = mutate(function setPageIndex({ state }) {
+  state.send("SetIndex");
+});
 
-export const open: Action<string> = (
-  {
-    effects: {
-      router: { open }
-    }
-  },
-  path
-) => {
-  open(path);
-};
+export const setPageNew: Operator = mutate(function setPageNew({ state }) {
+  state.send("SetNew");
+});
+
+export const setPageRoom: Operator<PageParams> = pipe(
+  decode(RoomKeyCodec),
+  fold({
+    success: pipe(
+      mutate(function setPageRoom({ state }, params) {
+        state.send("SetRoom", { params });
+      }),
+      ifRoomNotLoaded(),
+      requestRoom()
+    ),
+    error: o.redirectToIndex()
+  })
+);
+
+export const setPageSettings: Operator<PageParams> = pipe(
+  decode(SettingsParamsCodec),
+  fold({
+    success: mutate(function setPageSettings({ state }, params) {
+      state.send("SetSettings", { params });
+    }),
+    error: o.redirectToIndex()
+  })
+);
+
+export const open: Operator<{ path: string; params?: PageParams }> = run(
+  function open({ effects: { router } }, { path, params }) {
+    const url = params ? `${path}?${queryString.stringify(params)}` : path;
+    router.open(url);
+  }
+);

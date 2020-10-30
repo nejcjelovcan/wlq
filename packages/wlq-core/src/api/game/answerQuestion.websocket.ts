@@ -24,7 +24,7 @@ export default async function answerQuestion(
     );
 
     // check if answerable
-    if (room.state !== "Game" || room.game.state !== "Question")
+    if (room.current !== "Game" || room.game.current !== "Question")
       throw new Error("Can only answer if room is in Question state");
 
     const answerValid = room.game.question.options.includes(answer);

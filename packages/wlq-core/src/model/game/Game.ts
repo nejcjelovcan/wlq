@@ -29,13 +29,16 @@ export const GameCodec = t.intersection([
     roomId: t.string
   }),
   t.union([
-    t.type({ state: t.literal("Idle") }),
+    t.type({ current: t.literal("Idle") }),
     t.intersection([
-      t.type({ state: t.literal("Question") }),
+      t.type({ current: t.literal("Question") }),
       GameQuestionCodec
     ]),
-    t.intersection([t.type({ state: t.literal("Answer") }), GameQuestionCodec]),
-    t.type({ state: t.literal("Finished") })
+    t.intersection([
+      t.type({ current: t.literal("Answer") }),
+      GameQuestionCodec
+    ]),
+    t.type({ current: t.literal("Finished") })
   ])
 ]);
 export type Game = t.TypeOf<typeof GameCodec>;
@@ -47,23 +50,23 @@ export const GamePublicCodec = t.intersection([
     roomId: t.string
   }),
   t.union([
-    t.type({ state: t.literal("Idle") }),
+    t.type({ current: t.literal("Idle") }),
     t.intersection([
-      t.type({ state: t.literal("Question") }),
+      t.type({ current: t.literal("Question") }),
       GamePublicQuestionCodec
     ]),
     t.intersection([
-      t.type({ state: t.literal("Answer") }),
+      t.type({ current: t.literal("Answer") }),
       GamePublicQuestionCodec,
       GamePublicAnswerCodec
     ]),
-    t.type({ state: t.literal("Finished") })
+    t.type({ current: t.literal("Finished") })
   ])
 ]);
 export type GamePublic = t.TypeOf<typeof GamePublicCodec>;
 
 export function getGamePublic(game: Game): GamePublic {
-  if (game.state === "Question" || game.state === "Answer") {
+  if (game.current === "Question" || game.current === "Answer") {
     const {
       question: { options, questionText },
       questionToken,
@@ -77,18 +80,18 @@ export function getGamePublic(game: Game): GamePublic {
       answeredParticipants: answers.map(a => a.pid)
     };
 
-    if (game.state === "Question")
+    if (game.current === "Question")
       return {
         ...gamePublic,
         ...questionProps,
-        state: "Question"
+        current: "Question"
       };
 
-    if (game.state === "Answer")
+    if (game.current === "Answer")
       return {
         ...gamePublic,
         ...questionProps,
-        state: "Answer",
+        current: "Answer",
         answers
       };
   }

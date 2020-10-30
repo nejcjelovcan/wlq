@@ -1,36 +1,34 @@
 import { Stack } from "@chakra-ui/core";
-import React, { useEffect } from "react";
+import React from "react";
 import Layout from "../components/Layout";
 import PageHead from "../components/PageHead";
-import { useOvermind } from "../overmind";
+import { RoomSessionMachine } from "../overmind/roomSession/roomSession.statemachine";
 
-const RoomPage = () => {
-  const {
-    state: {
-      roomSession: { current },
-      router: { currentPage }
-    },
-    actions: {
-      roomSession: { requestRoom }
-    }
-  } = useOvermind();
+const RoomPage = ({
+  roomSession: { room }
+}: {
+  roomSession: RoomSessionMachine;
+}) => {
+  // const {
+  //   state: {},
+  //   actions: {
+  //     roomSession: { requestRoom }
+  //   }
+  // } = useOvermind();
 
-  useEffect(() => {
-    if (currentPage.name === "Room") {
-      requestRoom(currentPage);
-    }
-  }, [currentPage, requestRoom]);
+  // useEffect(() => {
+  //   if (currentPage.name === "Room") {
+  //     requestRoom(currentPage);
+  //   }
+  // }, [currentPage, requestRoom]);
 
-  if (currentPage.name !== "Room") return null;
+  // if (currentPage.name !== "Room") return null;
 
   return (
     <Layout>
       <Stack spacing={4}>
-        <PageHead
-          title="Geography"
-          loading={current === "Init" || current === "Requesting"}
-        />
-        <div>{currentPage.roomId}</div>
+        <PageHead title="Geography" loading={room.current === "Empty"} />
+        <div>{room.current !== "Empty" && room.roomId}</div>
       </Stack>
     </Layout>
   );

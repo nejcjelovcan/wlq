@@ -1,66 +1,47 @@
-import {
-  ParticipantPublic,
-  RoomKey,
-  RoomPublic
-} from "@wlq/wlq-core/lib/model";
-import { json, statemachine, Statemachine } from "overmind";
+import { statemachine, Statemachine } from "overmind";
 import { SetParticipantsMessage } from "@wlq/wlq-core/lib/api/room/JoinRoomMessages";
+import { ErrorMessage } from "@wlq/wlq-core";
+import { ParticipantPublic } from "@wlq/wlq-core/lib/model";
+import { RequestMachine } from "../request.statemachine";
+import { RoomMachine } from "./room/room.statemachine";
 
 export type RoomSessionStates =
   | { current: "Init" }
-  | { current: "Requesting"; roomId: string }
-  | { current: "Loaded"; room: RoomPublic }
-  | { current: "Joining"; room: RoomPublic }
-  | { current: "Joined"; room: RoomPublic; participants: ParticipantPublic[] }
+  | { current: "Joining" }
+  | { current: "Joined"; pid: string }
   | { current: "Error"; error: string };
 
 export type RoomSessionEvents =
-  | { type: "RoomRequest"; data: RoomKey }
-  | { type: "RoomReceive"; data: RoomPublic }
-  | { type: "RoomJoin" }
-  | { type: "RoomJoined"; data: SetParticipantsMessage }
-  | { type: "RoomError"; data: { error: string } };
+  // | { type: "Load" }
+  | {
+      type: "Join";
+    }
+  | { type: "Joined"; data: SetParticipantsMessage }
+  | { type: "Error"; data: ErrorMessage };
+
+export type RoomSessionBaseState = {
+  request: RequestMachine;
+  participants: ParticipantPublic[];
+  room: RoomMachine;
+};
 
 export type RoomSessionMachine = Statemachine<
   RoomSessionStates,
-  RoomSessionEvents
+  RoomSessionEvents,
+  RoomSessionBaseState
 >;
+
 export const roomSessionMachine = statemachine<
   RoomSessionStates,
-  RoomSessionEvents
+  RoomSessionEvents,
+  RoomSessionBaseState
 >({
-  RoomRequest: (_, { roomId }) => {
-    return {
-      current: "Requesting",
-      roomId
-    };
-  },
-  RoomReceive: (_, room) => {
-    return {
-      current: "Loaded",
-      room
-    };
-  },
-  RoomJoin: state => {
-    if (state.current === "Loaded") {
-      return {
-        current: "Joining",
-        room: json(state.room)
-      };
-    }
-    return;
-  },
-  RoomJoined: (state, message) => {
-    if (state.current === "Joining") {
-      return {
-        current: "Joined",
-        room: json(state.room),
-        participants: message.data.participants
-      };
-    }
-    return;
-  },
-  RoomError: (_, { error }) => {
-    return { current: "Error", error };
-  }
+  // Load: () => ({ current: "Loaded" }),
+  Join: () => ({ current: "Joining" }),
+  Joined: (_, { data: { participants, pid } }) => ({
+    current: "Joined",
+    participants,
+    pid
+  }),
+  Error: (_, { data: { error } }) => ({ current: "Error", error })
 });

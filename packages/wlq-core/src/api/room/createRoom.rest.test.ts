@@ -36,7 +36,7 @@ describe("createRoom.rest", () => {
 
     const payload = calls[0][0].payload;
     expect(payload).toMatchObject({
-      room: { type: "Room", listed: true, state: "Idle", participantCount: 0 }
+      room: { type: "Room", listed: true, current: "Idle", participantCount: 0 }
     });
   });
 

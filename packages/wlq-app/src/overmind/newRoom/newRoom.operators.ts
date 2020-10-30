@@ -1,43 +1,42 @@
-import { decodeThrow } from "@wlq/wlq-core";
-import { NewRoomCodec } from "@wlq/wlq-core/lib/model";
-import { catchError, filter, json, mutate, Operator } from "overmind";
+import { NewRoom } from "@wlq/wlq-core/lib/model";
+import { map, mutate, Operator, pipe } from "overmind";
+import { getNewRoom } from "./newRoom.statemachine";
 
-export const validateNewRoomData: <T>() => Operator<T> = () =>
-  mutate(function validateNewRoomData({ state: { newRoom } }) {
-    decodeThrow(NewRoomCodec, json(newRoom.newRoomData));
+export const sendNewRoomUpdate: () => Operator<Partial<NewRoom>> = () =>
+  pipe(
+    mutate(({ state }, newRoom) => {
+      if (state.current !== "New") throw new Error("Unexpected state");
+      state.newRoom.send("NewRoomUpdate", { newRoom });
+    }),
+    map(({ state }) => {
+      if (state.current !== "New") throw new Error("Unexpected state");
+      return getNewRoom(state.newRoom);
+    })
+  );
+
+export const sendNewRoomValid: () => Operator<NewRoom> = () =>
+  mutate(({ state }, newRoom) => {
+    if (state.current !== "New") throw new Error("Unexpected state");
+    state.newRoom.send("NewRoomValidate", { newRoom });
   });
 
-export const shouldSubmitNewRoom: <T>() => Operator<T> = () =>
-  filter(function shouldSubmitNewRoom({ state: { newRoom } }) {
-    return newRoom.current !== "Submitting";
-  });
-
-export const submitNewRoom: <T>() => Operator<T> = () =>
-  mutate(async function submitNewRoom({
-    state: { newRoom },
-    effects: { rest }
-  }) {
-    newRoom.send("NewRoomSubmit");
-    const { room } = await rest.createRoom(
-      decodeThrow(NewRoomCodec, json(newRoom.newRoomData))
-    );
-    newRoom.send("NewRoomReceive", { room });
-  });
-
-export const handleNewRoomError: () => Operator = () =>
-  catchError(function handleNewRoomError({ state: { newRoom } }, error) {
-    newRoom.send("NewRoomError", { error: error.message });
-  });
-
-export const passToRoomSession: <T>() => Operator<T> = () =>
-  mutate(function passToRoomSession({
-    state: { newRoom },
-    actions: {
-      roomSession: { setRoom }
+export const sendRequest: <T>() => Operator<T> = () =>
+  mutate(function sendRequest({ state }) {
+    if (state.current === "New") {
+      state.newRoom.request.send("Request");
     }
-  }) {
-    if (newRoom.current === "Created") {
-      setRoom({ ...newRoom.room });
-      // goToRoom({ roomId: newRoom.room.roomId });
+  });
+
+export const sendReceive: <T>() => Operator<T> = () =>
+  mutate(function sendReceive({ state }) {
+    if (state.current === "New") {
+      state.newRoom.request.send("Response");
+    }
+  });
+
+export const sendError: () => Operator<Error> = () =>
+  mutate(function sendError({ state }, error) {
+    if (state.current === "New") {
+      state.newRoom.request.send("Error", { error: error.message });
     }
   });

@@ -1,14 +1,7 @@
 import React from "react";
 import UserBadge from "./UserBadge";
 import { render } from "@testing-library/react";
-import { UserDetails } from "@wlq/wlq-core/lib/model";
-
-const userDetails: UserDetails = {
-  type: "UserDetails",
-  emoji: "🐭",
-  color: "red",
-  alias: "Alias"
-};
+import { userDetails } from "../__test__/fixtures";
 
 describe("UserBadge", () => {
   it("Displays emoji", () => {

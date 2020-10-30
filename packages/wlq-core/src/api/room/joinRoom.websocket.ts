@@ -3,11 +3,11 @@ import {
   IEmitter,
   IStore,
   IWlqRawWebsocketEvent,
-  decodeThrow
+  decodeThrow,
+  getErrorMessage
 } from "../..";
 import { getParticipantPublic, newParticipant } from "../../model";
 import { verifyToken } from "../../model/token";
-import { getErrorMessage } from "../errors";
 import {
   JoinRoomMessageCodec,
   ParticipantJoinedMessage,

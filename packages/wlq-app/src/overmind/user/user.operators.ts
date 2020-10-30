@@ -1,48 +1,41 @@
-import { decodeThrow, sample } from "@wlq/wlq-core";
+import { IoErrors, sample } from "@wlq/wlq-core";
 import {
-  UserDetailsCodec,
+  UserDetails,
   USER_DETAILS_COLORS,
   USER_DETAILS_EMOJIS
 } from "@wlq/wlq-core/lib/model";
-import { action, catchError, filter, json, mutate, Operator } from "overmind";
+import { map, mutate, Operator, pipe } from "overmind";
+import { getUserDetails } from "./user.statemachine";
 
-export const loadUserDetails: <T>() => Operator<T> = () =>
-  mutate(function loadUserDetails({ state, effects: { localStorage } }) {
-    const details = localStorage.getItem("userDetails");
-    if (details) {
-      const parsed = JSON.parse(details);
-      state.user.send("UserUpdate", {
-        details: parsed
-      });
-    }
+export const sendUserUpdate: () => Operator<Partial<UserDetails>> = () =>
+  pipe(
+    mutate(function sendUserUpdate({ state: { user } }, details) {
+      user.send("UserUpdate", { details });
+    }),
+    // this is important! (otherwise we pass only update without previous values)
+    map(function passUserDetails({ state: { user } }) {
+      return getUserDetails(user);
+    })
+  );
+
+export const sendUserValid: () => Operator<UserDetails> = () =>
+  mutate(function sendUserValid({ state: { user } }, details) {
+    user.send("UserValidate", { details });
   });
 
-export const checkUserDetailsValid: <T>() => Operator<T> = () =>
-  filter(({ state: { user } }) => user.current === "Valid");
-
-export const writeUserDetails: <T>() => Operator<T> = () =>
-  action(function writeUserDetails({
-    state: { user },
-    effects: { localStorage }
-  }) {
-    if (user.current === "Valid") {
-      localStorage.setItem("userDetails", JSON.stringify(user.details));
-    }
+export const sendUserErrors: () => Operator<IoErrors> = () =>
+  mutate(function sendUserErrors({ state: { user } }, errors) {
+    user.send("UserErrors", { errors });
   });
 
-export const validateUserDetails: <T>() => Operator<T> = () =>
-  mutate(function validateUserDetails({ state: { user } }) {
-    const details = decodeThrow(UserDetailsCodec, json(user.details));
-    user.send("UserSetValid", { details });
-  });
-
-export const randomizeUserDetailsOnError: () => Operator = () =>
-  catchError(({ state: { user } }) => {
-    user.send("UserUpdate", {
-      details: {
-        type: "UserDetails",
-        color: sample(USER_DETAILS_COLORS),
-        emoji: sample(USER_DETAILS_EMOJIS)
-      }
-    });
+export const generateRandomUserDetails: <T>() => Operator<
+  T,
+  Partial<UserDetails>
+> = () =>
+  map(function generateRandomUserDetails() {
+    return {
+      type: "UserDetails",
+      color: sample(USER_DETAILS_COLORS),
+      emoji: sample(USER_DETAILS_EMOJIS)
+    };
   });

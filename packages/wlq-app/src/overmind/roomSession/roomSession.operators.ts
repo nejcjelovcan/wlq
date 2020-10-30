@@ -1,68 +1,129 @@
 import { IWebsocketMessage } from "@wlq/wlq-core";
-import { RoomKey, RoomPublic } from "@wlq/wlq-core/lib/model";
-import { catchError, filter, map, mutate, Operator } from "overmind";
+import { SetParticipantsMessage } from "@wlq/wlq-core/lib/api/room/JoinRoomMessages";
+import { RoomPublic } from "@wlq/wlq-core/lib/model";
+import * as e from "fp-ts/Either";
+import { filter, map, mutate, Operator, pipe, run } from "overmind";
+import { fold, waitUntilTokenLoaded } from "../operators";
+import { sendLoadRoom } from "./room/room.operators";
 
-export const requestRoom: () => Operator<RoomKey> = () =>
-  mutate(async function requestRoom({ state, effects: { rest } }, roomKey) {
-    state.roomSession.send("RoomRequest", roomKey);
-    const { room } = await rest.getRoom(roomKey);
-    state.roomSession.send("RoomReceive", room);
-  });
+/* === Filters & waits === */
 
-export const setRoom: () => Operator<RoomPublic> = () =>
-  mutate(function setRoom({ state }, room) {
-    state.roomSession.send("RoomReceive", room);
-  });
+export const ifRoomNotLoaded: <T>() => Operator<T> = () =>
+  filter(function ifRoomNotLoaded({ state }) {
+    if (state.current !== "Room") return false;
+    if (state.roomSession.request.current === "Init") return true;
 
-export const shouldRequestRoom: <T>() => Operator<T> = () =>
-  filter(function shouldRequestRoom({ state: { roomSession, router } }) {
-    if (roomSession.current === "Init") return true;
-    if (
-      roomSession.current !== "Requesting" &&
-      roomSession.current !== "Error"
-    ) {
-      if (
-        router.currentPage.name === "Room" &&
-        roomSession.room.roomId !== router.currentPage.roomId
-      ) {
-        return true;
-      }
-    }
     return false;
   });
 
-export const handleRoomError: () => Operator = () =>
-  catchError(function handleRoomError({ state: { roomSession } }, error) {
-    roomSession.send("RoomError", { error: error.message });
+/* === State machine operators === */
+
+export const sendJoin: <T>() => Operator<T> = () =>
+  mutate(function sendJoin({ state }) {
+    if (state.current === "Room") {
+      state.roomSession.send("Join");
+    }
   });
 
-export const getWebsocketMessage: () => Operator<
-  MessageEvent,
-  IWebsocketMessage | undefined
-> = () =>
-  map((_, message) => {
-    const data = JSON.parse(message.data);
-    if (
-      typeof data["action"] === "string" &&
-      typeof data["data"] === "object"
-    ) {
-      return { action: data["action"], data: data["data"] };
+export const sendJoined: () => Operator<SetParticipantsMessage> = () =>
+  mutate(function sendJoined({ state }, message) {
+    if (state.current === "Room") {
+      state.roomSession.send("Joined", message);
     }
-    return;
   });
+
+export const sendRequest: <T>() => Operator<T> = () =>
+  mutate(function sendRequest({ state }) {
+    if (state.current === "Room") {
+      state.roomSession.request.send("Request");
+    }
+  });
+
+export const sendReceive: <T>() => Operator<T> = () =>
+  mutate(function sendReceive({ state }) {
+    if (state.current === "Room") {
+      state.roomSession.request.send("Response");
+    }
+  });
+
+export const sendError: () => Operator<Error> = () =>
+  mutate(function sendError({ state }, error) {
+    if (state.current === "Room") {
+      state.roomSession.request.send("Error", { error: error.message });
+    }
+  });
+
+export const openRoomFromCreate: () => Operator<{ room: RoomPublic }> = () =>
+  pipe(
+    mutate(function setRoomFromCreate({ state }, { room }) {
+      state.send("SetRoomFromCreate", { room });
+    }),
+    run(function openRoom(
+      {
+        actions: {
+          router: { open }
+        }
+      },
+      { room }
+    ) {
+      open({ path: `/room/${room.roomId}` });
+    }),
+    sendJoin(),
+    openWebsocket()
+  );
+
+/* === Request operators === */
+
+export const requestRoom: () => Operator = () =>
+  pipe(
+    waitUntilTokenLoaded(),
+    sendRequest(),
+    map(async function requestRoom({ state, effects: { rest } }) {
+      try {
+        if (state.current === "Room" && state.roomSession.current === "Init") {
+          return e.right(await rest.getRoom(state.params));
+        } else {
+          return e.left(new Error("Unexpected state"));
+        }
+      } catch (error) {
+        return e.left(error);
+      }
+    }),
+    fold({
+      success: pipe(sendReceive(), sendLoadRoom(), sendJoin(), openWebsocket()),
+      error: sendError()
+    })
+  );
+
+/* === Websocket operators === */
 
 export const openWebsocket: <T>() => Operator<T> = () =>
-  mutate(function openWebsocket({
-    state: { roomSession },
+  run(function openWebsocket({
+    state,
     actions: {
-      roomSession: { receiveMessage, joinRoom }
+      roomSession: { roomOnMessage, joinRoom }
     },
     effects: { websocket }
   }) {
-    if (roomSession.current === "Loaded") {
-      roomSession.send("RoomJoin");
-      websocket.initialize(roomSession.room.websocket);
-      websocket.setOnMessage(receiveMessage);
+    if (
+      state.current === "Room" &&
+      state.roomSession.room.current !== "Empty"
+    ) {
+      websocket.initialize(state.roomSession.room.websocket);
+      websocket.setOnMessage(roomOnMessage);
       websocket.setOnOpen(joinRoom);
     }
+  });
+
+export const getMessage: () => Operator<MessageEvent, IWebsocketMessage> = () =>
+  map(function getMessage(_, event) {
+    try {
+      const message = JSON.parse(event.data);
+      if ("action" in message && typeof message.action === "string") {
+        if ("data" in message && typeof message.data === "object") {
+          return { action: message.action, data: message.data };
+        }
+      }
+    } catch (error) {}
+    return { action: "error", data: { error: "Could not parse message" } };
   });

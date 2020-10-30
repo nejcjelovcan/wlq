@@ -5,6 +5,6 @@ describe("newGame", () => {
     expect(newGame({ roomId: "roomId" })).toMatchObject({ roomId: "roomId" });
   });
   it("returns new game with Idle state", () => {
-    expect(newGame({ roomId: "roomId" })).toMatchObject({ state: "Idle" });
+    expect(newGame({ roomId: "roomId" })).toMatchObject({ current: "Idle" });
   });
 });

@@ -1,45 +1,31 @@
-import { Operator, mutate, filter, catchError } from "overmind";
+import { mutate, Operator, pipe, run, waitUntil } from "overmind";
 
-export const loadToken: <T>() => Operator<T> = () =>
-  mutate(function loadToken({ state, effects: { localStorage } }) {
-    const token = localStorage.getItem("token");
-    if (token) {
-      state.token.send("TokenLoad", { token });
-    }
+export const waitUntilTokenLoaded: () => Operator = () =>
+  waitUntil(function waitUntilTokenLoaded({ token }) {
+    return token.current === "Loaded";
   });
 
-export const shouldRequestToken: <T>() => Operator<T> = () =>
-  filter(function shouldRequestToken({ state }) {
-    return (
-      state.token.current !== "Loaded" && state.token.current !== "Requesting"
-    );
+export const setToken: () => Operator<string> = () =>
+  pipe(
+    mutate(function sendLoadToken({ state }, token) {
+      state.token.send("LoadToken", { token });
+    }),
+    run(function setRestAuthorization({ effects: { rest } }, token) {
+      rest.setAuthorization(token);
+    })
+  );
+
+export const sendRequest: <T>() => Operator<T> = () =>
+  mutate(function sendRequest({ state }) {
+    state.token.request.send("Request");
   });
 
-export const requestToken: <T>() => Operator<T> = () =>
-  mutate(async function requestToken({ state, effects: { rest } }) {
-    state.token.send("TokenRequest");
-    const { token } = await rest.getToken();
-    state.token.send("TokenReceive", { token });
+export const sendReceive: <T>() => Operator<T> = () =>
+  mutate(function sendReceive({ state }) {
+    state.token.request.send("Response");
   });
 
-export const handleTokenError: () => Operator = () =>
-  catchError(function handleTokenError({ state }, error) {
-    state.token.send("TokenError", { error: error.message });
-  });
-
-export const writeToken: () => Operator = () =>
-  mutate(function writeToken({ state: { token }, effects: { localStorage } }) {
-    if (token.current === "Loaded") {
-      localStorage.setItem("token", token.token);
-    }
-  });
-
-export const setupRestAuthorization: () => Operator = () =>
-  mutate(function setupRestAuthentication({
-    state: { token },
-    effects: { rest }
-  }) {
-    if (token.current === "Loaded") {
-      rest.setAuthorization(token.token);
-    }
+export const sendError: () => Operator<Error> = () =>
+  mutate(function sendError({ state }, error) {
+    state.token.request.send("Error", { error: error.message });
   });

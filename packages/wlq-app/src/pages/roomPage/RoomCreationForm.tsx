@@ -12,23 +12,19 @@ import {
 } from "@chakra-ui/core";
 import { NewRoom } from "@wlq/wlq-core/lib/model";
 import React from "react";
-import { NewRoomStates } from "../../overmind/newRoom/newRoom.statemachine";
+import { RequestMachine } from "../../overmind/request.statemachine";
 
 export type RoomCreationFormProps = {
-  current: NewRoomStates["current"];
-  valid?: boolean;
-  newRoomData: Partial<NewRoom>;
-  error?: string;
-  updateNewRoomData: (data: Partial<NewRoom>) => void;
+  newRoom: Partial<NewRoom>;
+  request: RequestMachine;
+  updateNewRoom: (data: Partial<NewRoom>) => void;
   submitNewRoom: () => void;
 };
 
 const RoomCreationForm = ({
-  current,
-  newRoomData,
-  valid,
-  error,
-  updateNewRoomData,
+  newRoom,
+  request,
+  updateNewRoom,
   submitNewRoom
 }: RoomCreationFormProps) => {
   return (
@@ -41,18 +37,18 @@ const RoomCreationForm = ({
     >
       <Stack spacing={4}>
         <Skeleton isLoaded>
-          <FormControl isReadOnly={current === "Submitting"}>
+          <FormControl isReadOnly={request.current === "Requested"}>
             <Flex justifyContent="space-between" alignItems="center">
               <FormLabel htmlFor="listed">Listed</FormLabel>
               <Switch
                 size="lg"
                 id="listed"
-                isChecked={newRoomData.listed}
-                onChange={event => {
-                  updateNewRoomData({
+                isChecked={newRoom.listed}
+                onChange={event =>
+                  updateNewRoom({
                     listed: event.target.checked
-                  });
-                }}
+                  })
+                }
               />
             </Flex>
 
@@ -63,14 +59,16 @@ const RoomCreationForm = ({
           </FormControl>
         </Skeleton>
         <Skeleton isLoaded>
-          <FormControl isInvalid={!!error}>
-            <FormErrorMessage>{error}</FormErrorMessage>
+          <FormControl isInvalid={request.current === "Error"}>
+            <FormErrorMessage>
+              {request.current === "Error" ? request.error : ""}
+            </FormErrorMessage>
             <Flex justifyContent="flex-end" pt={4}>
               <Button
-                disabled={current === "Editing" && !valid}
+                disabled={request.current === "Requested"}
                 type="submit"
                 size="lg"
-                isLoading={current === "Submitting"}
+                isLoading={request.current === "Requested"}
                 spinner={<Spinner />}
               >
                 Continue

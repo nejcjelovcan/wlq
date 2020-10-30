@@ -19,8 +19,7 @@ describe("getRoom", () => {
     await expect(session.axios.post("getRoom", {})).rejects.toMatchObject({
       response: {
         data: {
-          error:
-            "Invalid value undefined supplied to : { roomId: string }/roomId: string"
+          error: "Invalid value for property 'roomId': undefined"
         },
         status: 400
       }
@@ -50,7 +49,7 @@ describe("getRoom", () => {
         type: "Room",
         listed: true,
         participantCount: 0,
-        state: "Idle"
+        current: "Idle"
       }
     });
   });
