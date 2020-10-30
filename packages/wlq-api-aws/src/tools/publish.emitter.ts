@@ -6,7 +6,6 @@ export type PublishEmitter = Pick<IEmitter, "publishToRoom">;
 
 export function newPublishEmitter(sns: SNS, context: Context): PublishEmitter {
   const topic = getBroadcastTopic(context);
-  console.log("TOPIC", topic);
 
   return {
     async publishToRoom(roomId, message) {

@@ -48,7 +48,10 @@ export type WebsocketClient = {
 };
 
 // eslint-disable-next-line require-await
-export async function websocketClient(count = 1): Promise<WebsocketClient> {
+export async function websocketClient(
+  count = 1,
+  options: { log?: boolean } = {}
+): Promise<WebsocketClient> {
   return new Promise((resolve, reject) => {
     const client = new WebSocket(output.ServiceEndpointWebsocket);
     let resolved = false;
@@ -64,6 +67,7 @@ export async function websocketClient(count = 1): Promise<WebsocketClient> {
         ) => {
           return new Promise((resolve, reject) => {
             client.onmessage = message => {
+              if (options.log) console.log("onMessage", message.data);
               try {
                 const decoded = decodeWebsocketMessage(
                   JSON.parse(message.data.toString())
@@ -71,7 +75,6 @@ export async function websocketClient(count = 1): Promise<WebsocketClient> {
                 queue.push(decoded);
                 // resolve when queue length reaches count
                 if (!resolved && queue.length >= count) {
-                  client.close();
                   resolved = true;
                   resolve(queue);
                 }

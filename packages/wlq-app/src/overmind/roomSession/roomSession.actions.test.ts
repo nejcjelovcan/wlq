@@ -85,6 +85,41 @@ describe("roomSession.actions", () => {
         );
       });
     });
+
+    describe("participantLeft", () => {
+      it("removes a participant from participants", async () => {
+        const overmind = createOvermindMock(
+          config,
+          withEffectMocks(roomEffects)
+        );
+
+        await overmind.actions.token.assureToken();
+        await overmind.actions.router.setPageRoom({ roomId: room.roomId });
+        await overmind.actions.roomSession.setParticipants({
+          action: "setParticipants",
+          data: {
+            participants: [participantFixture({ pid: "pid" })],
+            pid: "pid"
+          }
+        });
+
+        await overmind.actions.roomSession.roomOnMessage(
+          new MessageEvent("", {
+            data: JSON.stringify({
+              action: "participantLeft",
+              data: { pid: "pid" }
+            })
+          })
+        );
+
+        if (overmind.state.current !== "Room")
+          throw new Error("Expected state.current=Room");
+        if (overmind.state.roomSession.current !== "Joined")
+          throw new Error("Expected state.roomSession.current=Joined");
+
+        expect(overmind.state.roomSession.participants.length).toEqual(0);
+      });
+    });
   });
 
   describe("joinRoom", () => {

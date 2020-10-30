@@ -157,11 +157,12 @@ functions:
           arn:
             Ref: BroadcastTopic
           topicName: ${self:custom.broadcastTopic}
-          filterPolicy:
-            action:
-              - setParticipants
-              - participantJoined
-              - error
+          # filterPolicy:
+          #   action:
+          #     - setParticipants
+          #     - participantJoined
+          #     - participantLeft
+          #     - error
 
   # AUTHORIZE
   authorize:

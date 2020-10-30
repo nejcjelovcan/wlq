@@ -12,7 +12,15 @@ const TableName = process.env.ROOM_TABLE_NAME!;
 
 export function newRoomStore(
   DB: DynamoDB.DocumentClient
-): Pick<IStore, "addRoom" | "getRoom" | "getParticipants" | "addParticipant"> {
+): Pick<
+  IStore,
+  | "addRoom"
+  | "getRoom"
+  | "getParticipants"
+  | "getParticipant"
+  | "addParticipant"
+  | "deleteParticipant"
+> {
   return {
     async addRoom(room) {
       await DB.put({
@@ -53,6 +61,23 @@ export function newRoomStore(
       return [];
     },
 
+    async getParticipant(key) {
+      const result = await DB.query({
+        TableName,
+        IndexName: "InverseIndex",
+        KeyConditionExpression: "SK = :sk",
+        ExpressionAttributeValues: {
+          ":sk": participantSk(key)
+        },
+        ScanIndexForward: true
+      }).promise();
+      if (Array.isArray(result.Items) && result.Items.length === 1) {
+        return decodeThrow(ParticipantCodec, result.Items[0]);
+      }
+
+      throw new NotFoundStoreError("Participant not found");
+    },
+
     async addParticipant(participant) {
       await DB.put({
         TableName,
@@ -63,18 +88,30 @@ export function newRoomStore(
 
       // update room count
       return await updateRoomCount(DB, participant, 1);
+    },
+
+    async deleteParticipant(key) {
+      await DB.delete({
+        TableName,
+        Key: participantComposite(key)
+      }).promise();
+
+      return await updateRoomCount(DB, key, -1);
     }
   };
 }
 
 const roomComposite = ({ roomId }: RoomKey) => ({ PK: roomId, SK: "#" });
 
+const participantSk = ({ connectionId }: ParticipantKey) =>
+  `PARTICIPANT#${connectionId}`;
+
 const participantComposite = ({
   roomId,
   connectionId
 }: RoomKey & ParticipantKey) => ({
   PK: roomId,
-  SK: `PARTICIPANT#${connectionId}`
+  SK: participantSk({ connectionId })
 });
 
 const updateRoomCount = async (

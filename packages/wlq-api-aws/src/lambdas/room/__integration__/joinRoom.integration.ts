@@ -1,16 +1,9 @@
+import { userDetailsFixture } from "@wlq/wlq-core/src/model/fixtures";
 import {
   createSession,
   Session,
   websocketClient
 } from "../../../__integration__/utils";
-import { UserDetails } from "@wlq/wlq-core/lib/model";
-
-const userDetails: UserDetails = {
-  type: "UserDetails",
-  alias: "Alias",
-  emoji: "🐦",
-  color: "blue"
-};
 
 describe("joinRoom", () => {
   let session: Session;
@@ -27,6 +20,7 @@ describe("joinRoom", () => {
   });
 
   it("emits error message if room does not exist", async () => {
+    const userDetails = userDetailsFixture();
     const client = await websocketClient();
     const [message] = await client.send({
       action: "joinRoom",
@@ -44,6 +38,7 @@ describe("joinRoom", () => {
   });
 
   it("emits setParticipants when join succeeds", async () => {
+    const userDetails = userDetailsFixture({ alias: "Alias" });
     const {
       room: { roomId }
     } = (await session.axios.post("createRoom", { listed: true })).data;
@@ -56,8 +51,34 @@ describe("joinRoom", () => {
     client.close();
     expect(message).toMatchObject({
       action: "setParticipants",
-      data: { participants: [{ details: { alias: userDetails.alias } }] }
+      data: { participants: [{ details: { alias: "Alias" } }] }
     });
+  });
+
+  it("updates participantCount when user joins", async () => {
+    const userDetails = userDetailsFixture({ alias: "Alias" });
+    const {
+      room: { roomId }
+    } = (await session.axios.post("createRoom", { listed: true })).data;
+
+    const {
+      room: { participantCount }
+    } = (await session.axios.post("getRoom", { roomId })).data;
+    expect(participantCount).toBe(0);
+
+    const client = await websocketClient();
+    await client.send({
+      action: "joinRoom",
+      data: { token: session.token, details: userDetails, roomId }
+    });
+
+    const {
+      room: { participantCount: count }
+    } = (await session.axios.post("getRoom", { roomId })).data;
+
+    expect(count).toBe(1);
+
+    client.close();
   });
 
   it("emits participantJoined to other clients when join succeeds", async () => {
@@ -73,28 +94,33 @@ describe("joinRoom", () => {
     const client1 = await websocketClient(3);
     const client2 = await websocketClient(2);
 
+    const userDetails1 = userDetailsFixture({ alias: "User1" });
     const promise1 = client1.send({
       action: "joinRoom",
       data: {
         token: session.token,
-        details: { ...userDetails, alias: "User1" },
+        details: userDetails1,
         roomId
       }
     });
 
     await new Promise(resolve => setTimeout(resolve, 1000));
 
+    const userDetails2 = userDetailsFixture({ alias: "User2" });
     const promise2 = client2.send({
       action: "joinRoom",
       data: {
         token: session2.token,
-        details: { ...userDetails, alias: "User2" },
+        details: userDetails2,
         roomId
       }
     });
 
     const messages = await promise1;
     await promise2;
+
+    client1.close();
+    client2.close();
 
     expect(messages[0]).toMatchObject({
       action: "setParticipants",

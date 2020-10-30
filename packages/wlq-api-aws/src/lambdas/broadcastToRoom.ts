@@ -27,7 +27,6 @@ export const handler: SNSHandler = async event => {
     console.log("CONNECTIONS", connectionIds);
 
     if (connectionIds.length > 0) {
-      console.log("Broadcasting message", message);
       const promises = connectionIds.map(async connectionId => {
         try {
           console.log("Broadcasting to", connectionId);

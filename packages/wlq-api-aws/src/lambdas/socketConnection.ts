@@ -1,16 +1,14 @@
 // import leaveRoom from "@wlq/wlq-api/src/room/leaveRoom";
-import {
-  APIGatewayProxyCallback,
-  APIGatewayProxyEvent,
-  Context
-} from "aws-lambda";
-import { AwsOkResult } from "../tools";
+import leaveRoom from "@wlq/wlq-core/lib/api/room/leaveRoom.websocket";
+import { APIGatewayProxyEvent, Context } from "aws-lambda";
+import DynamoDB from "aws-sdk/clients/dynamodb";
+import SNS from "aws-sdk/clients/sns";
+import { AwsOkResult, newPublishEmitter, newRoomStore } from "../tools";
 
-export function handler(
-  event: APIGatewayProxyEvent,
-  _: Context,
-  callback: APIGatewayProxyCallback
-) {
+const DB = new DynamoDB.DocumentClient();
+const Notification = new SNS();
+
+export async function handler(event: APIGatewayProxyEvent, context: Context) {
   const { connectionId, routeKey } = event.requestContext;
 
   switch (routeKey) {
@@ -20,13 +18,17 @@ export function handler(
     case "$disconnect":
       console.log("DISCONNECT");
 
-      // TODO removeParticipant
       if (connectionId) {
+        const emitter = {
+          ...newPublishEmitter(Notification, context)
+        };
+        const store = newRoomStore(DB);
+        await leaveRoom({ connectionId, payload: {} }, store, emitter);
       }
       break;
     case "$default":
     // TODO call emitter.websocket with error (unrecognized action)
   }
 
-  callback(undefined, AwsOkResult);
+  return AwsOkResult;
 }
