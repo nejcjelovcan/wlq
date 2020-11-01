@@ -14,11 +14,13 @@ jobs:
           node-version: "12.x"
 
       - uses: actions/cache@v2
+        id: yarn-cache
         with:
           path: "**/node_modules"
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
 
       - name: Yarn install
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install
 
       - name: Build wlq-core
@@ -42,12 +44,18 @@ jobs:
           envkey_HTTP_ORIGIN: "*"
           file_name: packages/wlq-api-aws/.env.test.local
 
+      - name: Generate stage name
+        id: generate-stage-name
+        run: |
+          echo -n "::set-output name=STAGE::"
+          echo "$GITHUB_REF" | iconv -t ascii//TRANSLIT | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z
+
       - name: Deploy wlq-api-aws
-        run: yarn workspace @wlq/wlq-api-aws deploy:test
+        run: yarn workspace @wlq/wlq-api-aws deploy:test --stage ${{steps.generate-stage-name.outputs.STAGE}}
 
       - name: Run integration tests
         run: yarn workspace @wlq/wlq-api-aws test:integration
 
       - name: Remove wlq-api-aws deployment
         if: ${{ always() }}
-        run: yarn workspace @wlq/wlq-api-aws remove:test
+        run: yarn workspace @wlq/wlq-api-aws deploy-remove:test --stage ${{steps.generate-stage-name.outputs.STAGE}}
