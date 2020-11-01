@@ -24,6 +24,8 @@ export function newRoomStore(
   | "startGame"
   | "setGameQuestionToken"
   | "setGameToAnswerState"
+  | "setGameToFinishedState"
+  | "addAnswer"
 > {
   return {
     async addRoom(room) {
@@ -103,24 +105,28 @@ export function newRoomStore(
       return await updateRoomCount(DB, key, -1);
     },
 
-    async setGameQuestion(roomKey, question) {
+    async setGameQuestion(roomKey, game, question) {
       const result = await DB.update({
         TableName,
         Key: roomComposite(roomKey),
-        UpdateExpression: `SET game.question = :question, game.answers = :answers,
-          game.current = :current, game.questionIndex = questionIndex + :inc,
-          game.questionToken = :questionToken`,
-        ConditionExpression:
-          "current = :expectedCurrent AND game.current IN (:expectedRoomCurrent1, :expectedRoomCurrent2)",
+        UpdateExpression: "SET game = :game",
+        ConditionExpression: `#current = :expectedCurrent
+            AND game.#current IN (:expectedGameCurrent1, :expectedGameCurrent2)`,
         ExpressionAttributeValues: {
-          ":question": question,
-          ":answers": [],
-          ":current": "Question",
-          ":questionToken": "",
-          ":inc": 1,
+          ":game": {
+            ...game,
+            questionIndex: game.questionIndex + 1,
+            current: "Question",
+            question: question,
+            questionToken: "",
+            answers: []
+          },
           ":expectedCurrent": "Game",
-          ":expectedRoomCurrent1": "Idle",
-          ":expectedRoomCurrent2": "Answer"
+          ":expectedGameCurrent1": "Idle",
+          ":expectedGameCurrent2": "Answer"
+        },
+        ExpressionAttributeNames: {
+          "#current": "current"
         },
         ReturnValues: "ALL_NEW"
       }).promise();
@@ -133,13 +139,16 @@ export function newRoomStore(
       const result = await DB.update({
         TableName,
         Key: roomComposite(roomKey),
-        UpdateExpression: "game.questionToken = :questionToken",
+        UpdateExpression: "SET game.questionToken = :questionToken",
         ConditionExpression:
-          "current = :expectedCurrent AND game.current == :expectedRoomCurrent",
+          "#current = :expectedCurrent AND game.#current = :expectedGameCurrent",
         ExpressionAttributeValues: {
           ":questionToken": questionToken,
           ":expectedCurrent": "Game",
-          ":expectedRoomCurrent": "Question"
+          ":expectedGameCurrent": "Question"
+        },
+        ExpressionAttributeNames: {
+          "#current": "current"
         },
         ReturnValues: "ALL_NEW"
       }).promise();
@@ -152,13 +161,38 @@ export function newRoomStore(
       const result = await DB.update({
         TableName,
         Key: roomComposite(roomKey),
-        UpdateExpression: "game.current = :roomCurrent",
+        UpdateExpression: "SET game.#current = :gameCurrent",
         ConditionExpression:
-          "current = :expectedCurrent AND game.current == :expectedRoomCurrent",
+          "#current = :expectedCurrent AND game.#current = :expectedGameCurrent",
         ExpressionAttributeValues: {
-          ":roomCurrent": "Answer",
+          ":gameCurrent": "Answer",
           ":expectedCurrent": "Game",
-          ":expectedRoomCurrent": "Question"
+          ":expectedGameCurrent": "Question"
+        },
+        ExpressionAttributeNames: {
+          "#current": "current"
+        },
+        ReturnValues: "ALL_NEW"
+      }).promise();
+
+      // TODO throw State error if condition fails
+      return decodeThrow(RoomCodec, result.Attributes);
+    },
+
+    async setGameToFinishedState(roomKey) {
+      const result = await DB.update({
+        TableName,
+        Key: roomComposite(roomKey),
+        UpdateExpression: "SET game = :game",
+        ConditionExpression:
+          "#current = :expectedCurrent AND game.#current = :expectedGameCurrent",
+        ExpressionAttributeValues: {
+          ":game": { current: "Finished" },
+          ":expectedCurrent": "Game",
+          ":expectedGameCurrent": "Answer"
+        },
+        ExpressionAttributeNames: {
+          "#current": "current"
         },
         ReturnValues: "ALL_NEW"
       }).promise();
@@ -171,17 +205,43 @@ export function newRoomStore(
       const result = await DB.update({
         TableName,
         Key: roomComposite(roomKey),
-
-        UpdateExpression: `SET current = :current, game.current = :gameCurrent,
-          game.questionCount = :questionCount, game.questionIndex = :questionIndex`,
-        ExpressionAttributeNames: { "#state": "state" },
-        ConditionExpression: "current = :expectedCurrent",
+        UpdateExpression: "SET #current = :current, game = :game",
+        ConditionExpression: "#current = :expectedCurrent",
         ExpressionAttributeValues: {
           ":current": "Game",
-          ":gameCurrent": "Idle",
-          ":questionCount": questionCount,
-          ":questionIndex": 0,
+          ":game": {
+            type: "Game",
+            current: "Idle",
+            questionCount,
+            questionIndex: 0
+          },
           ":expectedCurrent": "Idle"
+        },
+        ExpressionAttributeNames: {
+          "#current": "current"
+        },
+        ReturnValues: "ALL_NEW"
+      }).promise();
+
+      // TODO throw State error if condition fails
+      return decodeThrow(RoomCodec, result.Attributes);
+    },
+
+    async addAnswer({ roomId, pid }, answer) {
+      const result = await DB.update({
+        TableName,
+        Key: roomComposite({ roomId }),
+        UpdateExpression:
+          "SET game.answers = list_append(game.answers, :answers)",
+        ConditionExpression:
+          "#current = :expectedCurrent AND game.#current = :expectedGameCurrent",
+        ExpressionAttributeValues: {
+          ":answers": [{ pid, answer }],
+          ":expectedCurrent": "Game",
+          ":expectedGameCurrent": "Question"
+        },
+        ExpressionAttributeNames: {
+          "#current": "current"
         },
         ReturnValues: "ALL_NEW"
       }).promise();

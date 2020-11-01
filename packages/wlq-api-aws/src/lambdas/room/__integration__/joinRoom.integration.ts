@@ -13,16 +13,19 @@ describe("joinRoom", () => {
 
   it("emits error message on invalid payload", async () => {
     const client = await websocketClient();
-    const [message] = await client.send({ action: "joinRoom", data: {} });
+    client.send({ action: "joinRoom", data: {} });
+    const [message] = await client.receive("error");
     client.close();
+
     expect(message).toMatchObject({ action: "error" });
     expect(message.data.error).toMatch("Could not join room: Invalid value");
+    expect(client.queue).toStrictEqual([]);
   });
 
   it("emits error message if room does not exist", async () => {
     const userDetails = userDetailsFixture();
     const client = await websocketClient();
-    const [message] = await client.send({
+    client.send({
       action: "joinRoom",
       data: {
         token: session.token,
@@ -30,11 +33,13 @@ describe("joinRoom", () => {
         roomId: "nonexistent"
       }
     });
+    const [message] = await client.receive("error");
     client.close();
     expect(message).toEqual({
       action: "error",
       data: { error: "Could not join room: Room not found" }
     });
+    expect(client.queue).toStrictEqual([]);
   });
 
   it("emits setParticipants when join succeeds", async () => {
@@ -44,15 +49,20 @@ describe("joinRoom", () => {
     } = (await session.axios.post("createRoom", { listed: true })).data;
 
     const client = await websocketClient();
-    const [message] = await client.send({
+    client.send({
       action: "joinRoom",
       data: { token: session.token, details: userDetails, roomId }
     });
+    const [message] = await client.receive(
+      "setParticipants",
+      "participantJoined"
+    );
     client.close();
     expect(message).toMatchObject({
       action: "setParticipants",
       data: { participants: [{ details: { alias: "Alias" } }] }
     });
+    expect(client.queue).toStrictEqual([]);
   });
 
   it("updates participantCount when user joins", async () => {
@@ -67,18 +77,17 @@ describe("joinRoom", () => {
     expect(participantCount).toBe(0);
 
     const client = await websocketClient();
-    await client.send({
+    client.send({
       action: "joinRoom",
       data: { token: session.token, details: userDetails, roomId }
     });
+    client.close();
 
     const {
       room: { participantCount: count }
     } = (await session.axios.post("getRoom", { roomId })).data;
 
     expect(count).toBe(1);
-
-    client.close();
   });
 
   it("emits participantJoined to other clients when join succeeds", async () => {
@@ -91,11 +100,11 @@ describe("joinRoom", () => {
 
     const session2 = await createSession();
 
-    const client1 = await websocketClient(3);
-    const client2 = await websocketClient(2);
+    const client1 = await websocketClient();
+    const client2 = await websocketClient();
 
     const userDetails1 = userDetailsFixture({ alias: "User1" });
-    const promise1 = client1.send({
+    client1.send({
       action: "joinRoom",
       data: {
         token: session.token,
@@ -104,10 +113,11 @@ describe("joinRoom", () => {
       }
     });
 
+    // need to wait so that user2 participantJoin comes second
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     const userDetails2 = userDetailsFixture({ alias: "User2" });
-    const promise2 = client2.send({
+    client2.send({
       action: "joinRoom",
       data: {
         token: session2.token,
@@ -116,8 +126,11 @@ describe("joinRoom", () => {
       }
     });
 
-    const messages = await promise1;
-    await promise2;
+    const messages = await client1.receive(
+      "setParticipants",
+      "participantJoined",
+      "participantJoined"
+    );
 
     client1.close();
     client2.close();
@@ -134,5 +147,6 @@ describe("joinRoom", () => {
       action: "participantJoined",
       data: { participant: { details: { alias: "User2" } } }
     });
+    expect(client1.queue).toStrictEqual([]);
   });
 });

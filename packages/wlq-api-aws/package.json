@@ -11,7 +11,7 @@
     "verify": "yarn verify:lint && yarn verify:tsc",
     "test": "jest",
     "test:watch": "yarn test --watch-all",
-    "test:integration": "yarn test --config=jest.config.integration.js",
+    "test:integration": "yarn test --config=jest.config.integration.js --runInBand",
     "deploy": "serverless deploy --verbose",
     "deploy:test": "serverless deploy --stage test --verbose",
     "deploy:production": "serverless deploy --stage production --verbose",

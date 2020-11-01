@@ -18,11 +18,11 @@ describe("socketConnection", () => {
 
     const session2 = await createSession();
 
-    const client1 = await websocketClient(4);
-    const client2 = await websocketClient(2);
+    const client1 = await websocketClient();
+    const client2 = await websocketClient();
 
     const userDetails1 = userDetailsFixture({ alias: "User1" });
-    const promise1 = client1.send({
+    client1.send({
       action: "joinRoom",
       data: {
         token: session.token,
@@ -32,7 +32,7 @@ describe("socketConnection", () => {
     });
 
     const userDetails2 = userDetailsFixture({ alias: "User2" });
-    const promise2 = client2.send({
+    client2.send({
       action: "joinRoom",
       data: {
         token: session2.token,
@@ -41,20 +41,31 @@ describe("socketConnection", () => {
       }
     });
 
-    const {
-      data: { pid }
-    } = (await promise2)[0];
-
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const [
+      {
+        data: { pid }
+      }
+    ] = await client2.receive(
+      "setParticipants",
+      "participantJoined",
+      "participantJoined"
+    );
 
     client2.close();
-    const messages = await promise1;
-
+    const [message] = await client1.receive(
+      "participantLeft",
+      "setParticipants",
+      "participantJoined",
+      "participantJoined"
+    );
     client1.close();
 
-    expect(messages[3]).toMatchObject({
+    expect(message).toMatchObject({
       action: "participantLeft",
       data: { pid }
     });
+
+    expect(client1.queue).toStrictEqual([]);
+    expect(client2.queue).toStrictEqual([]);
   });
 });
