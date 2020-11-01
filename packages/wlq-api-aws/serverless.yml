@@ -95,7 +95,7 @@ custom:
     staging: true
     test: false
   customDomain:
-    enabled: ${self:custom.setupDomain.${self:provider.stage}}
+    enabled: ${self:custom.setupDomain.${self:provider.stage}, self:custom.setupDomain.test}
     domainName: ${self:custom.siteName}
     basePath: ""
     stage: ${self:provider.stage}

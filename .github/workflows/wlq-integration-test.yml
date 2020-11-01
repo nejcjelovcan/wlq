@@ -43,11 +43,11 @@ jobs:
           file_name: packages/wlq-api-aws/.env.test.local
 
       - name: Deploy wlq-api-aws
-        run: yarn workspace @wlq/wlq-api-aws deploy:test
+        run: yarn workspace @wlq/wlq-api-aws deploy:test --stage $GITHUB_REF_NAME_SLUG
 
       - name: Run integration tests
         run: yarn workspace @wlq/wlq-api-aws test:integration
 
       - name: Remove wlq-api-aws deployment
         if: ${{ always() }}
-        run: yarn workspace @wlq/wlq-api-aws remove:test
+        run: yarn workspace @wlq/wlq-api-aws deploy-remove:test --stage $GITHUB_REF_NAME_SLUG
