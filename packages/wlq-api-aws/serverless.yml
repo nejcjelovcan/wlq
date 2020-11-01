@@ -58,8 +58,6 @@ provider:
         - "states:SendTaskSuccess"
       Resource:
         - "*"
-        # - ${self:resources.Outputs.GameAnswerWait.Value}
-        # - ${self:resources.Outputs.GameQuestionTimeout.Value}
 
 plugins:
   - serverless-plugin-typescript
@@ -80,6 +78,8 @@ custom:
   acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
   roomTableName: ${self:service}-RoomTable-${self:provider.stage}
   broadcastTopic: "${self:service}-broadcast-${self:provider.stage}"
+  gameQuestionTimeoutStepFunctionName: ${self:service}-gameQuestionTimeout-${self:provider.stage}
+  gameAnswerWaitStepFunctionName: ${self:service}-gameAnswerWait-${self:provider.stage}
   nextQuestionFunctionName: ${self:service}-${self:provider.stage}-nextQuestion
   nextQuestionArn:
     Fn::Join:
@@ -220,7 +220,8 @@ functions:
 stepFunctions:
   stateMachines:
     GameQuestionTimeout:
-      name: GameQuestionTimeout
+      name: ${self:custom.gameQuestionTimeoutStepFunctionName}
+      id: GameQuestionTimeout
       definition:
         Comment: Issues a questionToken for a given room to be sent after all users answer, otherwise times out after certain time
         StartAt: IssueQuestionToken
@@ -256,7 +257,8 @@ stepFunctions:
             Type: Succeed
 
     GameAnswerWait:
-      name: GameAnswerWait
+      name: ${self:custom.gameAnswerWaitStepFunctionName}
+      id: GameAnswerWait
       definition:
         Comment: Waits a bit and then poses next question (or finishes game)
         StartAt: "Wait"
