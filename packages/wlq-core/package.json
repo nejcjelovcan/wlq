@@ -21,7 +21,7 @@
     "fp-ts": "^2.8.5",
     "io-ts": "^2.2.12",
     "jose": "^2.0.3",
-    "nanoid": "^3.1.15"
+    "nanoid": "^3.1.16"
   },
   "devDependencies": {
     "@types/deep-extend": "^0.4.31",
