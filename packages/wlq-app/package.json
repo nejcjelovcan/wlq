@@ -58,6 +58,6 @@
     "@types/page": "^1.8.0",
     "@types/react-test-renderer": "^16.9.3",
     "deep-extend": "^0.6.0",
-    "react-test-renderer": "16.x"
+    "react-test-renderer": "17.x"
   }
 }
