@@ -1,0 +1,5 @@
+ignore:
+  - "__integration__"
+  - "__test__"
+  - "__fixtures__"
+  - "packages/wlq-api-aws"
