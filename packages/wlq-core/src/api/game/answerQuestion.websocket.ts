@@ -15,8 +15,6 @@ export default async function answerQuestion(
     "websocket" | "publishToRoom" | "stateMachineTaskSuccess"
   >
 ) {
-  const participantKey = event;
-
   try {
     // validate incoming event
     const {
@@ -24,7 +22,7 @@ export default async function answerQuestion(
     } = decodeThrow(AnswerQuestionEventCodec, event.payload);
 
     // get participant & room
-    const participant = await store.getParticipant(participantKey);
+    const participant = await store.getParticipant(event);
     const room = await store.getRoom({ roomId: participant.roomId });
 
     // check if answerable
