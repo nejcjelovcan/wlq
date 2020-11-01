@@ -48,5 +48,6 @@ jobs:
       - name: Run integration tests
         run: yarn workspace @wlq/wlq-api-aws test:integration
 
-      - name: Remove wlq-api-aws
+      - name: Remove wlq-api-aws deployment
+        if: ${{ always() }}
         run: yarn workspace @wlq/wlq-api-aws remove:test

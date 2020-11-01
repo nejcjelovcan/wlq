@@ -1,4 +1,5 @@
-import { NewGame } from "./game/newGame";
+import { Game } from "./game/Game";
+import { PosedQuestion } from "./game/PosedQuestion";
 import { Participant, ParticipantKey } from "./room/participant/Participant";
 import { Room, RoomKey } from "./room/Room";
 
@@ -58,19 +59,47 @@ export default interface IStore {
    * Should also update Room's participantCount
    * Should raise NotFoundStoreError if not found
    */
-  deleteParticipant: (participantKey: ParticipantKey) => Promise<Room>;
+  deleteParticipant: (key: ParticipantKey & RoomKey) => Promise<Room>;
 
   /**
-   * Get participant and the room it belongs to
+   * Start game
    *
-   * Should raise NotFoundStoreError if either participant or room not found
+   * Should throw StoreStateError if room is not in state Idle
    */
-  getParticipantAndRoom: (
-    participantKey: ParticipantKey
-  ) => Promise<[Participant, Room]>;
+  startGame: (roomKey: RoomKey, questionCount: number) => Promise<Room>;
 
-  startGame?: (roomKey: RoomKey, newGameParams: NewGame) => Promise<Room>;
-  finishGame?: (roomKey: RoomKey) => Promise<Room>;
+  /**
+   * Set game question
+   *
+   * Should throw StoreStateError if room is not in state Game
+   * or game is not in state Idle|Answer
+   */
+  setGameQuestion: (
+    roomKey: RoomKey,
+    game: Game,
+    question: PosedQuestion
+  ) => Promise<Room>;
+
+  /**
+   * Set game question
+   *
+   * Should throw StoreStateError if room is not in state Game
+   * or game is not in state Question
+   */
+  setGameQuestionToken: (
+    roomKey: RoomKey,
+    questionToken: string
+  ) => Promise<Room>;
+
+  /**
+   * Set game to answer state
+   */
+  setGameToAnswerState: (roomKey: RoomKey) => Promise<Room>;
+
+  /**
+   * Set game to finished state
+   */
+  setGameToFinishedState: (roomKey: RoomKey) => Promise<Room>;
 
   /**
    * Add answer
@@ -81,11 +110,7 @@ export default interface IStore {
    * TODO: We could add an expectation that the answer of this pid does not
    * yet exist (and simplify answerQuestion.websocket)
    */
-  addAnswer: (addAnswer: {
-    roomId: string;
-    pid: string;
-    answer: string;
-  }) => Promise<Room>;
+  addAnswer: (participant: Participant, answer: string) => Promise<Room>;
 }
 
 export class StoreError extends Error {}

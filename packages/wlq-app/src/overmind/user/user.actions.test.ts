@@ -1,6 +1,6 @@
+import { userDetailsFixture } from "@wlq/wlq-core/lib/model/fixtures";
 import { createOvermindMock } from "overmind";
 import { config } from "../";
-import { userDetails } from "../../__test__/fixtures";
 import { LocalStorageError } from "../effects/localStorage";
 
 describe("user.actions", () => {
@@ -29,6 +29,7 @@ describe("user.actions", () => {
       const overmind = createOvermindMock(config, {
         localStorage: { setItem }
       });
+      const userDetails = userDetailsFixture();
       await overmind.actions.user.updateDetails(userDetails);
 
       if (overmind.state.user.current !== "Valid")
@@ -45,6 +46,7 @@ describe("user.actions", () => {
 
   describe("loadOrRandomizeDetails", () => {
     it("loads valid details if present in localStorage", async () => {
+      const userDetails = userDetailsFixture();
       const overmind = createOvermindMock(config, {
         localStorage: { getItem: _ => JSON.stringify(userDetails) }
       });

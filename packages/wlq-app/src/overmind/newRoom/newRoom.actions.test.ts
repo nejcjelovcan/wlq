@@ -1,6 +1,6 @@
+import { roomPublicFixture } from "@wlq/wlq-core/lib/model/fixtures";
 import { createOvermindMock } from "overmind";
 import { config } from "../";
-import { room } from "../../__test__/fixtures";
 import { withEffectMocks } from "../../__test__/overmindMocks";
 
 describe("newRoom.actions", () => {
@@ -28,6 +28,7 @@ describe("newRoom.actions", () => {
 
   describe("submitNewRoom", () => {
     it("submits new room and redirects to room", async () => {
+      const room = roomPublicFixture();
       const overmind = createOvermindMock(
         config,
         withEffectMocks({

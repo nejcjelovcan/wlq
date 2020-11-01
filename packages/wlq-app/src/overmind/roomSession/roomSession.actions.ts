@@ -6,6 +6,10 @@ import {
   SetParticipantsMessage,
   SetParticipantsMessageCodec
 } from "@wlq/wlq-core/lib/api/room/JoinRoomMessages";
+import {
+  ParticipantLeftMessage,
+  ParticipantLeftMessageCodec
+} from "@wlq/wlq-core/lib/api/room/leaveRoom.websocket";
 import { mutate, Operator, pipe, run } from "overmind";
 import * as o from "./roomSession.operators";
 
@@ -22,12 +26,22 @@ export const participantJoined: Operator<ParticipantJoinedMessage> = mutate(
   }
 );
 
+export const participantLeft: Operator<ParticipantLeftMessage> = mutate(
+  ({ state }, { data: { pid } }) => {
+    if (state.current === "Room") {
+      state.roomSession.participants = state.roomSession.participants.filter(
+        p => p.pid !== pid
+      );
+    }
+  }
+);
+
 export const roomOnMessage: Operator<MessageEvent, IWebsocketMessage> = pipe(
   o.getMessage(),
   mutate(function roomOnMessage(
     {
       actions: {
-        roomSession: { setParticipants, participantJoined }
+        roomSession: { setParticipants, participantJoined, participantLeft }
       }
     },
     message
@@ -38,6 +52,9 @@ export const roomOnMessage: Operator<MessageEvent, IWebsocketMessage> = pipe(
     } else if (message.action === "participantJoined") {
       const decoded = decodeThrow(ParticipantJoinedMessageCodec, message);
       participantJoined(decoded);
+    } else if (message.action === "participantLeft") {
+      const decoded = decodeThrow(ParticipantLeftMessageCodec, message);
+      participantLeft(decoded);
     } else {
       throw new Error(
         `Unhandled websocket message: ${JSON.stringify(message)}`

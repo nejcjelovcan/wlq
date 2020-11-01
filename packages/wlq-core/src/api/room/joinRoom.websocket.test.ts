@@ -1,4 +1,5 @@
-import { newRoom } from "../../model";
+// import { newRoom } from "../../model";
+import { roomFixture, userDetailsFixture } from "../../model/fixtures";
 import { newMemoryStore } from "../../model/MemoryStore";
 import { newToken } from "../../model/token";
 import joinRoom from "./joinRoom.websocket";
@@ -14,12 +15,7 @@ const joinRoomData = (
 ): JoinRoomMessage["data"] => ({
   roomId: "test",
   token: newToken(),
-  details: {
-    type: "UserDetails",
-    alias: "test",
-    color: "blue",
-    emoji: "🐦"
-  },
+  details: userDetailsFixture(),
   ...override
 });
 
@@ -72,7 +68,7 @@ describe("joinRoom.websocket", () => {
       websocket: jest.fn()
     };
     const store = newMemoryStore();
-    const room = await store.addRoom(newRoom({ listed: true }));
+    const room = await store.addRoom(roomFixture());
 
     await joinRoom(
       joinRoomEvent(joinRoomData({ roomId: room.roomId })),
@@ -96,7 +92,7 @@ describe("joinRoom.websocket", () => {
       websocket: jest.fn()
     };
     const store = newMemoryStore();
-    const room = await store.addRoom(newRoom({ listed: true }));
+    const room = await store.addRoom(roomFixture());
 
     await joinRoom(
       joinRoomEvent(joinRoomData({ roomId: room.roomId })),

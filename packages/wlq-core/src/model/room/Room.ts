@@ -1,5 +1,7 @@
 import * as t from "io-ts";
+import { setEquals } from "../../helpers";
 import { GameCodec, GamePublicCodec, getGamePublic } from "../game/Game";
+import { Participant } from "./participant/Participant";
 
 const RoomKeyProps = {
   roomId: t.string
@@ -43,10 +45,16 @@ export const RoomPublicCodec = t.intersection([
 export type RoomPublic = t.TypeOf<typeof RoomPublicCodec>;
 
 export function getQuestionTokenIfEverybodyAnswered(
-  room: Room
+  room: Room,
+  participants: Participant[]
 ): string | undefined {
   if (room.current === "Game" && room.game.current === "Question") {
-    return room.game.questionToken;
+    const answers = new Set(room.game.answers.map(a => a.pid));
+    const pids = new Set(participants.map(p => p.pid));
+    if (setEquals(answers, pids)) {
+      return room.game.questionToken;
+    }
+    return undefined;
   }
   return undefined;
 }
@@ -61,8 +69,7 @@ export function getRoomPublic(room: Room): RoomPublic {
   } else {
     return {
       ...room,
-      websocket: `${process.env.WEBSOCKET_PROTOCOL}://${process.env
-        .WEBSOCKET_ENDPOINT!}`
+      websocket: `${process.env.WEBSOCKET_PROTOCOL}://${process.env.WEBSOCKET_ENDPOINT}`
     };
   }
 }

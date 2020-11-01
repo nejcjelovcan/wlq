@@ -12,7 +12,7 @@
     "verify": "yarn verify:lint && yarn verify:tsc",
     "test": "dotenv -e .env.test jest",
     "test:coverage": "dotenv -e .env.test yarn jest -- --coverage --silent",
-    "test:watch": "dotenv -e .env.test yarn jest -- --watch-all --silent",
+    "test:watch": "dotenv -e .env.test yarn jest -- --watch-all",
     "build:tsc": "tsc",
     "build:watch": "tsc -w",
     "build": "rm -rf lib/ && yarn build:tsc"
@@ -24,7 +24,9 @@
     "nanoid": "^3.1.15"
   },
   "devDependencies": {
+    "@types/deep-extend": "^0.4.31",
     "@types/jest": "^26.0.15",
+    "deep-extend": "^0.6.0",
     "dotenv-cli": "^4.0.0"
   }
 }

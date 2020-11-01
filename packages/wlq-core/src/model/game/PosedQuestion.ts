@@ -3,14 +3,22 @@ import * as t from "io-ts";
 const PosedQuestionPublicProps = {
   type: t.literal("PosedQuestion"),
   questionText: t.string,
-  options: t.array(t.string)
+  options: t.array(t.string),
+  time: t.number
 };
 
-export const PosedQuestionType = t.type({
+export const PosedQuestionCodec = t.type({
   ...PosedQuestionPublicProps,
   answer: t.string
 });
-export type PosedQuestion = t.TypeOf<typeof PosedQuestionType>;
+export type PosedQuestion = t.TypeOf<typeof PosedQuestionCodec>;
 
-export const PosedQuestionPublicType = t.type(PosedQuestionPublicProps);
-export type PosedQuestionPublic = t.TypeOf<typeof PosedQuestionPublicType>;
+export const PosedQuestionPublicCodec = t.type(PosedQuestionPublicProps);
+export type PosedQuestionPublic = t.TypeOf<typeof PosedQuestionPublicCodec>;
+
+export function getPosedQuestionPublic({
+  answer,
+  ...publicRest
+}: PosedQuestion): PosedQuestionPublic {
+  return publicRest;
+}

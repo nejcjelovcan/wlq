@@ -9,5 +9,5 @@ module.exports = {
   coveragePathIgnorePatterns: ["__fixtures__", "__integration__", "index.ts"],
   coverageDirectory: "./coverage/",
   collectCoverageFrom: ["src/**/*.{ts,tsx}"],
-  testTimeout: 10000
+  testTimeout: 20000
 };

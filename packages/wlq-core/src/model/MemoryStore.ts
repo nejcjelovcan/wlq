@@ -61,17 +61,12 @@ export function newMemoryStore(): IStore {
 
     async deleteParticipant(participant) {
       _getParticipant(participant.connectionId);
-      const room = _getRoom(participant.connectionId);
+      const room = _getRoom(participant.roomId);
       room.participantCount -= 1;
       return room;
     },
 
-    async getParticipantAndRoom({ connectionId }) {
-      const participant = _getParticipant(connectionId);
-      return [participant, _getRoom(participant.roomId)];
-    },
-
-    async addAnswer({ roomId, pid, answer }) {
+    async addAnswer({ roomId, pid }, answer) {
       const room = _getRoom(roomId);
       if (room.current === "Game" && room.game.current === "Question") {
         room.game.answers.push({ pid, answer });
@@ -81,6 +76,98 @@ export function newMemoryStore(): IStore {
           "Room must be in state='Game' and game in state='Answer'"
         );
       }
+    },
+
+    async startGame({ roomId }, questionCount) {
+      const room = _getRoom(roomId);
+      if (room.current !== "Idle")
+        throw new StateStoreError("Room should be in state=Idle");
+
+      rooms[roomId] = {
+        ...room,
+        current: "Game",
+        game: {
+          type: "Game",
+          current: "Idle",
+          questionCount,
+          questionIndex: 0
+        }
+      };
+      return rooms[roomId];
+    },
+
+    async setGameQuestion({ roomId }, game, question) {
+      const room = _getRoom(roomId);
+
+      if (room.current !== "Game")
+        throw new StateStoreError("Room should be in state=Game");
+      if (room.game.current !== "Idle" && room.game.current !== "Answer")
+        throw new StateStoreError("Game should be in state=Idle|Answer");
+
+      rooms[roomId] = {
+        ...room,
+        game: {
+          ...game,
+          current: "Question",
+          questionIndex: game.questionIndex + 1,
+          questionToken: "",
+          question,
+          answers: []
+        }
+      };
+      return rooms[roomId];
+    },
+
+    async setGameQuestionToken({ roomId }, questionToken) {
+      const room = _getRoom(roomId);
+
+      if (room.current !== "Game")
+        throw new StateStoreError("Room should be in state=Game");
+      if (room.game.current !== "Question")
+        throw new StateStoreError("Game should be in state=Question");
+
+      rooms[roomId] = {
+        ...room,
+        game: {
+          ...room.game,
+          questionToken
+        }
+      };
+      return rooms[roomId];
+    },
+
+    async setGameToAnswerState({ roomId }) {
+      const room = _getRoom(roomId);
+
+      if (room.current !== "Game")
+        throw new StateStoreError("Room should be in state=Game");
+      if (room.game.current !== "Question")
+        throw new StateStoreError("Game should be in state=Question");
+
+      rooms[roomId] = {
+        ...room,
+        game: {
+          ...room.game,
+          current: "Answer"
+        }
+      };
+      return rooms[roomId];
+    },
+
+    async setGameToFinishedState({ roomId }) {
+      const room = _getRoom(roomId);
+
+      if (room.current !== "Game")
+        throw new StateStoreError("Room should be in state=Game");
+
+      rooms[roomId] = {
+        ...room,
+        game: {
+          ...room.game,
+          current: "Finished"
+        }
+      };
+      return rooms[roomId];
     }
   };
 }

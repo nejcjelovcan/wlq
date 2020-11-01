@@ -10,7 +10,7 @@ provider:
   apiGateway:
     minimumCompressionSize: 1024
 
-  websocketApiName: websocket-chat-${self:provider.stage}
+  websocketApiName: websocket-${self:provider.stage}
   websocketApiRouteSelectionExpression: $request.body.action
 
   environment:
@@ -21,6 +21,9 @@ provider:
     BROADCAST_TOPIC: ${self:custom.broadcastTopic}
     WEBSOCKET_PROTOCOL: wss
     WEBSOCKET_ENDPOINT: ${self:custom.websocketEndpoint}
+    GAME_QUESTION_COUNT: ${env:GAME_QUESTION_COUNT}
+    GAME_QUESTION_TIME: ${env:GAME_QUESTION_TIME}
+    ANSWER_WAIT_TIME: ${env:ANSWER_WAIT_TIME}
 
   iamRoleStatements:
     - Effect: Allow
@@ -49,6 +52,12 @@ provider:
                 ":${self:custom.broadcastTopic}",
               ],
             ]
+    - Effect: "Allow"
+      Action:
+        - "states:StartExecution"
+        - "states:SendTaskSuccess"
+      Resource:
+        - "*"
 
 plugins:
   - serverless-plugin-typescript
@@ -68,7 +77,18 @@ custom:
   httpOrigin: ${env:HTTP_ORIGIN}
   acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
   roomTableName: ${self:service}-RoomTable-${self:provider.stage}
-  broadcastTopic: "${self:service}-broadcast-${self:provider.stage}"
+  broadcastTopic: "${self:service}-${self:provider.stage}-broadcast"
+  gameQuestionTimeoutStepFunctionName: ${self:service}-${self:provider.stage}-gameQuestionTimeout
+  gameAnswerWaitStepFunctionName: ${self:service}-${self:provider.stage}-gameAnswerWait
+  nextQuestionFunctionName: ${self:service}-${self:provider.stage}-nextQuestion
+  nextQuestionArn:
+    Fn::Join:
+      - ":"
+      - - arn:aws:lambda
+        - Ref: AWS::Region
+        - Ref: AWS::AccountId
+        - function
+        - ${self:custom.nextQuestionFunctionName}
   setupDomain:
     dev: true
     production: true
@@ -148,6 +168,20 @@ functions:
       - websocket:
           route: joinRoom
 
+  startGame:
+    handler: src/lambdas/game/startGame.handler
+    environment:
+      GAME_QUESTION_TIMEOUT_ARN: ${self:resources.Outputs.GameQuestionTimeout.Value}
+    events:
+      - websocket:
+          route: startGame
+
+  answerQuestion:
+    handler: src/lambdas/game/answerQuestion.handler
+    events:
+      - websocket:
+          route: answerQuestion
+
   # SNS Lambdas
   broadcastToRoom:
     maximumRetryAttempts: 0
@@ -157,17 +191,103 @@ functions:
           arn:
             Ref: BroadcastTopic
           topicName: ${self:custom.broadcastTopic}
-          filterPolicy:
-            action:
-              - setParticipants
-              - participantJoined
-              - error
+          # filterPolicy:
+          #   action:
+          #     - setParticipants
+          #     - participantJoined
+          #     - participantLeft
+          #     - error
 
   # AUTHORIZE
   authorize:
     handler: src/lambdas/authorize.handler
 
+  # STEP FUNCTIONS
+  setQuestionToken:
+    handler: src/lambdas/game/setQuestionToken.handler
+
+  revealAnswer:
+    handler: src/lambdas/game/revealAnswer.handler
+    environment:
+      GAME_ANSWER_WAIT_ARN: ${self:resources.Outputs.GameAnswerWait.Value}
+
+  nextQuestion:
+    handler: src/lambdas/game/nextQuestion.handler
+    name: ${self:custom.nextQuestionFunctionName}
+    environment:
+      GAME_QUESTION_TIMEOUT_ARN: ${self:resources.Outputs.GameQuestionTimeout.Value}
+
+stepFunctions:
+  stateMachines:
+    GameQuestionTimeout:
+      name: ${self:custom.gameQuestionTimeoutStepFunctionName}
+      id: GameQuestionTimeout
+      definition:
+        Comment: Issues a questionToken for a given room to be sent after all users answer, otherwise times out after certain time
+        StartAt: IssueQuestionToken
+        States:
+          IssueQuestionToken:
+            Type: Task
+            Resource: "arn:aws:states:::lambda:invoke.waitForTaskToken"
+            Parameters:
+              FunctionName:
+                Fn::GetAtt: [setQuestionToken, Arn]
+              Payload:
+                roomId.$: $.roomId
+                questionToken.$: $$.Task.Token
+            TimeoutSecondsPath: $.time
+            Next: RevealAnswer
+            ResultPath: $.output
+            Catch:
+              - ErrorEquals:
+                  - States.ALL
+                Next: RevealAnswer
+                ResultPath: $.output
+          RevealAnswer:
+            Type: Task
+            Resource: "arn:aws:states:::lambda:invoke"
+            Parameters:
+              FunctionName:
+                Fn::GetAtt: [revealAnswer, Arn]
+              Payload:
+                roomId.$: $.roomId
+                output.$: $.output
+            Next: End
+          End:
+            Type: Succeed
+
+    GameAnswerWait:
+      name: ${self:custom.gameAnswerWaitStepFunctionName}
+      id: GameAnswerWait
+      definition:
+        Comment: Waits a bit and then poses next question (or finishes game)
+        StartAt: "Wait"
+        States:
+          Wait:
+            Type: Wait
+            SecondsPath: $.waitTime
+            Next: RoomNextQuestion
+          RoomNextQuestion:
+            Type: Task
+            Resource: "arn:aws:states:::lambda:invoke"
+            Parameters:
+              FunctionName: ${self:custom.nextQuestionArn}
+              Payload:
+                roomId.$: $.roomId
+            Next: End
+          End:
+            Type: Succeed
+
 resources:
+  Outputs:
+    GameQuestionTimeout:
+      Value:
+        Ref: GameQuestionTimeout
+
+    GameAnswerWait:
+      Value:
+        Ref: GameAnswerWait
+
   Resources:
     GatewayResponseDefault4XX:
       Type: "AWS::ApiGateway::GatewayResponse"
@@ -188,7 +308,7 @@ resources:
     WebsocketsApi:
       Type: AWS::ApiGatewayV2::Api
       Properties:
-        Name: ${self:provider.stage}-wlq-api-aws-websocket
+        Name: ${self:service}-websocket-api-${self:provider.stage}
         ProtocolType: WEBSOCKET
         RouteSelectionExpression: "$request.body.action"
 
