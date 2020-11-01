@@ -10,6 +10,7 @@ import {
 } from "../room/participant/Participant";
 import { Game } from "../game/Game";
 import newGame from "../game/newGame";
+import { PosedQuestion } from "../game/PosedQuestion";
 
 export const userDetailsFixture = (
   override: Partial<UserDetails> = {}
@@ -49,4 +50,31 @@ export const participantPublicFixture = (
 ) => deepExtend(getParticipantPublic(participantFixture()), override);
 
 export const gameFixture = (override: Partial<Game> = {}): Game =>
-  deepExtend(newGame({ roomId: "roomId" }), override);
+  deepExtend(newGame(), override);
+
+export const gameStateQuestionFixture = (override: Partial<Game> = {}): Game =>
+  deepExtend(
+    gameFixture({
+      current: "Question",
+      question: posedQuestionFixture(),
+      answers: [{ pid: "pid1", answer: "Option 1" }],
+      questionToken: "questionToken"
+    }),
+    override
+  );
+
+// private Game with current=Answer has same properties as current=Question
+// (only public one differs since it does not reveal answer in current=Q)
+export const gameStateAnswerFixture = (override: Partial<Game> = {}): Game =>
+  deepExtend(gameStateQuestionFixture({ current: "Answer" }), override);
+
+export const posedQuestionFixture = (
+  override: Partial<PosedQuestion> = {}
+): PosedQuestion => ({
+  type: "PosedQuestion",
+  questionText: "Question text?",
+  options: ["Option 1", "Option 2", "Option 3", "Option 4"],
+  answer: "Option 3",
+  time: 10,
+  ...override
+});

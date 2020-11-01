@@ -11,7 +11,11 @@ export default async function startGame(
   event: IWlqRawWebsocketEvent,
   store: Pick<
     IStore,
-    "getRoom" | "setGameQuestion" | "startGame" | "getParticipant"
+    | "getRoom"
+    | "setGameQuestion"
+    | "setGameToFinishedState"
+    | "startGame"
+    | "getParticipant"
   >,
   emitter: Pick<IEmitter, "stateMachineStart" | "publishToRoom" | "websocket">
 ) {
@@ -22,7 +26,7 @@ export default async function startGame(
       parseInt(process.env.GAME_QUESTION_COUNT!)
     );
 
-    await nextQuestion(participant.roomId, store, emitter);
+    await nextQuestion({ roomId: participant.roomId }, store, emitter);
   } catch (e) {
     console.error("Error in startGame");
     console.log(e);

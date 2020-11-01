@@ -66,12 +66,7 @@ export function newMemoryStore(): IStore {
       return room;
     },
 
-    async getParticipantAndRoom({ connectionId }) {
-      const participant = _getParticipant(connectionId);
-      return [participant, _getRoom(participant.roomId)];
-    },
-
-    async addAnswer({ roomId, pid, answer }) {
+    async addAnswer({ roomId, pid }, answer) {
       const room = _getRoom(roomId);
       if (room.current === "Game" && room.game.current === "Question") {
         room.game.answers.push({ pid, answer });
@@ -93,7 +88,6 @@ export function newMemoryStore(): IStore {
         current: "Game",
         game: {
           type: "Game",
-          roomId,
           current: "Idle",
           questionCount,
           questionIndex: 0
@@ -102,7 +96,7 @@ export function newMemoryStore(): IStore {
       return rooms[roomId];
     },
 
-    async setGameQuestion({ roomId }, question) {
+    async setGameQuestion({ roomId }, game, question) {
       const room = _getRoom(roomId);
 
       if (room.current !== "Game")
@@ -113,13 +107,11 @@ export function newMemoryStore(): IStore {
       rooms[roomId] = {
         ...room,
         game: {
-          type: "Game",
-          roomId,
+          ...game,
           current: "Question",
-          question,
-          questionCount: room.game.questionCount,
-          questionIndex: room.game.questionIndex + 1,
+          questionIndex: game.questionIndex + 1,
           questionToken: "",
+          question,
           answers: []
         }
       };
@@ -157,6 +149,22 @@ export function newMemoryStore(): IStore {
         game: {
           ...room.game,
           current: "Answer"
+        }
+      };
+      return rooms[roomId];
+    },
+
+    async setGameToFinishedState({ roomId }) {
+      const room = _getRoom(roomId);
+
+      if (room.current !== "Game")
+        throw new StateStoreError("Room should be in state=Game");
+
+      rooms[roomId] = {
+        ...room,
+        game: {
+          ...room.game,
+          current: "Finished"
         }
       };
       return rooms[roomId];

@@ -1,9 +1,9 @@
-import poseRankedQuestion from "./poseRankedQuestion";
+import { RankedCollection } from "../RankedCollection";
 import {
   rankedCollectionFixture,
   rankedCollectionItemFixture
 } from "../RankedCollection/__fixtures__/rankedCollection.fixtures";
-import { RankedCollection } from "../RankedCollection";
+import poseRankedQuestion from "./poseRankedQuestion";
 
 const collectionWithFourItems = (props: Partial<RankedCollection> = {}) =>
   rankedCollectionFixture({

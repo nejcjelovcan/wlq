@@ -9,8 +9,7 @@ import { ParticipantAnswerCodec } from "../room/participant/ParticipantAnswer";
 export const GameBaseCodec = t.type({
   type: t.literal("Game"),
   questionCount: t.number,
-  questionIndex: t.number,
-  roomId: t.string
+  questionIndex: t.number
 });
 
 export const GameQuestionCodec = t.type({

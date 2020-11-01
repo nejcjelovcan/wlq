@@ -2,8 +2,6 @@ import { decodeThrow, IEmitter, IStore } from "../..";
 import { ParticipantAnswerCodec, RoomKeyCodec } from "../../model";
 import * as t from "io-ts";
 
-// const ANSWER_WAIT_TIME = 5
-
 export default async function revealAnswer(
   event: { [key: string]: unknown },
   store: Pick<IStore, "setGameToAnswerState">,
@@ -12,8 +10,10 @@ export default async function revealAnswer(
   const { roomId } = decodeThrow(RoomKeyCodec, event);
 
   const room = await store.setGameToAnswerState({ roomId });
-  // emitter.stateMachineStart(process.env.GAME_ANSWER_WAIT!, {roomId, waitTime: ANSWER_WAIT_TIME})
-  // ^ TODO, also test call to stateMachineStart
+  emitter.stateMachineStart(process.env.GAME_ANSWER_WAIT_ARN!, {
+    roomId,
+    waitTime: process.env.ANSWER_WAIT_TIME
+  });
 
   if (room.current === "Game" && room.game.current === "Answer") {
     await emitter.publishToRoom<RevealAnswerMessage>(roomId, {

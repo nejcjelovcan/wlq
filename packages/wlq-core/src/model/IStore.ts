@@ -1,3 +1,4 @@
+import { Game } from "./game/Game";
 import { PosedQuestion } from "./game/PosedQuestion";
 import { Participant, ParticipantKey } from "./room/participant/Participant";
 import { Room, RoomKey } from "./room/Room";
@@ -61,15 +62,6 @@ export default interface IStore {
   deleteParticipant: (key: ParticipantKey & RoomKey) => Promise<Room>;
 
   /**
-   * Get participant and the room it belongs to
-   *
-   * Should raise NotFoundStoreError if either participant or room not found
-   */
-  getParticipantAndRoom: (
-    participantKey: ParticipantKey
-  ) => Promise<[Participant, Room]>;
-
-  /**
    * Start game
    *
    * Should throw StoreStateError if room is not in state Idle
@@ -82,7 +74,11 @@ export default interface IStore {
    * Should throw StoreStateError if room is not in state Game
    * or game is not in state Idle|Answer
    */
-  setGameQuestion: (roomKey: RoomKey, question: PosedQuestion) => Promise<Room>;
+  setGameQuestion: (
+    roomKey: RoomKey,
+    game: Game,
+    question: PosedQuestion
+  ) => Promise<Room>;
 
   /**
    * Set game question
@@ -101,6 +97,11 @@ export default interface IStore {
   setGameToAnswerState: (roomKey: RoomKey) => Promise<Room>;
 
   /**
+   * Set game to finished state
+   */
+  setGameToFinishedState: (roomKey: RoomKey) => Promise<Room>;
+
+  /**
    * Add answer
    *
    * Should raise NotFoundStoreError if room not found
@@ -109,11 +110,7 @@ export default interface IStore {
    * TODO: We could add an expectation that the answer of this pid does not
    * yet exist (and simplify answerQuestion.websocket)
    */
-  addAnswer: (addAnswer: {
-    roomId: string;
-    pid: string;
-    answer: string;
-  }) => Promise<Room>;
+  addAnswer: (participant: Participant, answer: string) => Promise<Room>;
 }
 
 export class StoreError extends Error {}

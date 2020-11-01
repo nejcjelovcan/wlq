@@ -1,4 +1,4 @@
-import sampleMany from "./sampleMany";
+import sampleMany, { InvalidArraySizeError } from "./sampleMany";
 
 describe("sampleMany", () => {
   it("returns the amount of items passed as count argument", () => {
@@ -8,6 +8,6 @@ describe("sampleMany", () => {
   });
   it("throws an error if count exceeds array length", () => {
     const arr = [1, 2, 3, 4, 5];
-    expect(() => sampleMany(arr, 10)).toThrowError("Invalid array size");
+    expect(() => sampleMany(arr, 10)).toThrowError(InvalidArraySizeError);
   });
 });

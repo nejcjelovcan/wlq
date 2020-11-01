@@ -8,3 +8,9 @@ export const PoseQuestionMessageCodec = t.type({
   })
 });
 export type PoseQuestionMessage = t.TypeOf<typeof PoseQuestionMessageCodec>;
+
+export const GameFinishedMessageCodec = t.type({
+  action: t.literal("gameFinished"),
+  data: t.type({})
+});
+export type GameFinishedMessage = t.TypeOf<typeof GameFinishedMessageCodec>;

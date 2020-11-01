@@ -48,6 +48,28 @@ describe("revealAnswer", () => {
       )
     ).rejects.toThrowError(StateStoreError);
   });
+  it("calls stateMachineStart with roomId and waitTime", async () => {
+    const emitter = {
+      publishToRoom: jest.fn(),
+      stateMachineStart: jest.fn()
+    };
+    const store = newMemoryStore();
+    const { roomId } = await store.addRoom(roomFixture({ roomId: "roomId" }));
+    const room = await store.startGame({ roomId }, 10);
+    if (room.current !== "Game") throw new Error("Unexpected state");
+    await store.setGameQuestion(
+      { roomId },
+      room.game,
+      poseQuestion(getAllCollections())
+    );
+
+    await revealAnswer({ roomId }, store, emitter);
+
+    const calls = emitter.stateMachineStart.mock.calls;
+    expect(calls.length).toBe(1);
+    expect(calls[0][1].roomId).toBe("roomId");
+    expect(typeof calls[0][1].waitTime).toBe("string");
+  });
   it("publishes revealAnswer", async () => {
     const emitter = {
       publishToRoom: jest.fn(),
@@ -55,8 +77,13 @@ describe("revealAnswer", () => {
     };
     const store = newMemoryStore();
     const { roomId } = await store.addRoom(roomFixture({ roomId: "roomId" }));
-    await store.startGame({ roomId }, 10);
-    await store.setGameQuestion({ roomId }, poseQuestion(getAllCollections()));
+    const room = await store.startGame({ roomId }, 10);
+    if (room.current !== "Game") throw new Error("Unexpected state");
+    await store.setGameQuestion(
+      { roomId },
+      room.game,
+      poseQuestion(getAllCollections())
+    );
 
     await revealAnswer({ roomId }, store, emitter);
 
