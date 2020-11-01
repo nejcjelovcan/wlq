@@ -14,7 +14,7 @@ import {
   newRoomStore,
   newWebsocketEmitter
 } from "../../tools";
-import { newStateMachineEmitter } from "tools/stateMachine.emitter";
+import { newStateMachineEmitter } from "../../tools/stateMachineEmitter";
 
 const DB = new DynamoDB.DocumentClient();
 const WebsocketGateway = new ApiGatewayManagementApi({

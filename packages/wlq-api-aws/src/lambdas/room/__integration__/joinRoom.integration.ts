@@ -2,20 +2,26 @@ import { userDetailsFixture } from "@wlq/wlq-core/src/model/fixtures";
 import {
   createSession,
   Session,
+  WebsocketClient,
   websocketClient
 } from "../../../__integration__/utils";
 
 describe("joinRoom", () => {
   let session: Session;
+  let client: WebsocketClient | undefined;
+  let client2: WebsocketClient | undefined;
   beforeAll(async () => {
     session = await createSession();
   });
+  afterEach(() => {
+    if (client) client.close();
+    if (client2) client2.close();
+  });
 
   it("emits error message on invalid payload", async () => {
-    const client = await websocketClient();
+    client = await websocketClient();
     client.send({ action: "joinRoom", data: {} });
     const [message] = await client.receive("error");
-    client.close();
 
     expect(message).toMatchObject({ action: "error" });
     expect(message.data.error).toMatch("Could not join room: Invalid value");
@@ -24,7 +30,7 @@ describe("joinRoom", () => {
 
   it("emits error message if room does not exist", async () => {
     const userDetails = userDetailsFixture();
-    const client = await websocketClient();
+    client = await websocketClient();
     client.send({
       action: "joinRoom",
       data: {
@@ -34,7 +40,6 @@ describe("joinRoom", () => {
       }
     });
     const [message] = await client.receive("error");
-    client.close();
     expect(message).toEqual({
       action: "error",
       data: { error: "Could not join room: Room not found" }
@@ -48,7 +53,7 @@ describe("joinRoom", () => {
       room: { roomId }
     } = (await session.axios.post("createRoom", { listed: true })).data;
 
-    const client = await websocketClient();
+    client = await websocketClient();
     client.send({
       action: "joinRoom",
       data: { token: session.token, details: userDetails, roomId }
@@ -57,7 +62,6 @@ describe("joinRoom", () => {
       "setParticipants",
       "participantJoined"
     );
-    client.close();
     expect(message).toMatchObject({
       action: "setParticipants",
       data: { participants: [{ details: { alias: "Alias" } }] }
@@ -76,12 +80,11 @@ describe("joinRoom", () => {
     } = (await session.axios.post("getRoom", { roomId })).data;
     expect(participantCount).toBe(0);
 
-    const client = await websocketClient();
+    client = await websocketClient();
     client.send({
       action: "joinRoom",
       data: { token: session.token, details: userDetails, roomId }
     });
-    client.close();
 
     const {
       room: { participantCount: count }
@@ -100,11 +103,11 @@ describe("joinRoom", () => {
 
     const session2 = await createSession();
 
-    const client1 = await websocketClient();
-    const client2 = await websocketClient();
+    client = await websocketClient();
+    client2 = await websocketClient();
 
     const userDetails1 = userDetailsFixture({ alias: "User1" });
-    client1.send({
+    client.send({
       action: "joinRoom",
       data: {
         token: session.token,
@@ -126,14 +129,11 @@ describe("joinRoom", () => {
       }
     });
 
-    const messages = await client1.receive(
+    const messages = await client.receive(
       "setParticipants",
       "participantJoined",
       "participantJoined"
     );
-
-    client1.close();
-    client2.close();
 
     expect(messages[0]).toMatchObject({
       action: "setParticipants",
@@ -147,6 +147,6 @@ describe("joinRoom", () => {
       action: "participantJoined",
       data: { participant: { details: { alias: "User2" } } }
     });
-    expect(client1.queue).toStrictEqual([]);
+    expect(client.queue).toStrictEqual([]);
   });
 });

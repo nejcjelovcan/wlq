@@ -2,7 +2,7 @@ import nextQuestion from "@wlq/wlq-core/lib/api/game/nextQuestion";
 import { Context } from "aws-lambda";
 import DynamoDB from "aws-sdk/clients/dynamodb";
 import SNS from "aws-sdk/clients/sns";
-import { newStateMachineEmitter } from "tools/stateMachine.emitter";
+import { newStateMachineEmitter } from "../../tools/stateMachineEmitter";
 import { newPublishEmitter, newRoomStore } from "../../tools";
 
 const DB = new DynamoDB.DocumentClient();

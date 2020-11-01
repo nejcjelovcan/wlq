@@ -6,25 +6,31 @@ import {
   createSession,
   Session,
   wait,
+  WebsocketClient,
   websocketClient
 } from "../../../__integration__/utils";
 
 describe("answerQuestion", () => {
   let session: Session;
+  let client: WebsocketClient | undefined;
+  let client2: WebsocketClient | undefined;
   beforeAll(async () => {
     session = await createSession();
   });
-  // TODO I think there are some throttling issues with ApiGateway for websocket
-  afterEach(wait(5000));
+  afterEach(async () => {
+    if (client) client.close();
+    if (client2) client2.close();
+    // TODO I think there are some throttling issues with ApiGateway for websocket
+    await wait(5000)();
+  });
 
   it("emits error message if participant does not exist", async done => {
-    const client = await websocketClient();
+    client = await websocketClient();
     client.send({
       action: "answerQuestion",
       data: { answer: "Test" }
     });
     const [message] = await client.receive("error");
-    client.close();
     expect(message).toEqual({
       action: "error",
       data: { error: "Could not answer question: Participant not found" }
@@ -34,7 +40,7 @@ describe("answerQuestion", () => {
   });
 
   it("emits error message if room not in Game state", async done => {
-    const client = await websocketClient();
+    client = await websocketClient();
     const {
       room: { roomId }
     } = (await session.axios.post("createRoom", { listed: true })).data;
@@ -48,7 +54,6 @@ describe("answerQuestion", () => {
       data: { answer: "Test" }
     });
     const [message] = await client.receive("error");
-    client.close();
     expect(message).toEqual({
       action: "error",
       data: { error: "Could not answer question: Wrong state" }
@@ -58,7 +63,7 @@ describe("answerQuestion", () => {
   });
 
   it("emits error message if answer not among options", async done => {
-    const client = await websocketClient();
+    client = await websocketClient();
     const {
       room: { roomId }
     } = (await session.axios.post("createRoom", { listed: true })).data;
@@ -76,7 +81,7 @@ describe("answerQuestion", () => {
       data: { answer: "Not an option" }
     });
     const [message] = await client.receive("error");
-    client.close();
+
     expect(message).toEqual({
       action: "error",
       data: { error: "Could not answer question: Answer invalid" }
@@ -89,7 +94,7 @@ describe("answerQuestion", () => {
     // we need two participants for this test, lest the answerQuestion triggers
     // revealAnswer and we get Wrong state error message
 
-    const client = await websocketClient();
+    client = await websocketClient();
     const {
       room: { roomId }
     } = (await session.axios.post("createRoom", { listed: true })).data;
@@ -99,7 +104,7 @@ describe("answerQuestion", () => {
     });
     await client.receive("setParticipants", "participantJoined");
 
-    const client2 = await websocketClient();
+    client2 = await websocketClient();
     client2.send({
       action: "joinRoom",
       data: { token: session.token, details: userDetailsFixture(), roomId }
@@ -124,8 +129,6 @@ describe("answerQuestion", () => {
     });
 
     const [message] = await client.receive("error");
-    client.close();
-    client2.close();
     expect(message).toEqual({
       action: "error",
       data: { error: "Could not answer question: Already answered" }
@@ -140,7 +143,7 @@ describe("answerQuestion", () => {
       room: { roomId }
     } = (await session.axios.post("createRoom", { listed: true })).data;
 
-    const client = await websocketClient();
+    client = await websocketClient();
     client.send({
       action: "joinRoom",
       data: { token: session.token, details: userDetails, roomId }
@@ -165,7 +168,7 @@ describe("answerQuestion", () => {
       "participantAnswered",
       "revealAnswer"
     );
-    client.close();
+
     expect(answered).toMatchObject({
       action: "participantAnswered",
       data: { pid }

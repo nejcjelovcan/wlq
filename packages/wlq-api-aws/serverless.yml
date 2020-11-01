@@ -10,7 +10,7 @@ provider:
   apiGateway:
     minimumCompressionSize: 1024
 
-  websocketApiName: websocket-chat-${self:provider.stage}
+  websocketApiName: websocket-${self:provider.stage}
   websocketApiRouteSelectionExpression: $request.body.action
 
   environment:
@@ -77,9 +77,9 @@ custom:
   httpOrigin: ${env:HTTP_ORIGIN}
   acmCertificateArn: ${env:ACM_CERTIFICATE_ARN}
   roomTableName: ${self:service}-RoomTable-${self:provider.stage}
-  broadcastTopic: "${self:service}-broadcast-${self:provider.stage}"
-  gameQuestionTimeoutStepFunctionName: ${self:service}-gameQuestionTimeout-${self:provider.stage}
-  gameAnswerWaitStepFunctionName: ${self:service}-gameAnswerWait-${self:provider.stage}
+  broadcastTopic: "${self:service}-${self:provider.stage}-broadcast"
+  gameQuestionTimeoutStepFunctionName: ${self:service}-${self:provider.stage}-gameQuestionTimeout
+  gameAnswerWaitStepFunctionName: ${self:service}-${self:provider.stage}-gameAnswerWait
   nextQuestionFunctionName: ${self:service}-${self:provider.stage}-nextQuestion
   nextQuestionArn:
     Fn::Join:
@@ -308,7 +308,7 @@ resources:
     WebsocketsApi:
       Type: AWS::ApiGatewayV2::Api
       Properties:
-        Name: ${self:provider.stage}-wlq-api-aws-websocket
+        Name: ${self:service}-websocket-api-${self:provider.stage}
         ProtocolType: WEBSOCKET
         RouteSelectionExpression: "$request.body.action"
 

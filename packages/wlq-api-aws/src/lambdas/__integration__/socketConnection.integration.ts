@@ -2,13 +2,20 @@ import { userDetailsFixture } from "@wlq/wlq-core/src/model/fixtures";
 import {
   createSession,
   Session,
+  WebsocketClient,
   websocketClient
 } from "../../__integration__/utils";
 
 describe("socketConnection", () => {
   let session: Session;
+  let client: WebsocketClient | undefined;
+  let client2: WebsocketClient | undefined;
   beforeAll(async () => {
     session = await createSession();
+  });
+  afterEach(() => {
+    if (client) client.close();
+    if (client2) client2.close();
   });
 
   it("emits participantLeft to other clients when participant closes connection", async () => {
@@ -18,11 +25,11 @@ describe("socketConnection", () => {
 
     const session2 = await createSession();
 
-    const client1 = await websocketClient();
-    const client2 = await websocketClient();
+    client = await websocketClient();
+    client2 = await websocketClient();
 
     const userDetails1 = userDetailsFixture({ alias: "User1" });
-    client1.send({
+    client.send({
       action: "joinRoom",
       data: {
         token: session.token,
@@ -52,20 +59,19 @@ describe("socketConnection", () => {
     );
 
     client2.close();
-    const [message] = await client1.receive(
+    const [message] = await client.receive(
       "participantLeft",
       "setParticipants",
       "participantJoined",
       "participantJoined"
     );
-    client1.close();
 
     expect(message).toMatchObject({
       action: "participantLeft",
       data: { pid }
     });
 
-    expect(client1.queue).toStrictEqual([]);
+    expect(client.queue).toStrictEqual([]);
     expect(client2.queue).toStrictEqual([]);
   });
 });

@@ -7,7 +7,7 @@ import {
 import ApiGatewayManagementApi from "aws-sdk/clients/apigatewaymanagementapi";
 import DynamoDB from "aws-sdk/clients/dynamodb";
 import SNS from "aws-sdk/clients/sns";
-import { newStateMachineEmitter } from "tools/stateMachine.emitter";
+import { newStateMachineEmitter } from "../../tools/stateMachineEmitter";
 import {
   AwsOkResult,
   getWebsocketEventFromAws,

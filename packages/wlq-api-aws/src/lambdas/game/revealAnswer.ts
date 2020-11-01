@@ -2,7 +2,7 @@ import revealAnswer from "@wlq/wlq-core/lib/api/game/revealAnswer";
 import { Context } from "aws-lambda";
 import DynamoDB from "aws-sdk/clients/dynamodb";
 import SNS from "aws-sdk/clients/sns";
-import { newStateMachineEmitter } from "tools/stateMachine.emitter";
+import { newStateMachineEmitter } from "../../tools/stateMachineEmitter";
 import { newPublishEmitter, newRoomStore } from "../../tools";
 
 const DB = new DynamoDB.DocumentClient();
