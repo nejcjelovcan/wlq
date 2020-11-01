@@ -66,6 +66,33 @@ describe("nextQuestion", () => {
     expect(calls2[0][1].roomId).toBe(room.roomId);
   });
 
+  it("calls setGameToFinishedState if questionIndex reached questionCount", async () => {
+    const emitter = {
+      publishToRoom: jest.fn(),
+      stateMachineStart: jest.fn()
+    };
+    const setGameToFinishedState = jest.fn();
+    const store = newMemoryStore();
+    const room = await store.addRoom(
+      roomFixture({
+        current: "Game",
+        game: gameFixture({ questionCount: 10, questionIndex: 9 })
+      })
+    );
+
+    await nextQuestion(
+      { roomId: room.roomId },
+      { ...store, setGameToFinishedState },
+      emitter
+    );
+
+    const calls = setGameToFinishedState.mock.calls;
+
+    expect(calls.length).toBe(1);
+    expect(calls[0][0]).toStrictEqual({ roomId: room.roomId });
+    expect(calls[0][1].type).toBe("Game");
+  });
+
   it("publishes gameFinished message if questionIndex reached questionCount", async () => {
     const emitter = {
       publishToRoom: jest.fn(),

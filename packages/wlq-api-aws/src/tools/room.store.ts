@@ -179,7 +179,7 @@ export function newRoomStore(
       return decodeThrow(RoomCodec, result.Attributes);
     },
 
-    async setGameToFinishedState(roomKey) {
+    async setGameToFinishedState(roomKey, game) {
       const result = await DB.update({
         TableName,
         Key: roomComposite(roomKey),
@@ -187,7 +187,10 @@ export function newRoomStore(
         ConditionExpression:
           "#current = :expectedCurrent AND game.#current = :expectedGameCurrent",
         ExpressionAttributeValues: {
-          ":game": { current: "Finished" },
+          ":game": {
+            ...game,
+            current: "Finished"
+          },
           ":expectedCurrent": "Game",
           ":expectedGameCurrent": "Answer"
         },

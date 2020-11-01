@@ -99,7 +99,7 @@ export default interface IStore {
   /**
    * Set game to finished state
    */
-  setGameToFinishedState: (roomKey: RoomKey) => Promise<Room>;
+  setGameToFinishedState: (roomKey: RoomKey, game: Game) => Promise<Room>;
 
   /**
    * Add answer
