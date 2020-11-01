@@ -20,7 +20,7 @@
   "dependencies": {
     "fp-ts": "^2.8.4",
     "io-ts": "^2.2.12",
-    "jose": "^2.0.2",
+    "jose": "^2.0.3",
     "nanoid": "^3.1.15"
   },
   "devDependencies": {
