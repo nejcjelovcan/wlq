@@ -1,8 +1,8 @@
-// import { decodeThrow } from "@wlq/wlq-core";
 import { PoseQuestionMessageCodec } from "@wlq//wlq-core/lib/api/game/NextQuestionMessages";
-import { decodeThrow } from "@wlq/wlq-core/lib";
+import { decodeThrow } from "@wlq/wlq-core";
 import { userDetailsFixture } from "@wlq/wlq-core/lib/model/fixtures";
 import {
+  cleanupClient,
   createSession,
   Session,
   wait,
@@ -18,10 +18,9 @@ describe("answerQuestion", () => {
     session = await createSession();
   });
   afterEach(async () => {
-    if (client) client.close();
-    if (client2) client2.close();
-    // TODO I think there are some throttling issues with ApiGateway for websocket
-    await wait(5000)();
+    cleanupClient(client);
+    cleanupClient(client2);
+    await wait(2000)();
   });
 
   it("emits error message if participant does not exist", async done => {
@@ -44,11 +43,15 @@ describe("answerQuestion", () => {
     const {
       room: { roomId }
     } = (await session.axios.post("createRoom", { listed: true })).data;
+
     client.send({
       action: "joinRoom",
       data: { token: session.token, details: userDetailsFixture(), roomId }
     });
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
     await client.receive("setParticipants", "participantJoined");
+
     client.send({
       action: "answerQuestion",
       data: { answer: "Test" }
@@ -92,12 +95,13 @@ describe("answerQuestion", () => {
 
   it("emits error message if participant already answered", async done => {
     // we need two participants for this test, lest the answerQuestion triggers
-    // revealAnswer and we get Wrong state error message
+    // revealAnswer and we get Wrong state error message after trying to answer again
 
     client = await websocketClient();
     const {
       room: { roomId }
     } = (await session.axios.post("createRoom", { listed: true })).data;
+
     client.send({
       action: "joinRoom",
       data: { token: session.token, details: userDetailsFixture(), roomId }
@@ -109,6 +113,8 @@ describe("answerQuestion", () => {
       action: "joinRoom",
       data: { token: session.token, details: userDetailsFixture(), roomId }
     });
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     client.send({ action: "startGame", data: {} });
     const [poseMessage] = await client.receive(
@@ -153,6 +159,8 @@ describe("answerQuestion", () => {
         data: { pid }
       }
     ] = await client.receive("setParticipants", "participantJoined");
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     client.send({ action: "startGame", data: {} });
     const [poseMessage] = await client.receive("poseQuestion");

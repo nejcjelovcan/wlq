@@ -1,5 +1,6 @@
 import { userDetailsFixture } from "@wlq/wlq-core/src/model/fixtures";
 import {
+  cleanupClient,
   createSession,
   Session,
   WebsocketClient,
@@ -14,8 +15,8 @@ describe("joinRoom", () => {
     session = await createSession();
   });
   afterEach(() => {
-    if (client) client.close();
-    if (client2) client2.close();
+    cleanupClient(client);
+    cleanupClient(client2);
   });
 
   it("emits error message on invalid payload", async () => {
@@ -99,7 +100,8 @@ describe("joinRoom", () => {
     } = (await session.axios.post("createRoom", { listed: true })).data;
 
     // TODO we could check in joinRoom core impl. so that the same
-    // user cannot connect twice
+    // user cannot connect twice (but also, then we need to generate sessions
+    // beforeEach!!
 
     const session2 = await createSession();
 

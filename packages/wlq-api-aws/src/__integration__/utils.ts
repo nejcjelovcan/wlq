@@ -37,4 +37,8 @@ export function wait(time: number = 2000) {
   return async () => await new Promise(resolve => setTimeout(resolve, time));
 }
 
-export { default as websocketClient, WebsocketClient } from "./websocketClient";
+export {
+  default as websocketClient,
+  WebsocketClient,
+  cleanupClient
+} from "./websocketClient";

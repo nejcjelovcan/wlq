@@ -1,5 +1,6 @@
 import { userDetailsFixture } from "@wlq/wlq-core/lib/model/fixtures";
 import {
+  cleanupClient,
   createSession,
   Session,
   WebsocketClient,
@@ -13,7 +14,7 @@ describe("startGame", () => {
     session = await createSession();
   });
   afterEach(() => {
-    if (client) client.close();
+    cleanupClient(client);
   });
 
   it("emits error message if participant does not exist", async () => {
@@ -41,9 +42,9 @@ describe("startGame", () => {
       action: "joinRoom",
       data: { token: session.token, details: userDetails, roomId }
     });
-    await client.receive("setParticipants", "participantJoined");
 
     await new Promise(resolve => setTimeout(resolve, 1000));
+    await client.receive("setParticipants", "participantJoined");
 
     client.send({
       action: "startGame",

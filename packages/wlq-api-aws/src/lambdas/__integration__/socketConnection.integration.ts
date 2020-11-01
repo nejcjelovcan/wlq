@@ -1,5 +1,6 @@
 import { userDetailsFixture } from "@wlq/wlq-core/src/model/fixtures";
 import {
+  cleanupClient,
   createSession,
   Session,
   WebsocketClient,
@@ -14,8 +15,8 @@ describe("socketConnection", () => {
     session = await createSession();
   });
   afterEach(() => {
-    if (client) client.close();
-    if (client2) client2.close();
+    cleanupClient(client);
+    cleanupClient(client2);
   });
 
   it("emits participantLeft to other clients when participant closes connection", async () => {
@@ -47,6 +48,8 @@ describe("socketConnection", () => {
         roomId
       }
     });
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     const [
       {
