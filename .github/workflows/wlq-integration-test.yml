@@ -42,12 +42,18 @@ jobs:
           envkey_HTTP_ORIGIN: "*"
           file_name: packages/wlq-api-aws/.env.test.local
 
+      - name: Generate stage name
+        id: generate-stage-name
+        run: |
+          echo -n "::set-output STAGE="
+          echo "$GITHUB_REF" | iconv -t ascii//TRANSLIT | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z
+
       - name: Deploy wlq-api-aws
-        run: yarn workspace @wlq/wlq-api-aws deploy:test --stage ${{env.GITHUB_REF_NAME_SLUG}}
+        run: yarn workspace @wlq/wlq-api-aws deploy:test --stage ${{steps.generate-stage-name.outputs.STAGE}}
 
       - name: Run integration tests
         run: yarn workspace @wlq/wlq-api-aws test:integration
 
       - name: Remove wlq-api-aws deployment
         if: ${{ always() }}
-        run: yarn workspace @wlq/wlq-api-aws deploy-remove:test --stage ${{env.GITHUB_REF_NAME_SLUG}}
+        run: yarn workspace @wlq/wlq-api-aws deploy-remove:test --stage ${{steps.generate-stage-name.outputs.STAGE}}
