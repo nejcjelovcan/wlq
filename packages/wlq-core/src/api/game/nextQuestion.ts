@@ -33,7 +33,7 @@ export default async function nextQuestion(
       }
     });
   } else {
-    await store.setGameToFinishedState({ roomId });
+    await store.setGameToFinishedState({ roomId }, room.game);
 
     await emitter.publishToRoom<GameFinishedMessage>(roomId, {
       action: "gameFinished",
