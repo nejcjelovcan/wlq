@@ -19,7 +19,7 @@ describe("socketConnection", () => {
     cleanupClient(client2);
   });
 
-  it("emits participantLeft to other clients when participant closes connection", async () => {
+  it.skip("emits participantLeft to other clients when participant closes connection", async () => {
     const {
       room: { roomId }
     } = (await session.axios.post("createRoom", { listed: true })).data;
