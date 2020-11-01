@@ -12,9 +12,9 @@ import {
   getWebsocketEventFromAws,
   newPublishEmitter,
   newRoomStore,
-  newStateMachineEmitter,
   newWebsocketEmitter
 } from "../../tools";
+import { newStateMachineEmitter } from "tools/stateMachine.emitter";
 
 const DB = new DynamoDB.DocumentClient();
 const WebsocketGateway = new ApiGatewayManagementApi({

@@ -10,5 +10,4 @@ export {
   responseToAwsResult
 } from "./response.emitter";
 export { newRoomStore } from "./room.store";
-export { newStateMachineEmitter } from "./stateMachine.emitter";
 export { newWebsocketEmitter } from "./websocket.emitter";
