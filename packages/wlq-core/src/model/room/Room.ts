@@ -60,16 +60,17 @@ export function getQuestionTokenIfEverybodyAnswered(
 }
 
 export function getRoomPublic(room: Room): RoomPublic {
+  const websocket = `${process.env.WEBSOCKET_PROTOCOL}://${process.env.WEBSOCKET_ENDPOINT}`;
   if (room.current === "Game") {
     return {
       ...room,
       game: getGamePublic(room.game),
-      websocket: process.env.WEBSOCKET_ENDPOINT!
+      websocket
     };
   } else {
     return {
       ...room,
-      websocket: `${process.env.WEBSOCKET_PROTOCOL}://${process.env.WEBSOCKET_ENDPOINT}`
+      websocket
     };
   }
 }

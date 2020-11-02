@@ -188,7 +188,9 @@ export function newRoomStore(
           "#current = :expectedCurrent AND game.#current = :expectedGameCurrent",
         ExpressionAttributeValues: {
           ":game": {
-            ...game,
+            type: game.type,
+            questionCount: game.questionCount,
+            questionIndex: game.questionIndex,
             current: "Finished"
           },
           ":expectedCurrent": "Game",
