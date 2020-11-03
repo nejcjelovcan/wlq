@@ -7,7 +7,7 @@ import {
   getNewRoom,
   NewRoomMachine
 } from "../overmind/newRoom/newRoom.statemachine";
-import RoomCreationForm from "./roomPage/RoomCreationForm";
+import RoomCreationForm from "./newRoomPage/RoomCreationForm";
 
 const NewRoomPage = ({ newRoom }: { newRoom: NewRoomMachine }) => {
   const {

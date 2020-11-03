@@ -11,7 +11,7 @@ import { requestMachine } from "./request.statemachine";
 import { roomMachine } from "./roomSession/room/room.statemachine";
 import { newRoomMachine, NewRoomMachine } from "./newRoom/newRoom.statemachine";
 
-export const SettingsParamsCodec = t.partial({ next: t.string });
+export const SettingsParamsCodec = t.partial({ roomId: t.string });
 export type SettingsParams = t.TypeOf<typeof SettingsParamsCodec>;
 
 export type RootStates =

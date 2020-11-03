@@ -26,6 +26,7 @@ describe("roomSession.actions", () => {
         );
         const participant = participantFixture();
 
+        await overmind.actions.user.updateDetails(userDetailsFixture());
         await overmind.actions.token.assureToken();
         await overmind.actions.router.setPageRoom({ roomId: room.roomId });
         await overmind.actions.roomSession.roomOnMessage(
@@ -56,6 +57,7 @@ describe("roomSession.actions", () => {
           withEffectMocks(roomEffects)
         );
 
+        await overmind.actions.user.updateDetails(userDetailsFixture());
         await overmind.actions.token.assureToken();
         await overmind.actions.router.setPageRoom({ roomId: room.roomId });
         await overmind.actions.roomSession.setParticipants({
@@ -94,6 +96,7 @@ describe("roomSession.actions", () => {
           withEffectMocks(roomEffects)
         );
 
+        await overmind.actions.user.updateDetails(userDetailsFixture());
         await overmind.actions.token.assureToken();
         await overmind.actions.router.setPageRoom({ roomId: room.roomId });
         await overmind.actions.roomSession.setParticipants({
@@ -132,6 +135,7 @@ describe("roomSession.actions", () => {
       );
       const userDetails = userDetailsFixture();
 
+      await overmind.actions.user.updateDetails(userDetailsFixture());
       await overmind.actions.token.assureToken();
       await overmind.actions.user.updateDetails(userDetails);
       await overmind.actions.router.setPageRoom({ roomId: room.roomId });
@@ -161,6 +165,7 @@ describe("roomSession.actions", () => {
       );
       const userDetails = userDetailsFixture();
 
+      await overmind.actions.user.updateDetails(userDetailsFixture());
       await overmind.actions.token.assureToken();
       await overmind.actions.user.updateDetails(userDetails);
       await overmind.actions.router.setPageRoom({ roomId: room.roomId });
@@ -188,6 +193,7 @@ describe("roomSession.actions", () => {
     it("sets game to current=Question and populates question property", async () => {
       const overmind = createOvermindMock(config, withEffectMocks(roomEffects));
 
+      await overmind.actions.user.updateDetails(userDetailsFixture());
       await overmind.actions.token.assureToken();
       await overmind.actions.router.setPageRoom({ roomId: room.roomId });
       await overmind.actions.roomSession.setParticipants({
@@ -228,6 +234,7 @@ describe("roomSession.actions", () => {
     it("sets game to current=Answer and populates answers property", async () => {
       const overmind = createOvermindMock(config, withEffectMocks(roomEffects));
 
+      await overmind.actions.user.updateDetails(userDetailsFixture());
       await overmind.actions.token.assureToken();
       await overmind.actions.router.setPageRoom({ roomId: room.roomId });
       await overmind.actions.roomSession.setParticipants({
@@ -275,6 +282,7 @@ describe("roomSession.actions", () => {
     it("adds participant pid to answeredParticipants", async () => {
       const overmind = createOvermindMock(config, withEffectMocks(roomEffects));
 
+      await overmind.actions.user.updateDetails(userDetailsFixture());
       await overmind.actions.token.assureToken();
       await overmind.actions.router.setPageRoom({ roomId: room.roomId });
       await overmind.actions.roomSession.setParticipants({
@@ -322,6 +330,7 @@ describe("roomSession.actions", () => {
     it("sets game state to finished", async () => {
       const overmind = createOvermindMock(config, withEffectMocks(roomEffects));
 
+      await overmind.actions.user.updateDetails(userDetailsFixture());
       await overmind.actions.token.assureToken();
       await overmind.actions.router.setPageRoom({ roomId: room.roomId });
       await overmind.actions.roomSession.setParticipants({

@@ -26,6 +26,7 @@ import {
 } from "@wlq/wlq-core/lib/api/room/leaveRoom.websocket";
 import { map, Operator, pipe, run } from "overmind";
 import {
+  sendAnswerQuestion,
   sendGameFinished,
   sendParticipantAnswered,
   sendPoseQuestion,
@@ -57,6 +58,23 @@ export const startGame = run(({ state, effects: { websocket } }) => {
   if (state.current === "Room" && state.roomSession.current === "Joined") {
     websocket.sendMessage({ action: "startGame", data: {} });
   }
+});
+
+export const answerQuestion: Operator<string> = pipe(
+  run(({ effects: { websocket } }, answer) => {
+    websocket.sendMessage({ action: "answerQuestion", data: { answer } });
+  }),
+  map(({ state }, answer) => {
+    if (state.current === "Room" && state.roomSession.current === "Joined") {
+      return { answer, pid: state.roomSession.pid };
+    }
+    throw new Error("Unexpected state");
+  }),
+  sendAnswerQuestion()
+);
+
+export const closeWebsocket = run(({ effects: { websocket } }) => {
+  websocket.close();
 });
 
 /* === Websocket messages === */

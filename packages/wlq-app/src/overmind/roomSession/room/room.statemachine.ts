@@ -1,7 +1,11 @@
 import { GameFinishedMessage } from "@wlq/wlq-core/lib/api/game/NextQuestionMessages";
 import { RevealAnswerMessage } from "@wlq/wlq-core/lib/api/game/revealAnswer";
 import { ParticipantAnsweredMessage } from "@wlq/wlq-core/lib/api/game/answerQuestion.websocket";
-import { PosedQuestionPublic, RoomPublic } from "@wlq/wlq-core/lib/model";
+import {
+  ParticipantAnswer,
+  PosedQuestionPublic,
+  RoomPublic
+} from "@wlq/wlq-core/lib/model";
 import { statemachine, Statemachine } from "overmind/lib/statemachine";
 
 export type RoomStates = { current: "Empty" } | RoomPublic;
@@ -11,7 +15,8 @@ export type RoomEvents =
   | { type: "PoseQuestion"; data: { question: PosedQuestionPublic } }
   | { type: "RevealAnswer"; data: RevealAnswerMessage["data"] }
   | { type: "GameFinished"; data: GameFinishedMessage["data"] }
-  | { type: "ParticipantAnswered"; data: ParticipantAnsweredMessage["data"] };
+  | { type: "ParticipantAnswered"; data: ParticipantAnsweredMessage["data"] }
+  | { type: "AnswerQuestion"; data: ParticipantAnswer };
 
 export type RoomMachine = Statemachine<RoomStates, RoomEvents>;
 
@@ -26,7 +31,8 @@ export const roomMachine = statemachine<RoomStates, RoomEvents>({
           ...state.game,
           current: "Question",
           question,
-          answeredParticipants: []
+          answeredParticipants: [],
+          answers: []
         }
       };
     } else if (state.current === "Idle") {
@@ -40,7 +46,8 @@ export const roomMachine = statemachine<RoomStates, RoomEvents>({
           questionCount: 10,
           questionIndex: 0,
           question,
-          answeredParticipants: []
+          answeredParticipants: [],
+          answers: []
         }
       };
     }
@@ -86,6 +93,19 @@ export const roomMachine = statemachine<RoomStates, RoomEvents>({
       };
     }
     throw new Error("Invalid state in GameFinished");
+  },
+  AnswerQuestion: (state, { pid, answer }) => {
+    if (state.current === "Game" && state.game.current === "Question") {
+      return {
+        ...getRoomProps(state),
+        current: "Game",
+        game: {
+          ...state.game,
+          answers: state.game.answers.concat([{ pid, answer }])
+        }
+      };
+    }
+    throw new Error("Invalid state in AnswerQuestion");
   }
 });
 

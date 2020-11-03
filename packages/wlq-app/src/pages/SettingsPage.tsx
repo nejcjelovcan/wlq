@@ -12,7 +12,7 @@ import UserDetailsForm from "./settingsPage/UserDetailsForm";
 
 const SettingsPage = ({
   user,
-  params: { next }
+  params: { roomId }
 }: {
   user: UserMachine;
   params: SettingsParams;
@@ -31,8 +31,8 @@ const SettingsPage = ({
           details={getUserDetails(user)}
           updateDetails={updateDetails}
           onDone={
-            next
-              ? () => open({ path: "/room/", params: { next } })
+            roomId
+              ? () => open({ path: `/room/${roomId}` })
               : () => open({ path: "/" })
           }
         />

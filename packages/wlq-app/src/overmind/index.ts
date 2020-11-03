@@ -40,7 +40,7 @@ export const config = merge(
     ),
     effects: { localStorage, rest, websocket }
   },
-  namespaced({ router, token, user, newRoom, roomSession })
+  namespaced({ user, router, token, newRoom, roomSession })
 );
 
 export const useOvermind = createHook<typeof config>();
