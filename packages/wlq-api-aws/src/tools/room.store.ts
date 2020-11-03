@@ -211,7 +211,10 @@ export function newRoomStore(
         TableName,
         Key: roomComposite(roomKey),
         UpdateExpression: "SET #current = :current, game = :game",
-        ConditionExpression: "#current = :expectedCurrent",
+        ConditionExpression: `#current = :expectedCurrent OR
+          (#current = :expectedCurrent2 AND attribute_exists(game)
+            AND game.#current = :expectedGameCurrent
+          )`,
         ExpressionAttributeValues: {
           ":current": "Game",
           ":game": {
@@ -220,7 +223,9 @@ export function newRoomStore(
             questionCount,
             questionIndex: 0
           },
-          ":expectedCurrent": "Idle"
+          ":expectedCurrent": "Idle",
+          ":expectedCurrent2": "Game",
+          ":expectedGameCurrent": "Finished"
         },
         ExpressionAttributeNames: {
           "#current": "current"

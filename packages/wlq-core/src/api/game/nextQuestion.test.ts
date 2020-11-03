@@ -76,7 +76,7 @@ describe("nextQuestion", () => {
     const room = await store.addRoom(
       roomFixture({
         current: "Game",
-        game: gameFixture({ questionCount: 10, questionIndex: 9 })
+        game: gameFixture({ questionCount: 10, questionIndex: 10 })
       })
     );
 
@@ -102,7 +102,7 @@ describe("nextQuestion", () => {
     const room = await store.addRoom(
       roomFixture({
         current: "Game",
-        game: gameFixture({ questionCount: 10, questionIndex: 9 })
+        game: gameFixture({ questionCount: 10, questionIndex: 10 })
       })
     );
 

@@ -17,7 +17,7 @@ export default async function nextQuestion(
   const room = await store.getRoom({ roomId });
 
   if (room.current !== "Game") throw new StateStoreError("Invalid State");
-  if (room.game.questionIndex < room.game.questionCount - 1) {
+  if (room.game.questionIndex < room.game.questionCount) {
     const question = poseQuestion(getAllCollections());
 
     await store.setGameQuestion({ roomId }, room.game, question);
