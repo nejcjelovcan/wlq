@@ -1,3 +1,4 @@
+import { userDetailsFixture } from "@wlq/wlq-core/lib/model/fixtures";
 import { createOvermindMock } from "overmind";
 import { config } from "../";
 import { withEffectMocks } from "../../__test__/overmindMocks";
@@ -13,19 +14,39 @@ describe("router.actions", () => {
     });
   });
   describe("setPageNew", () => {
-    it("updates current page to New", async () => {
-      const overmind = createOvermindMock(config);
+    it("redirects to settings if user is not valid", async () => {
+      const open = jest.fn();
+      const overmind = createOvermindMock(config, { router: { open } });
 
-      await overmind.actions.router.setPageNew();
+      await overmind.actions.router.setPageNew({});
+
+      expect(open.mock.calls.length).toBe(1);
+      expect(open.mock.calls[0]).toEqual(["/settings"]);
+    });
+    it("updates current page to New", async () => {
+      const overmind = createOvermindMock(config, withEffectMocks());
+
+      await overmind.actions.user.updateDetails(userDetailsFixture());
+      await overmind.actions.router.setPageNew({});
 
       expect(overmind.state.current).toBe("New");
     });
   });
   describe("setPageRoom", () => {
+    it("redirects to settings if user is not valid", async () => {
+      const open = jest.fn();
+      const overmind = createOvermindMock(config, { router: { open } });
+
+      await overmind.actions.router.setPageRoom({ roomId: "roomId" });
+
+      expect(open.mock.calls.length).toBe(1);
+      expect(open.mock.calls[0]).toEqual(["/settings?roomId=roomId"]);
+    });
     it("updates current page to Room (with params)", async () => {
       const overmind = createOvermindMock(config, withEffectMocks());
 
       // setPageRoom uses waitUntilTokenLoaded
+      await overmind.actions.user.updateDetails(userDetailsFixture());
       await overmind.actions.token.assureToken();
 
       await overmind.actions.router.setPageRoom({ roomId: "roomId" });

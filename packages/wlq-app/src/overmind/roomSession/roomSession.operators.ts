@@ -1,6 +1,6 @@
-import { IWebsocketMessage } from "@wlq/wlq-core";
+import { IWebsocketMessage, IWlqRawPayload, uniqueBy } from "@wlq/wlq-core";
 import { SetParticipantsMessage } from "@wlq/wlq-core/lib/api/room/JoinRoomMessages";
-import { RoomPublic } from "@wlq/wlq-core/lib/model";
+import { ParticipantPublic, RoomPublic } from "@wlq/wlq-core/lib/model";
 import * as e from "fp-ts/Either";
 import { filter, map, mutate, Operator, pipe, run } from "overmind";
 import { fold, waitUntilTokenLoaded } from "../operators";
@@ -126,4 +126,28 @@ export const getMessage: () => Operator<MessageEvent, IWebsocketMessage> = () =>
       }
     } catch (error) {}
     return { action: "error", data: { error: "Could not parse message" } };
+  });
+
+/* === Helpers === */
+
+export const updateParticipants: () => Operator<ParticipantPublic[]> = () =>
+  mutate(({ state }, participants) => {
+    if (state.current === "Room") {
+      const pid =
+        state.roomSession.current === "Joined"
+          ? state.roomSession.pid
+          : undefined;
+      state.roomSession.participants = uniqueBy(
+        participants.filter(p => p.pid !== pid),
+        "pid"
+      );
+    }
+  });
+
+export const getMessageData: <D extends IWlqRawPayload>() => Operator<
+  IWebsocketMessage<D>,
+  D extends Promise<infer U> ? U : D
+> = () =>
+  map(function getMessageData(_, { data }) {
+    return data;
   });

@@ -1,4 +1,13 @@
-export { Game, GameCodec, GamePublic, GamePublicCodec } from "./game/Game";
+export {
+  Game,
+  GameCodec,
+  GamePublic,
+  GamePublicCodec,
+  ParticipantsByAnswer,
+  getParticipantsByAnswer,
+  hasParticipantAnswered,
+  getParticipantAnswer
+} from "./game/Game";
 export { default as newGame } from "./game/newGame";
 export {
   PosedQuestion,

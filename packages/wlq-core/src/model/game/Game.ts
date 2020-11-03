@@ -4,7 +4,11 @@ import {
   PosedQuestionCodec,
   PosedQuestionPublicCodec
 } from "./PosedQuestion";
-import { ParticipantAnswerCodec } from "../room/participant/ParticipantAnswer";
+import {
+  ParticipantAnswer,
+  ParticipantAnswerCodec
+} from "../room/participant/ParticipantAnswer";
+import { ParticipantPublic } from "../room/participant/Participant";
 
 export const GameBaseCodec = t.type({
   type: t.literal("Game"),
@@ -22,7 +26,8 @@ export type GameQuestion = t.TypeOf<typeof GameQuestionCodec>;
 
 export const GamePublicQuestionCodec = t.type({
   question: PosedQuestionPublicCodec,
-  answeredParticipants: t.array(t.string)
+  answeredParticipants: t.array(t.string),
+  answers: t.array(ParticipantAnswerCodec)
 });
 export type GamePublicQuestion = t.TypeOf<typeof GamePublicQuestionCodec>;
 
@@ -80,7 +85,8 @@ export function getGamePublic(game: Game): GamePublic {
       return {
         ...gamePublic,
         ...questionProps,
-        current: "Question"
+        current: "Question",
+        answers: [] // TODO test this
       };
 
     if (game.current === "Answer")
@@ -93,4 +99,56 @@ export function getGamePublic(game: Game): GamePublic {
       };
   }
   return game;
+}
+
+export function hasParticipantAnswered(
+  game: Game | GamePublic,
+  pid: string
+): boolean {
+  const answer = getParticipantAnswer(game, pid);
+  if (answer) return true;
+  if (
+    game.current === "Question" &&
+    "answeredParticipants" in game &&
+    Array.isArray(game.answeredParticipants)
+  ) {
+    // @ts-ignore
+    return game.answeredParticipants.includes(pid);
+  }
+  return false;
+}
+
+export function getParticipantAnswer(
+  game: Game | GamePublic,
+  pid: string
+): ParticipantAnswer | null {
+  if (game.current === "Question" || game.current === "Answer") {
+    return game.answers.find(a => a.pid === pid) || null;
+  }
+  return null;
+}
+
+export type ParticipantsByAnswer = { [answer: string]: ParticipantPublic[] };
+
+export function getParticipantsByAnswer(
+  game: GamePublic,
+  participants: ParticipantPublic[]
+): ParticipantsByAnswer {
+  if (game.current === "Answer") {
+    return game.answers
+      .map<[string, ParticipantPublic | undefined]>(({ answer, pid }) => [
+        answer,
+        participants.find(p => p.pid === pid)
+      ])
+      .reduce<ParticipantsByAnswer>((aggregate, [answer, participant]) => {
+        if (!(answer in aggregate)) {
+          aggregate[answer] = [];
+        }
+        if (participant) {
+          aggregate[answer].push(participant);
+        }
+        return aggregate;
+      }, {});
+  }
+  return {};
 }

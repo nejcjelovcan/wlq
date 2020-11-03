@@ -1,4 +1,18 @@
-import { decodeThrow, IWebsocketMessage, uniqueBy } from "@wlq/wlq-core";
+import { decodeThrow, IWebsocketMessage } from "@wlq/wlq-core";
+import {
+  ParticipantAnsweredMessage,
+  ParticipantAnsweredMessageCodec
+} from "@wlq/wlq-core/lib/api/game/answerQuestion.websocket";
+import {
+  GameFinishedMessage,
+  GameFinishedMessageCodec,
+  PoseQuestionMessage,
+  PoseQuestionMessageCodec
+} from "@wlq/wlq-core/lib/api/game/NextQuestionMessages";
+import {
+  RevealAnswerMessage,
+  RevealAnswerMessageCodec
+} from "@wlq/wlq-core/lib/api/game/revealAnswer";
 import {
   JoinRoomMessage,
   ParticipantJoinedMessage,
@@ -10,74 +24,155 @@ import {
   ParticipantLeftMessage,
   ParticipantLeftMessageCodec
 } from "@wlq/wlq-core/lib/api/room/leaveRoom.websocket";
-import { mutate, Operator, pipe, run } from "overmind";
+import { map, Operator, pipe, run } from "overmind";
+import {
+  sendAnswerQuestion,
+  sendGameFinished,
+  sendParticipantAnswered,
+  sendPoseQuestion,
+  sendRevealAnswer
+} from "./room/room.operators";
 import * as o from "./roomSession.operators";
 
-export const setParticipants: Operator<SetParticipantsMessage> = o.sendJoined();
+/* === Websocket sends === */
 
-export const participantJoined: Operator<ParticipantJoinedMessage> = mutate(
-  ({ state }, { data: { participant } }) => {
-    if (state.current === "Room") {
-      state.roomSession.participants = uniqueBy(
-        [...state.roomSession.participants].concat([participant]),
-        "pid"
-      );
-    }
-  }
-);
-
-export const participantLeft: Operator<ParticipantLeftMessage> = mutate(
-  ({ state }, { data: { pid } }) => {
-    if (state.current === "Room") {
-      state.roomSession.participants = state.roomSession.participants.filter(
-        p => p.pid !== pid
-      );
-    }
-  }
-);
-
-export const roomOnMessage: Operator<MessageEvent, IWebsocketMessage> = pipe(
-  o.getMessage(),
-  mutate(function roomOnMessage(
-    {
-      actions: {
-        roomSession: { setParticipants, participantJoined, participantLeft }
-      }
-    },
-    message
-  ) {
-    if (message.action === "setParticipants") {
-      const decoded = decodeThrow(SetParticipantsMessageCodec, message);
-      setParticipants(decoded);
-    } else if (message.action === "participantJoined") {
-      const decoded = decodeThrow(ParticipantJoinedMessageCodec, message);
-      participantJoined(decoded);
-    } else if (message.action === "participantLeft") {
-      const decoded = decodeThrow(ParticipantLeftMessageCodec, message);
-      participantLeft(decoded);
-    } else {
-      throw new Error(
-        `Unhandled websocket message: ${JSON.stringify(message)}`
-      );
-    }
-  })
-);
-
-export const joinRoom: Operator = run(({ state, effects: { websocket } }) => {
+export const joinRoom = run(({ state, effects: { websocket } }) => {
   if (
     state.token.current === "Loaded" &&
     state.user.current === "Valid" &&
     state.current === "Room" &&
     state.roomSession.room.current !== "Empty"
   ) {
-    const message: JoinRoomMessage = {
+    websocket.sendMessage<JoinRoomMessage>({
       action: "joinRoom",
       data: {
         token: state.token.token,
         details: state.user.validDetails,
         roomId: state.roomSession.room.roomId
       }
-    };
-    websocket.sendMessage(message);
+    });
   }
 });
+
+export const startGame = run(({ state, effects: { websocket } }) => {
+  if (state.current === "Room" && state.roomSession.current === "Joined") {
+    websocket.sendMessage({ action: "startGame", data: {} });
+  }
+});
+
+export const answerQuestion: Operator<string> = pipe(
+  run(({ effects: { websocket } }, answer) => {
+    websocket.sendMessage({ action: "answerQuestion", data: { answer } });
+  }),
+  map(({ state }, answer) => {
+    if (state.current === "Room" && state.roomSession.current === "Joined") {
+      return { answer, pid: state.roomSession.pid };
+    }
+    throw new Error("Unexpected state");
+  }),
+  sendAnswerQuestion()
+);
+
+export const closeWebsocket = run(({ effects: { websocket } }) => {
+  websocket.close();
+});
+
+/* === Websocket messages === */
+
+export const setParticipants: Operator<SetParticipantsMessage> = pipe(
+  o.sendJoined(),
+  map((_, { data: { participants } }) => participants),
+  o.updateParticipants()
+);
+
+export const participantJoined: Operator<ParticipantJoinedMessage> = pipe(
+  map(({ state }, { data: { participant } }) => {
+    if (state.current === "Room") {
+      return [...state.roomSession.participants].concat([participant]);
+    }
+    throw new Error("Unexpected state");
+  }),
+  o.updateParticipants()
+);
+
+export const participantLeft: Operator<ParticipantLeftMessage> = pipe(
+  map(({ state }, { data: { pid } }) => {
+    if (state.current === "Room") {
+      return state.roomSession.participants.filter(p => p.pid !== pid);
+    }
+    return [];
+  }),
+  o.updateParticipants()
+);
+
+export const poseQuestion: Operator<PoseQuestionMessage> = pipe(
+  o.getMessageData(),
+  sendPoseQuestion()
+);
+
+export const participantAnswered: Operator<ParticipantAnsweredMessage> = pipe(
+  o.getMessageData(),
+  sendParticipantAnswered()
+);
+
+export const revealAnswer: Operator<RevealAnswerMessage> = pipe(
+  o.getMessageData(),
+  sendRevealAnswer()
+);
+
+export const gameFinished: Operator<GameFinishedMessage> = pipe(
+  o.getMessageData(),
+  sendGameFinished()
+);
+
+/* === Websocket === */
+
+export const roomOnMessage: Operator<MessageEvent, IWebsocketMessage> = pipe(
+  o.getMessage(),
+  run(function roomOnMessage(
+    {
+      actions: {
+        roomSession: {
+          setParticipants,
+          participantJoined,
+          participantLeft,
+          poseQuestion,
+          revealAnswer,
+          participantAnswered,
+          gameFinished
+        }
+      }
+    },
+    message
+  ) {
+    switch (message.action) {
+      case "setParticipants":
+        setParticipants(decodeThrow(SetParticipantsMessageCodec, message));
+        break;
+      case "participantJoined":
+        participantJoined(decodeThrow(ParticipantJoinedMessageCodec, message));
+        break;
+      case "participantLeft":
+        participantLeft(decodeThrow(ParticipantLeftMessageCodec, message));
+        break;
+      case "poseQuestion":
+        poseQuestion(decodeThrow(PoseQuestionMessageCodec, message));
+        break;
+      case "revealAnswer":
+        revealAnswer(decodeThrow(RevealAnswerMessageCodec, message));
+        break;
+      case "participantAnswered":
+        participantAnswered(
+          decodeThrow(ParticipantAnsweredMessageCodec, message)
+        );
+        break;
+      case "gameFinished":
+        gameFinished(decodeThrow(GameFinishedMessageCodec, message));
+        break;
+      default:
+        throw new Error(
+          `Unhandled websocket message: ${JSON.stringify(message)}`
+        );
+    }
+  })
+);

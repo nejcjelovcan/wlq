@@ -1,4 +1,3 @@
-import { ChakraProvider } from "@chakra-ui/core";
 import { createOvermind } from "overmind";
 import { Provider } from "overmind-react";
 import React from "react";
@@ -7,16 +6,13 @@ import App from "./App";
 import "./index.css";
 import { config } from "./overmind";
 import reportWebVitals from "./reportWebVitals";
-import theme from "./theme";
 
 const overmind = createOvermind(config, { strict: true });
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider value={overmind}>
-      <ChakraProvider theme={theme}>
-        <App />
-      </ChakraProvider>
+      <App />
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

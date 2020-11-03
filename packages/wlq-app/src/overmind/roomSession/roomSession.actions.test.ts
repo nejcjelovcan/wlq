@@ -1,5 +1,6 @@
 import {
   participantFixture,
+  posedQuestionPublicFixture,
   roomPublicFixture,
   userDetailsFixture
 } from "@wlq/wlq-core/lib/model/fixtures";
@@ -25,6 +26,7 @@ describe("roomSession.actions", () => {
         );
         const participant = participantFixture();
 
+        await overmind.actions.user.updateDetails(userDetailsFixture());
         await overmind.actions.token.assureToken();
         await overmind.actions.router.setPageRoom({ roomId: room.roomId });
         await overmind.actions.roomSession.roomOnMessage(
@@ -55,6 +57,7 @@ describe("roomSession.actions", () => {
           withEffectMocks(roomEffects)
         );
 
+        await overmind.actions.user.updateDetails(userDetailsFixture());
         await overmind.actions.token.assureToken();
         await overmind.actions.router.setPageRoom({ roomId: room.roomId });
         await overmind.actions.roomSession.setParticipants({
@@ -93,6 +96,7 @@ describe("roomSession.actions", () => {
           withEffectMocks(roomEffects)
         );
 
+        await overmind.actions.user.updateDetails(userDetailsFixture());
         await overmind.actions.token.assureToken();
         await overmind.actions.router.setPageRoom({ roomId: room.roomId });
         await overmind.actions.roomSession.setParticipants({
@@ -131,6 +135,7 @@ describe("roomSession.actions", () => {
       );
       const userDetails = userDetailsFixture();
 
+      await overmind.actions.user.updateDetails(userDetailsFixture());
       await overmind.actions.token.assureToken();
       await overmind.actions.user.updateDetails(userDetails);
       await overmind.actions.router.setPageRoom({ roomId: room.roomId });
@@ -148,6 +153,216 @@ describe("roomSession.actions", () => {
           }
         }
       ]);
+    });
+  });
+
+  describe("startGame", () => {
+    it("sends startGame message via websocket", async () => {
+      const sendMessage = jest.fn();
+      const overmind = createOvermindMock(
+        config,
+        withEffectMocks(roomEffects, { websocket: { sendMessage } })
+      );
+      const userDetails = userDetailsFixture();
+
+      await overmind.actions.user.updateDetails(userDetailsFixture());
+      await overmind.actions.token.assureToken();
+      await overmind.actions.user.updateDetails(userDetails);
+      await overmind.actions.router.setPageRoom({ roomId: room.roomId });
+      if (overmind.state.current !== "Room")
+        throw new Error("Expected state.current=Room");
+
+      overmind.actions.roomSession.setParticipants({
+        action: "setParticipants",
+        data: { participants: [], pid: "pid" }
+      });
+
+      await overmind.actions.roomSession.startGame();
+
+      expect(sendMessage.mock.calls.length).toBe(1);
+      expect(sendMessage.mock.calls[0]).toEqual([
+        {
+          action: "startGame",
+          data: {}
+        }
+      ]);
+    });
+  });
+
+  describe("poseQuestion", () => {
+    it("sets game to current=Question and populates question property", async () => {
+      const overmind = createOvermindMock(config, withEffectMocks(roomEffects));
+
+      await overmind.actions.user.updateDetails(userDetailsFixture());
+      await overmind.actions.token.assureToken();
+      await overmind.actions.router.setPageRoom({ roomId: room.roomId });
+      await overmind.actions.roomSession.setParticipants({
+        action: "setParticipants",
+        data: {
+          participants: [participantFixture({ pid: "pid" })],
+          pid: "pid"
+        }
+      });
+
+      const question = posedQuestionPublicFixture();
+
+      await overmind.actions.roomSession.roomOnMessage(
+        new MessageEvent("", {
+          data: JSON.stringify({
+            action: "poseQuestion",
+            data: { question }
+          })
+        })
+      );
+
+      if (overmind.state.current !== "Room")
+        throw new Error("Expected state.current=Room");
+      if (overmind.state.roomSession.current !== "Joined")
+        throw new Error("Expected state.roomSession.current=Joined");
+      if (overmind.state.roomSession.room.current !== "Game")
+        throw new Error("Expected state.roomSession.room.current=Game");
+      if (overmind.state.roomSession.room.game.current !== "Question")
+        throw new Error(
+          "Expected state.roomSession.room.game.current=Question"
+        );
+
+      expect(overmind.state.roomSession.room.game.question).toEqual(question);
+    });
+  });
+
+  describe("revealAnswer", () => {
+    it("sets game to current=Answer and populates answers property", async () => {
+      const overmind = createOvermindMock(config, withEffectMocks(roomEffects));
+
+      await overmind.actions.user.updateDetails(userDetailsFixture());
+      await overmind.actions.token.assureToken();
+      await overmind.actions.router.setPageRoom({ roomId: room.roomId });
+      await overmind.actions.roomSession.setParticipants({
+        action: "setParticipants",
+        data: {
+          participants: [participantFixture({ pid: "pid" })],
+          pid: "pid"
+        }
+      });
+
+      await overmind.actions.roomSession.poseQuestion({
+        action: "poseQuestion",
+        data: { question: posedQuestionPublicFixture() }
+      });
+
+      await overmind.actions.roomSession.roomOnMessage(
+        new MessageEvent("", {
+          data: JSON.stringify({
+            action: "revealAnswer",
+            data: {
+              answer: "Answer",
+              answers: [{ pid: "pid", answer: "Answer" }]
+            }
+          })
+        })
+      );
+
+      if (overmind.state.current !== "Room")
+        throw new Error("Expected state.current=Room");
+      if (overmind.state.roomSession.current !== "Joined")
+        throw new Error("Expected state.roomSession.current=Joined");
+      if (overmind.state.roomSession.room.current !== "Game")
+        throw new Error("Expected state.roomSession.room.current=Game");
+      if (overmind.state.roomSession.room.game.current !== "Answer")
+        throw new Error("Expected state.roomSession.room.game.current=Answer");
+
+      expect(overmind.state.roomSession.room.game.answer).toEqual("Answer");
+      expect(overmind.state.roomSession.room.game.answers).toEqual([
+        { pid: "pid", answer: "Answer" }
+      ]);
+    });
+  });
+
+  describe("participantAnswered", () => {
+    it("adds participant pid to answeredParticipants", async () => {
+      const overmind = createOvermindMock(config, withEffectMocks(roomEffects));
+
+      await overmind.actions.user.updateDetails(userDetailsFixture());
+      await overmind.actions.token.assureToken();
+      await overmind.actions.router.setPageRoom({ roomId: room.roomId });
+      await overmind.actions.roomSession.setParticipants({
+        action: "setParticipants",
+        data: {
+          participants: [participantFixture({ pid: "pid" })],
+          pid: "pid"
+        }
+      });
+
+      await overmind.actions.roomSession.poseQuestion({
+        action: "poseQuestion",
+        data: { question: posedQuestionPublicFixture() }
+      });
+
+      await overmind.actions.roomSession.roomOnMessage(
+        new MessageEvent("", {
+          data: JSON.stringify({
+            action: "participantAnswered",
+            data: {
+              pid: "pid"
+            }
+          })
+        })
+      );
+
+      if (overmind.state.current !== "Room")
+        throw new Error("Expected state.current=Room");
+      if (overmind.state.roomSession.current !== "Joined")
+        throw new Error("Expected state.roomSession.current=Joined");
+      if (overmind.state.roomSession.room.current !== "Game")
+        throw new Error("Expected state.roomSession.room.current=Game");
+      if (overmind.state.roomSession.room.game.current !== "Question")
+        throw new Error(
+          "Expected state.roomSession.room.game.current=Question"
+        );
+
+      expect(
+        overmind.state.roomSession.room.game.answeredParticipants
+      ).toEqual(["pid"]);
+    });
+  });
+
+  describe("gameFinished", () => {
+    it("sets game state to finished", async () => {
+      const overmind = createOvermindMock(config, withEffectMocks(roomEffects));
+
+      await overmind.actions.user.updateDetails(userDetailsFixture());
+      await overmind.actions.token.assureToken();
+      await overmind.actions.router.setPageRoom({ roomId: room.roomId });
+      await overmind.actions.roomSession.setParticipants({
+        action: "setParticipants",
+        data: {
+          participants: [participantFixture({ pid: "pid" })],
+          pid: "pid"
+        }
+      });
+
+      await overmind.actions.roomSession.poseQuestion({
+        action: "poseQuestion",
+        data: { question: posedQuestionPublicFixture() }
+      });
+
+      await overmind.actions.roomSession.roomOnMessage(
+        new MessageEvent("", {
+          data: JSON.stringify({
+            action: "gameFinished",
+            data: {}
+          })
+        })
+      );
+
+      if (overmind.state.current !== "Room")
+        throw new Error("Expected state.current=Room");
+      if (overmind.state.roomSession.current !== "Joined")
+        throw new Error("Expected state.roomSession.current=Joined");
+      if (overmind.state.roomSession.room.current !== "Game")
+        throw new Error("Expected state.roomSession.room.current=Game");
+
+      expect(overmind.state.roomSession.room.game.current).toBe("Finished");
     });
   });
 });

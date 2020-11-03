@@ -10,7 +10,11 @@ import {
 } from "../room/participant/Participant";
 import { Game } from "../game/Game";
 import newGame from "../game/newGame";
-import { PosedQuestion } from "../game/PosedQuestion";
+import {
+  getPosedQuestionPublic,
+  PosedQuestion,
+  PosedQuestionPublic
+} from "../game/PosedQuestion";
 
 export const userDetailsFixture = (
   override: Partial<UserDetails> = {}
@@ -70,11 +74,19 @@ export const gameStateAnswerFixture = (override: Partial<Game> = {}): Game =>
 
 export const posedQuestionFixture = (
   override: Partial<PosedQuestion> = {}
-): PosedQuestion => ({
-  type: "PosedQuestion",
-  questionText: "Question text?",
-  options: ["Option 1", "Option 2", "Option 3", "Option 4"],
-  answer: "Option 3",
-  time: 10,
-  ...override
-});
+): PosedQuestion =>
+  deepExtend(
+    {
+      type: "PosedQuestion",
+      questionText: "Question text?",
+      options: ["Option 1", "Option 2", "Option 3", "Option 4"],
+      answer: "Option 3",
+      time: 10
+    },
+    override
+  );
+
+export const posedQuestionPublicFixture = (
+  override: Partial<PosedQuestionPublic> = {}
+): PosedQuestionPublic =>
+  deepExtend(getPosedQuestionPublic(posedQuestionFixture()), override);

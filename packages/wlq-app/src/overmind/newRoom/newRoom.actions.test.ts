@@ -1,4 +1,7 @@
-import { roomPublicFixture } from "@wlq/wlq-core/lib/model/fixtures";
+import {
+  roomPublicFixture,
+  userDetailsFixture
+} from "@wlq/wlq-core/lib/model/fixtures";
 import { createOvermindMock } from "overmind";
 import { config } from "../";
 import { withEffectMocks } from "../../__test__/overmindMocks";
@@ -9,9 +12,10 @@ describe("newRoom.actions", () => {
     // so, it is always valid (going to change in the future when
     // we implement categories/sets etc.)
     it("sets state to valid if newRoom is valid (always)", async () => {
-      const overmind = createOvermindMock(config);
+      const overmind = createOvermindMock(config, withEffectMocks());
 
-      await overmind.actions.router.setPageNew();
+      await overmind.actions.user.updateDetails(userDetailsFixture());
+      await overmind.actions.router.setPageNew({});
       await overmind.actions.newRoom.updateNewRoom({ listed: false });
       if (overmind.state.current !== "New")
         throw new Error("Expected state.current=New");
@@ -40,8 +44,9 @@ describe("newRoom.actions", () => {
         })
       );
 
+      await overmind.actions.user.updateDetails(userDetailsFixture());
       await overmind.actions.token.assureToken();
-      await overmind.actions.router.setPageNew();
+      await overmind.actions.router.setPageNew({});
       await overmind.actions.newRoom.submitNewRoom();
 
       // should redirect to Room
@@ -63,8 +68,9 @@ describe("newRoom.actions", () => {
         })
       );
 
+      await overmind.actions.user.updateDetails(userDetailsFixture());
       await overmind.actions.token.assureToken();
-      await overmind.actions.router.setPageNew();
+      await overmind.actions.router.setPageNew({});
       await overmind.actions.newRoom.submitNewRoom();
 
       // should redirect to Room

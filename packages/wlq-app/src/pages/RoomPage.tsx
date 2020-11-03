@@ -1,35 +1,42 @@
-import { Stack } from "@chakra-ui/core";
-import React from "react";
+import { Center, Spinner } from "@chakra-ui/core";
+import React, { useEffect } from "react";
+import ColumnFlex from "../components/ColumnFlex";
 import Layout from "../components/Layout";
 import PageHead from "../components/PageHead";
+import { useActions } from "../overmind";
 import { RoomSessionMachine } from "../overmind/roomSession/roomSession.statemachine";
+import JoinedRoomSessionView from "./roomPage/JoinedRoomSessionView";
 
-const RoomPage = ({
-  roomSession: { room }
-}: {
-  roomSession: RoomSessionMachine;
-}) => {
-  // const {
-  //   state: {},
-  //   actions: {
-  //     roomSession: { requestRoom }
-  //   }
-  // } = useOvermind();
+const RoomPage = ({ roomSession }: { roomSession: RoomSessionMachine }) => {
+  const { room, participants, request } = roomSession;
+  const {
+    roomSession: { closeWebsocket }
+  } = useActions();
 
-  // useEffect(() => {
-  //   if (currentPage.name === "Room") {
-  //     requestRoom(currentPage);
-  //   }
-  // }, [currentPage, requestRoom]);
-
-  // if (currentPage.name !== "Room") return null;
+  useEffect(() => {
+    return () => {
+      closeWebsocket();
+    };
+  }, [closeWebsocket]);
 
   return (
     <Layout>
-      <Stack spacing={4}>
-        <PageHead title="Geography" loading={room.current === "Empty"} />
-        <div>{room.current !== "Empty" && room.roomId}</div>
-      </Stack>
+      <PageHead title="Geography" loading={room.current === "Empty"} />
+      <ColumnFlex>
+        {roomSession.current === "Joining" && (
+          <Center>
+            <Spinner size="xl" />
+          </Center>
+        )}
+        {roomSession.current === "Joined" && (
+          <JoinedRoomSessionView
+            participants={participants}
+            room={room}
+            pid={roomSession.pid}
+            request={request}
+          />
+        )}
+      </ColumnFlex>
     </Layout>
   );
 };

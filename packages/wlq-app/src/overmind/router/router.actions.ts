@@ -7,6 +7,7 @@ import {
   requestRoom
 } from "../roomSession/roomSession.operators";
 import { SettingsParamsCodec } from "../root.statemachine";
+import { assureValidUserDetails } from "../user/user.operators";
 import { PageParams } from "./router.effects";
 import * as o from "./router.operators";
 
@@ -14,11 +15,15 @@ export const setPageIndex: Operator = mutate(function setPageIndex({ state }) {
   state.send("SetIndex");
 });
 
-export const setPageNew: Operator = mutate(function setPageNew({ state }) {
-  state.send("SetNew");
-});
+export const setPageNew: Operator<PageParams> = pipe(
+  assureValidUserDetails(),
+  mutate(function setPageNew({ state }) {
+    state.send("SetNew");
+  })
+);
 
 export const setPageRoom: Operator<PageParams> = pipe(
+  assureValidUserDetails(),
   decode(RoomKeyCodec),
   fold({
     success: pipe(
