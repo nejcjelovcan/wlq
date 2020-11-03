@@ -2,15 +2,17 @@ import { Button, Stack } from "@chakra-ui/core";
 import { ParticipantPublic } from "@wlq/wlq-core/lib/model";
 import React from "react";
 import ColumnFlex from "../../../components/ColumnFlex";
-import { useActions } from "../../../overmind";
 import InviteYourFiends from "./idleRoomView/InviteYourFriends";
 
-export type IdleRoomViewProps = { participants: ParticipantPublic[] };
+export type IdleRoomViewProps = {
+  participants: ParticipantPublic[];
+  startGame: () => void;
+};
 
-export default function IdleRoomView({ participants }: IdleRoomViewProps) {
-  const {
-    roomSession: { startGame }
-  } = useActions();
+export default function IdleRoomView({
+  startGame,
+  participants
+}: IdleRoomViewProps) {
   return (
     <ColumnFlex>
       <Stack spacing={2}>

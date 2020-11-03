@@ -9,7 +9,7 @@ import {
   Stack
 } from "@chakra-ui/core";
 import { UserDetails } from "@wlq/wlq-core/lib/model";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ColorPicker from "./ColorPicker";
 import EmojiPicker from "./EmojiPicker";
 
@@ -27,6 +27,7 @@ const UserDetailsForm = ({
   onDone
 }: UserDetailsProps) => {
   const [alias, setAlias] = useState(details.alias ?? "");
+  const didMount = useRef(false);
 
   const onSubmit = useCallback(
     event => {
@@ -37,7 +38,10 @@ const UserDetailsForm = ({
   );
 
   useEffect(() => {
-    updateDetails({ alias: alias || undefined });
+    if (didMount.current) {
+      updateDetails({ alias: alias || undefined });
+    }
+    didMount.current = true;
   }, [alias, updateDetails]);
 
   return (
@@ -81,7 +85,6 @@ const UserDetailsForm = ({
         <Skeleton isLoaded={true}>
           <Flex justifyContent="flex-end" pt={4}>
             <Button type="submit" size="lg" isDisabled={current !== "Valid"}>
-              {/* {onDone ? "Continue" : "Save"} */}
               Save
             </Button>
           </Flex>

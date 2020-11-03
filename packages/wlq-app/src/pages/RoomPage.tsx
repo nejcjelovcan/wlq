@@ -37,8 +37,6 @@ const RoomPage = ({ roomSession }: { roomSession: RoomSessionMachine }) => {
           />
         )}
       </ColumnFlex>
-
-      {/* {roomSession.current === "Joining" && <Spinner />} */}
     </Layout>
   );
 };

@@ -7,6 +7,7 @@ export default function ColumnFlex({
 }: { children: ReactNode } & FlexProps) {
   return (
     <Flex
+      data-testid="ColumnFlex"
       flexGrow={1}
       justifyContent="center"
       flexDirection="column"

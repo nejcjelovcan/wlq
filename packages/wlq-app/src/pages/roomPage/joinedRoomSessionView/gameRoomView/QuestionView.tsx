@@ -7,24 +7,22 @@ import {
 import React, { useContext } from "react";
 import UserBadge from "../../../../components/UserBadge";
 import UserDetailsContext from "../../../../contexts/UserDetailsContext";
-import { useActions } from "../../../../overmind";
 
 export default function QuestionView({
   current,
   question: { questionText, options },
   userAnswer,
   revealedAnswer,
-  participantsByAnswer
+  participantsByAnswer,
+  answerQuestion
 }: {
   current: GamePublic["current"];
   question: PosedQuestionPublic;
   userAnswer?: string;
   revealedAnswer?: string;
   participantsByAnswer: ParticipantsByAnswer;
+  answerQuestion: (answer: string) => void;
 }) {
-  const {
-    roomSession: { answerQuestion }
-  } = useActions();
   const userDetails = useContext(UserDetailsContext);
 
   return (
@@ -65,6 +63,7 @@ export default function QuestionView({
                   {(participantsByAnswer[option] || []).map(p => (
                     <UserBadge
                       key={p.pid}
+                      data-testid={`${option}-${p.pid}`}
                       userDetails={p.details}
                       showAlias={false}
                       grayscale={!correct}

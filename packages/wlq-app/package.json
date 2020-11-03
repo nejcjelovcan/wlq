@@ -13,7 +13,11 @@
     "lint:fix": "yarn lint --fix",
     "verify:lint": "yarn lint --max-warnings=0",
     "verify:tsc": "tsc --noEmit",
-    "verify": "yarn verify:lint && yarn verify:tsc"
+    "verify": "yarn verify:lint && yarn verify:tsc",
+    "deploy": "serverless deploy --verbose",
+    "deploy:test": "serverless deploy --verbose --env test",
+    "deploy:production": "serverless deploy --stage production --verbose",
+    "deploy-remove:test": "serverless remove --verbose --env test"
   },
   "dependencies": {
     "@chakra-ui/core": "^1.0.0-rc.8",
@@ -53,11 +57,24 @@
       "last 1 safari version"
     ]
   },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "index.ts",
+      "src/pages/[^./]+.tsx",
+      "theme.ts$",
+      "reportWebVitals.ts"
+    ]
+  },
   "devDependencies": {
     "@types/deep-extend": "^0.4.31",
     "@types/page": "^1.8.0",
     "@types/react-test-renderer": "^16.9.3",
     "deep-extend": "^0.6.0",
-    "react-test-renderer": "16.x"
+    "react-test-renderer": "16.x",
+    "serverless-cloudfront-invalidate": "^1.5.0",
+    "serverless-domain-manager": "^5.0.0",
+    "serverless-dotenv-plugin": "^3.1.0",
+    "serverless-plugin-scripts": "^1.0.2",
+    "serverless-s3-deploy": "^0.9.0"
   }
 }

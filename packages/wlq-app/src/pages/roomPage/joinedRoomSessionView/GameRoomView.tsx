@@ -1,4 +1,3 @@
-import { Flex } from "@chakra-ui/core";
 import {
   GamePublic,
   getParticipantAnswer,
@@ -6,25 +5,23 @@ import {
   ParticipantPublic
 } from "@wlq/wlq-core/lib/model";
 import React from "react";
+import ColumnFlex from "../../../components/ColumnFlex";
 import QuestionView from "./gameRoomView/QuestionView";
 
 export default function GameRoomView({
   participants,
   game,
-  pid
+  pid,
+  answerQuestion
 }: {
   participants: ParticipantPublic[];
   game: GamePublic;
   pid: string;
+  answerQuestion: (answer: string) => void;
 }) {
   const userAnswer = getParticipantAnswer(game, pid);
   return (
-    <Flex
-      justifyContent="center"
-      flexDirection="column"
-      alignItems="stretch"
-      height="70vh"
-    >
+    <ColumnFlex flexGrow={0} height="70vh">
       {(game.current === "Question" || game.current === "Answer") && (
         <QuestionView
           current={game.current}
@@ -32,10 +29,9 @@ export default function GameRoomView({
           userAnswer={userAnswer?.answer}
           revealedAnswer={game.current === "Answer" ? game.answer : undefined}
           participantsByAnswer={getParticipantsByAnswer(game, participants)}
+          answerQuestion={answerQuestion}
         />
       )}
-      {game.current === "Idle" && <div>Idle</div>}
-      {game.current === "Finished" && <div>Finished</div>}
-    </Flex>
+    </ColumnFlex>
   );
 }
