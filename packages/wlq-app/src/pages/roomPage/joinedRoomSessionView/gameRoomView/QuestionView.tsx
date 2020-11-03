@@ -47,7 +47,7 @@ export default function QuestionView({
               flexGrow={current === "Answer" ? 0 : 1}
               disabled={Boolean(userAnswer) || current === "Answer"}
               borderRadius="full"
-              variant={color ? "solid" : "outline"}
+              variant={color || correct ? "solid" : "outline"}
               colorScheme={color}
               onClick={
                 !userAnswer && current === "Question"
