@@ -5,12 +5,13 @@ import {
   PosedQuestionPublic
 } from "@wlq/wlq-core/lib/model";
 import React, { useContext } from "react";
+import CountdownProgress from "../../../../components/CountdownProgress";
 import UserBadge from "../../../../components/UserBadge";
 import UserDetailsContext from "../../../../contexts/UserDetailsContext";
 
 export default function QuestionView({
   current,
-  question: { questionText, options },
+  question: { questionText, options, time },
   userAnswer,
   revealedAnswer,
   participantsByAnswer,
@@ -27,9 +28,16 @@ export default function QuestionView({
 
   return (
     <Stack spacing={3}>
-      <Heading as="h2" size="lg">
-        {questionText}
-      </Heading>
+      <HStack justify="space-between">
+        <Heading as="h2" size="lg">
+          {questionText}
+        </Heading>
+        <CountdownProgress
+          visible={current === "Question"}
+          time={current === "Question" ? time : undefined}
+        />
+      </HStack>
+
       {options.map(option => {
         let color: string | undefined = undefined;
         const correct = revealedAnswer === option;

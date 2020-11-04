@@ -12,6 +12,7 @@ const ButtonTheme = {
       const { colorScheme: c } = props;
 
       return {
+        height: "3.2rem",
         bg: mode(`${c}.600`, `${c}.300`)(props),
         color: mode(`white`, `gray.800`)(props),
         _hover: { bg: mode(`${c}.700`, `${c}.400`)(props) },
@@ -23,6 +24,7 @@ const ButtonTheme = {
       const { colorScheme: c } = props;
 
       return {
+        height: "3.2rem",
         bg: "transparent",
         color: mode(`gray.800`, `white`)(props),
         _hover: {
