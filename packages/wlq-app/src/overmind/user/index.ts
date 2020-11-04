@@ -1,4 +1,10 @@
-import { state } from './user.state'
-import * as actions from './user.actions'
+import { OnInitialize } from "overmind";
+import * as actions from "./user.actions";
 
-export { state, actions }
+const onInitialize: OnInitialize = ({
+  actions: {
+    user: { loadOrRandomizeDetails }
+  }
+}) => loadOrRandomizeDetails();
+
+export { actions, onInitialize };

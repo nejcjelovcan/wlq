@@ -1,0 +1,32 @@
+{
+  "name": "@wlq/wlq-core",
+  "version": "1.1.0",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint src --ext ts,tsx",
+    "lint:fix": "yarn lint --fix",
+    "verify:lint": "yarn lint --max-warnings=0",
+    "verify:tsc": "tsc --noEmit",
+    "verify": "yarn verify:lint && yarn verify:tsc",
+    "test": "dotenv -e .env.test jest",
+    "test:coverage": "dotenv -e .env.test yarn jest -- --coverage --silent",
+    "test:watch": "dotenv -e .env.test yarn jest -- --watch-all",
+    "build:tsc": "tsc",
+    "build:watch": "tsc -w",
+    "build": "rm -rf lib/ && yarn build:tsc"
+  },
+  "dependencies": {
+    "fp-ts": "^2.8.5",
+    "io-ts": "^2.2.12",
+    "jose": "^2.0.3",
+    "nanoid": "^3.1.16"
+  },
+  "devDependencies": {
+    "@types/deep-extend": "^0.4.31",
+    "@types/jest": "^26.0.15",
+    "deep-extend": "^0.6.0",
+    "dotenv-cli": "^4.0.0"
+  }
+}

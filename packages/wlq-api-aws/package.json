@@ -1,30 +1,41 @@
 {
   "name": "@wlq/wlq-api-aws",
-  "version": "1.0.0",
-  "main": "lib/cjs/index.js",
-  "typings": "lib/cjs/index.d.ts",
-  "module": "lib/esm/index.js",
+  "version": "1.1.0",
   "license": "MIT",
   "scripts": {
-    "validate": "dotenv serverless webpack",
-    "test": "yarn jest",
-    "test:watch": "yarn jest --watch-all"
+    "build": "dotenv serverless webpack",
+    "lint": "eslint src --ext ts,tsx",
+    "lint:fix": "yarn lint --fix",
+    "verify:lint": "yarn lint --max-warnings=0",
+    "verify:tsc": "tsc --noEmit",
+    "verify": "yarn verify:lint && yarn verify:tsc",
+    "test": "jest",
+    "test:watch": "yarn test --watch-all",
+    "test:integration": "yarn test --config=jest.config.integration.js --runInBand",
+    "deploy": "serverless deploy --verbose",
+    "deploy:test": "serverless deploy --verbose --env test",
+    "deploy:production": "serverless deploy --stage production --verbose",
+    "deploy-remove:test": "serverless remove --verbose --env test"
   },
   "dependencies": {
     "aws-sdk": "^2.765.0"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.63",
+    "@types/aws-lambda": "^8.10.64",
     "@types/jest": "^26.0.14",
+    "@types/node-fetch": "^2.5.7",
+    "@types/ws": "^7.2.9",
+    "axios": "^0.21.0",
+    "axios-logger": "^2.4.0",
     "dotenv-cli": "^4.0.0",
-    "fork-ts-checker-webpack-plugin": "^5.2.0",
-    "jest": "^26.4.2",
-    "serverless": "^2.4.0",
-    "serverless-webpack": "^5.3.5",
-    "ts-jest": "^26.4.1",
-    "ts-loader": "^8.0.4",
-    "tsconfig-paths-webpack-plugin": "^3.3.0",
-    "webpack": "^4.44.2",
-    "webpack-node-externals": "^2.5.2"
+    "node-fetch": "^2.6.1",
+    "serverless": "^2.9.0",
+    "serverless-domain-manager": "^5.0.0",
+    "serverless-dotenv-plugin": "^3.1.0",
+    "serverless-plugin-optimize": "^4.1.4-rc.1",
+    "serverless-plugin-typescript": "^1.1.9",
+    "serverless-stack-output": "^0.2.3",
+    "serverless-step-functions": "^2.26.0",
+    "ws": "^7.3.1"
   }
 }

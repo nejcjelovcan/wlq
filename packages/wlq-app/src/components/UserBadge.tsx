@@ -3,17 +3,17 @@ import {
   BoxProps,
   Flex,
   SystemStyleObject,
-  useStyleConfig,
-} from '@chakra-ui/core'
-import { UserDetails } from '@wlq/wlq-model/src/user'
-import React from 'react'
-import EmojiIcon from './EmojiIcon'
+  useStyleConfig
+} from "@chakra-ui/core";
+import { UserDetails } from "@wlq/wlq-core/lib/model";
+import React from "react";
+import EmojiIcon from "./EmojiIcon";
 
 export type UserBadgeProps = {
-  userDetails: Partial<UserDetails>
-  showAlias?: boolean
-  grayscale?: boolean
-} & BoxProps
+  userDetails: UserDetails;
+  showAlias?: boolean;
+  grayscale?: boolean;
+} & BoxProps;
 
 const UserBadge = ({
   userDetails,
@@ -21,51 +21,43 @@ const UserBadge = ({
   grayscale = false,
   ...props
 }: UserBadgeProps) => {
-  const colorScheme = userDetails?.color ?? 'gray'
-  const variant = 'vibrant'
+  const colorScheme = userDetails.color ?? "gray";
+  const variant = "vibrant";
 
-  const userBadgeStyle = useStyleConfig('UserBadge', {
+  const userBadgeStyle = useStyleConfig("UserBadge", {
     colorScheme,
-    variant,
-  }) as SystemStyleObject
+    variant
+  }) as SystemStyleObject;
 
   return (
     <Flex
-      borderRadius="full"
-      textTransform="uppercase"
-      fontWeight="bold"
-      fontSize="xl"
-      transition="all 0.3s ease"
       alignItems="center"
-      minWidth={showAlias ? '4rem' : '3.2rem'}
-      maxWidth={showAlias ? '12rem' : '3.2rem'}
-      height="3.2rem"
+      minWidth={showAlias ? "4rem" : "3.2rem"}
+      maxWidth={showAlias ? "12rem" : "3.2rem"}
+      pr={showAlias ? "4" : "0"}
       sx={userBadgeStyle}
-      px="0.5rem"
-      style={{ filter: grayscale ? 'grayscale(100%)' : undefined }}
+      style={{ filter: grayscale ? "grayscale(100%)" : undefined }}
       {...props}
     >
       <EmojiIcon
-        emoji={userDetails?.emoji ?? '🧑🏾'}
-        colorScheme={colorScheme}
+        emoji={userDetails.emoji ?? "🧑🏾"}
         variant="vibrant"
         zIndex="3"
       />
 
       <Box
         zIndex="1"
-        px="0.5rem"
         transition="all 0.3s ease"
         position="relative"
-        opacity={showAlias ? '100' : '0'}
+        opacity={showAlias ? "100" : "0"}
         display="inline-block"
         textOverflow="ellipsis"
         whiteSpace="nowrap"
         overflow="hidden"
       >
-        {userDetails?.alias ?? 'Alias'}
+        {userDetails.alias && showAlias ? userDetails.alias : ""}
       </Box>
     </Flex>
-  )
-}
-export default UserBadge
+  );
+};
+export default UserBadge;

@@ -1,31 +1,54 @@
-import { IConfig } from 'overmind'
-import { merge, namespaced } from 'overmind/config'
+import { IConfig } from "overmind";
 import {
-  createHook,
-  createStateHook,
   createActionsHook,
   createEffectsHook,
+  createHook,
   createReactionHook,
-} from 'overmind-react'
-
-import * as api from '../utils/api'
-import * as localStorage from '../utils/localStorage'
-import websocket from '../utils/websocket'
-import * as user from './user'
-import { onInitialize } from './onInitialize'
-import * as room from './room'
+  createStateHook
+} from "overmind-react";
+import { merge, namespaced } from "overmind/config";
+import * as localStorage from "./effects/localStorage";
+import websocket from "./effects/websocket";
+import rest from "./effects/rest";
+import { requestMachine } from "./request.statemachine";
+import { rootMachine } from "./root.statemachine";
+import * as router from "./router";
+import { tokenMachine } from "./token/token.statemachine";
+import * as user from "./user";
+import * as token from "./token";
+import * as newRoom from "./newRoom";
+import * as roomSession from "./roomSession";
+import { userMachine } from "./user/user.statemachine";
 
 export const config = merge(
-  { onInitialize, state: {}, effects: { api, localStorage, websocket } },
-  namespaced({ user, room }),
-)
+  {
+    state: rootMachine.create(
+      { current: "Index" },
+      {
+        user: userMachine.create({
+          current: "Partial",
+          partialDetails: { type: "UserDetails" },
+          errors: {}
+        }),
+        token: tokenMachine.create(
+          {
+            current: "Init"
+          },
+          { request: requestMachine.create({ current: "Init" }) }
+        )
+      }
+    ),
+    effects: { localStorage, rest, websocket }
+  },
+  namespaced({ user, router, token, newRoom, roomSession })
+);
 
-export const useOvermind = createHook<typeof config>()
-export const useOvermindState = createStateHook<typeof config>()
-export const useActions = createActionsHook<typeof config>()
-export const useEffects = createEffectsHook<typeof config>()
-export const useReaction = createReactionHook<typeof config>()
+export const useOvermind = createHook<typeof config>();
+export const useOvermindState = createStateHook<typeof config>();
+export const useActions = createActionsHook<typeof config>();
+export const useEffects = createEffectsHook<typeof config>();
+export const useReaction = createReactionHook<typeof config>();
 
-declare module 'overmind' {
+declare module "overmind" {
   interface Config extends IConfig<typeof config> {}
 }

@@ -1,65 +1,43 @@
-import { Alert, Stack } from '@chakra-ui/core'
-import { useRouter } from 'next/dist/client/router'
-import React, { useEffect } from 'react'
-import PageHead from '../components/PageHead'
-import useToken from '../hooks/useToken'
-import useUserDetails from '../hooks/useUserDetails'
-import { useOvermind } from '../overmind'
-import RoomCreationForm from './roomPage/RoomCreationForm'
-import RoomDetails from './roomPage/RoomDetails'
+import { Center, Spinner } from "@chakra-ui/core";
+import React, { useEffect } from "react";
+import ColumnFlex from "../components/ColumnFlex";
+import Layout from "../components/Layout";
+import PageHead from "../components/PageHead";
+import { useActions } from "../overmind";
+import { RoomSessionMachine } from "../overmind/roomSession/roomSession.statemachine";
+import JoinedRoomSessionView from "./roomPage/JoinedRoomSessionView";
 
-const RoomPage = () => {
-  const token = useToken()
-  const ready = !!useUserDetails(true)
-
+const RoomPage = ({ roomSession }: { roomSession: RoomSessionMachine }) => {
+  const { room, participants, request } = roomSession;
   const {
-    state: {
-      room: {
-        currentRoom,
-        getRoomRequest: { error: getRoomError },
-      },
-    },
-    actions: {
-      room: { getRoom },
-    },
-  } = useOvermind()
+    roomSession: { closeWebsocket }
+  } = useActions();
 
-  const router = useRouter()
-  const hasRoomId = typeof router.query.r === 'string'
-  const rid = typeof router.query.r === 'string' ? router.query.r : undefined
-  const roomLoaded = hasRoomId && currentRoom?.roomId === rid
-
-  // redirect to /room/? if currentRoom changed
   useEffect(() => {
-    if (currentRoom?.roomId && !rid) {
-      router.replace(`/room/?r=${currentRoom.roomId}`, undefined, {
-        shallow: true,
-      })
-    }
-  }, [currentRoom, rid, router])
-
-  // fetch room if rid is set but no currentRoom
-  useEffect(() => {
-    if (!roomLoaded && token && !getRoomError && rid) {
-      getRoom(rid)
-    }
-  }, [roomLoaded, token, getRoom, rid, getRoomError])
-
-  const error = getRoomError
-  const loading = !ready || (hasRoomId && !error && !roomLoaded)
-  const title = !hasRoomId ? 'New Game' : error ? 'Error' : 'Room name'
+    return () => {
+      closeWebsocket();
+    };
+  }, [closeWebsocket]);
 
   return (
-    <Stack spacing={4} flexGrow={1}>
-      <PageHead
-        loading={loading}
-        title={currentRoom?.name ?? title}
-        showAlias={currentRoom ? currentRoom.state === 'Idle' : true}
-      />
-      {!hasRoomId && <RoomCreationForm userDetailsReady={ready} />}
-      {hasRoomId && !error && <RoomDetails />}
-      {error && <Alert status="error">{error}</Alert>}
-    </Stack>
-  )
-}
-export default RoomPage
+    <Layout>
+      <PageHead title="Geography" loading={room.current === "Empty"} />
+      <ColumnFlex>
+        {roomSession.current === "Joining" && (
+          <Center>
+            <Spinner size="xl" />
+          </Center>
+        )}
+        {roomSession.current === "Joined" && (
+          <JoinedRoomSessionView
+            participants={participants}
+            room={room}
+            pid={roomSession.pid}
+            request={request}
+          />
+        )}
+      </ColumnFlex>
+    </Layout>
+  );
+};
+export default RoomPage;

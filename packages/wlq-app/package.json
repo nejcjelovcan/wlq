@@ -1,33 +1,80 @@
 {
   "name": "@wlq/wlq-app",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "validate": "yarn build",
-    "clean:serverless": "rm -rf ./.next/static/ && rm -rf ./.next/serverless/",
-    "link:serverless": "cd .next/serverless/pages && mkdir -p ./settings && mv ./settings.html ./settings/index.html && mkdir -p ./room && mv ./room.html ./room/index.html",
-    "build:serverless": "next build && yarn link:serverless"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --silent",
+    "test:ci": "CI=true yarn workspace @wlq/wlq-app test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext ts,tsx",
+    "lint:fix": "yarn lint --fix",
+    "verify:lint": "yarn lint --max-warnings=0",
+    "verify:tsc": "tsc --noEmit",
+    "verify": "yarn verify:lint && yarn verify:tsc",
+    "deploy": "serverless deploy --verbose",
+    "deploy:test": "serverless deploy --verbose --env test",
+    "deploy:production": "serverless deploy --stage production --verbose",
+    "deploy-remove:test": "serverless remove --verbose --env test"
   },
   "dependencies": {
-    "@chakra-ui/core": "1.0.0-rc.5",
-    "@chakra-ui/icons": "1.0.0-rc.5",
-    "@react-hook/throttle": "^2.2.0",
-    "next": "9.5.3",
-    "next-transpile-modules": "^4.1.0",
-    "overmind": "^25.0.2",
-    "overmind-react": "^26.0.2",
-    "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "@chakra-ui/core": "^1.0.0-rc.8",
+    "@testing-library/jest-dom": "^5.11.5",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.55",
+    "@types/react-dom": "^16.9.9",
+    "framer-motion": "^2.9.4",
+    "overmind": "^26.0.0",
+    "overmind-react": "^27.0.0",
+    "page": "^1.11.6",
+    "query-string": "^6.13.6",
+    "react": "^16.8",
+    "react-dom": "^16.8",
+    "react-scripts": "4.0.0",
+    "typescript": "^4.0.5",
+    "web-vitals": "^0.2.4"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "index.ts",
+      "src/pages/[^./]+.tsx",
+      "theme.ts$",
+      "reportWebVitals.ts"
+    ]
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^9.5.3",
-    "@types/node": "^14.11.2",
-    "@types/react": "^16.9.49",
-    "miragejs": "^0.1.41",
-    "mock-socket": "^9.0.3",
-    "typescript": "^4.0.3"
+    "@types/deep-extend": "^0.4.31",
+    "@types/page": "^1.8.0",
+    "@types/react-test-renderer": "^16.9.3",
+    "deep-extend": "^0.6.0",
+    "react-test-renderer": "16.x",
+    "serverless-cloudfront-invalidate": "^1.5.0",
+    "serverless-domain-manager": "^5.0.0",
+    "serverless-dotenv-plugin": "^3.1.0",
+    "serverless-plugin-scripts": "^1.0.2",
+    "serverless-s3-deploy": "^0.9.0"
   }
 }

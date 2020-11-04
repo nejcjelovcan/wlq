@@ -1,23 +1,43 @@
-import { Stack } from '@chakra-ui/core'
-import { useRouter } from 'next/dist/client/router'
-import React from 'react'
-import PageHead from '../components/PageHead'
-import useToken from '../hooks/useToken'
-import useUserDetails from '../hooks/useUserDetails'
-import UserDetailsForm from './settingsPage/UserDetailsForm'
+import { Stack } from "@chakra-ui/core";
+import React from "react";
+import Layout from "../components/Layout";
+import PageHead from "../components/PageHead";
+import { useActions } from "../overmind";
+import { SettingsParams } from "../overmind/root.statemachine";
+import {
+  getUserDetails,
+  UserMachine
+} from "../overmind/user/user.statemachine";
+import UserDetailsForm from "./settingsPage/UserDetailsForm";
 
-const SettingsPage = () => {
-  useToken()
-  useUserDetails()
-  const router = useRouter()
+const SettingsPage = ({
+  user,
+  params: { roomId }
+}: {
+  user: UserMachine;
+  params: SettingsParams;
+}) => {
+  const {
+    router: { open },
+    user: { updateDetails }
+  } = useActions();
 
-  // TODO security
-  const next = typeof router.query.next === 'string' ? router.query.next : '/'
   return (
-    <Stack spacing={4}>
-      <PageHead title="Settings" />
-      <UserDetailsForm onDone={() => router.push(next)} />
-    </Stack>
-  )
-}
-export default SettingsPage
+    <Layout>
+      <Stack spacing={4}>
+        <PageHead title="Settings" />
+        <UserDetailsForm
+          current={user.current}
+          details={getUserDetails(user)}
+          updateDetails={updateDetails}
+          onDone={
+            roomId
+              ? () => open({ path: `/room/${roomId}` })
+              : () => open({ path: "/" })
+          }
+        />
+      </Stack>
+    </Layout>
+  );
+};
+export default SettingsPage;
