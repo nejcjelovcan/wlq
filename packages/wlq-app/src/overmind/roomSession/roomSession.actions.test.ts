@@ -324,6 +324,55 @@ describe("roomSession.actions", () => {
         overmind.state.roomSession.room.game.answeredParticipants
       ).toEqual(["pid"]);
     });
+
+    it("adds participant pid to answeredParticipants even if current is already Answer", async () => {
+      const overmind = createOvermindMock(config, withEffectMocks(roomEffects));
+
+      await overmind.actions.user.updateDetails(userDetailsFixture());
+      await overmind.actions.token.assureToken();
+      await overmind.actions.router.setPageRoom({ roomId: room.roomId });
+      await overmind.actions.roomSession.setParticipants({
+        action: "setParticipants",
+        data: {
+          participants: [participantFixture({ pid: "pid" })],
+          pid: "pid"
+        }
+      });
+
+      await overmind.actions.roomSession.poseQuestion({
+        action: "poseQuestion",
+        data: { question: posedQuestionPublicFixture() }
+      });
+
+      await overmind.actions.roomSession.revealAnswer({
+        action: "revealAnswer",
+        data: { answer: "Answer", answers: [] }
+      });
+
+      await overmind.actions.roomSession.roomOnMessage(
+        new MessageEvent("", {
+          data: JSON.stringify({
+            action: "participantAnswered",
+            data: {
+              pid: "pid"
+            }
+          })
+        })
+      );
+
+      if (overmind.state.current !== "Room")
+        throw new Error("Expected state.current=Room");
+      if (overmind.state.roomSession.current !== "Joined")
+        throw new Error("Expected state.roomSession.current=Joined");
+      if (overmind.state.roomSession.room.current !== "Game")
+        throw new Error("Expected state.roomSession.room.current=Game");
+      if (overmind.state.roomSession.room.game.current !== "Answer")
+        throw new Error("Expected state.roomSession.room.game.current=Answer");
+
+      expect(
+        overmind.state.roomSession.room.game.answeredParticipants
+      ).toEqual(["pid"]);
+    });
   });
 
   describe("gameFinished", () => {

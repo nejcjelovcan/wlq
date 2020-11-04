@@ -69,7 +69,12 @@ export const roomMachine = statemachine<RoomStates, RoomEvents>({
     throw new Error("Invalid state in RevealAnswer");
   },
   ParticipantAnswered: (state, { pid }) => {
-    if (state.current === "Game" && state.game.current === "Question") {
+    if (
+      state.current === "Game" &&
+      // it happens sometime that answer is revealed before participantAnswer
+      // is received (so we need current === "Answer as well")
+      (state.game.current === "Question" || state.game.current === "Answer")
+    ) {
       return {
         ...getRoomProps(state),
         current: "Game",
