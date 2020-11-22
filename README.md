@@ -1,5 +1,7 @@
 This is a serverless quiz game I am working on to strengthen my skills of building fullstack applications in Typescript.
 
+[![codecov](https://codecov.io/gh/nejcjelovcan/wlq/branch/develop/graph/badge.svg?token=J9WP3DL2JR)](https://codecov.io/gh/nejcjelovcan/wlq)
+
 - [The game](#the-game)
 - [Current focus](#current-focus)
 - [Packages](#packages)
@@ -9,6 +11,8 @@ This is a serverless quiz game I am working on to strengthen my skills of buildi
 - [Not doing](#not-doing)
 
 ## The game
+<a href="https://qweel.be/room/" target="_blank" rel="nofollow noreferrer"><img src=".readme/qweelbe_screnshot.png" width="250" align="right" /></a>
+
 The basic idea is to have a simple Browser-based multiplayer quiz game where you can test your knowledge of Geography while competing with your friends (or other users that are currently online). It should be easy to get into and invite others.
 
 Take a look at the live demo at [Qweel.be](https://qweel.be/room/). It is still very experimental, I will be grateful if you [add an issue](https://github.com/nejcjelovcan/wlq/issues) if you encounter any bugs.
