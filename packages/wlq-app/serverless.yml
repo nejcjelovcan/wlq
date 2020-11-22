@@ -44,8 +44,19 @@ custom:
             globs:
               - "**/*.html"
               - "**/*.txt"
+              - "**/*.json"
             headers:
               CacheControl: max-age=86400
+
+      - bucket: ${self:custom.siteName}
+        files:
+          - source: ./build/
+            globs:
+              - "favicon/*.png"
+              - "favicon/*.ico"
+              - "favicon.ico"
+            headers:
+              CacheControl: max-age=604800
 
       - bucket: ${self:custom.siteName}
         prefix: static
